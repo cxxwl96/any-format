@@ -3,6 +3,7 @@ import { reactive, type Ref, ref, toRaw, unref } from 'vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
 import { menus } from '@/router/menu'
 import { useRoute, useRouter } from 'vue-router'
+
 const route = useRoute()
 const router = useRouter()
 
@@ -19,11 +20,12 @@ const options: {
   }
 })
 
-const value = ref(options.filter(op=>op.payload.path===window.location.pathname).map(op=>op.value)[0] || options[0].value)
+const value = ref(options.filter(op => op.payload.path === window.location.pathname).map(op => op.value)[0] || options[0].value)
 
 const menuBoxStyle = ref({})
 
 const affixed = ref<boolean>(false)
+
 function affixChange(val?: boolean) {
   affixed.value = val || false
   menuBoxStyle.value = val ? {
@@ -67,7 +69,7 @@ router.beforeEach((to, from, next) => {
       <RouterView v-if="isShowRouterView" />
     </div>
     <div class="footer">
-      Footer
+      CopyRight © 2023 引导页 All Rights Reserved. 黔ICP备2023015771号-1
     </div>
     <a-float-button type="primary" :style="{top: '23px'}" v-show="affixed" @click="affixed=false">
       <template #icon>
@@ -90,5 +92,11 @@ router.beforeEach((to, from, next) => {
 
 .menu-box {
   border-radius: 6px;
+}
+
+.footer {
+  text-align: center;
+  color: rgb(157 157 157 / 40%);
+  font-size: 0.8rem;
 }
 </style>
