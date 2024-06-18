@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SettingOutlined } from '@ant-design/icons-vue'
-import { onMounted, reactive, ref, toRaw, type UnwrapRef, watch } from 'vue'
+import { onMounted, reactive, ref, toRaw, type UnwrapRef } from 'vue'
 import useFormat, { type AnyFormatConfig } from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
 import { message } from 'ant-design-vue'
@@ -13,10 +13,8 @@ const data = ref<string>('')
 // load cache
 onMounted(() => data.value = sessionStorage.getItem('AnyFormatData') || '')
 // data cache
-function cacheData(value: string) {
-  console.log(value)
-  sessionStorage.setItem('AnyFormatData', value)
-}
+const cacheData = (value: string) => sessionStorage.setItem('AnyFormatData', value)
+
 
 let config: UnwrapRef<AnyFormatConfig> = reactive(
   {
@@ -52,7 +50,8 @@ function dblclick(value: string) {
 
 <template>
   <div>
-    <CodeMirror @dblclick="dblclick" v-model:value="data" @change="cacheData" :lineWrapping="true" :style="{fontSize: '14px'}" />
+    <CodeMirror @dblclick="dblclick" v-model:value="data" @change="cacheData" :lineWrapping="true"
+                :style="{fontSize: '14px'}" />
     <span style="font-size: 14px; color: #00000059; margin: 20px">Tip：粘贴文本，双击格式化</span>
     <a-float-button :style="{bottom: '100px'}" @click="()=>{open=true}">
       <template #icon>
