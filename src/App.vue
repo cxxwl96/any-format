@@ -1,27 +1,8 @@
 <script setup lang="ts">
-import { reactive, type Ref, ref, toRaw, unref } from 'vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
+import { defineAsyncComponent, h, ref, unref } from 'vue'
 import { menus } from '@/router/menu'
-import { useRoute, useRouter } from 'vue-router'
 
-const route = useRoute()
-const router = useRouter()
-
-
-const options: {
-  payload: { path: string };
-  value: string | symbol | undefined
-}[] = menus.filter(menu => menu.name).map(menu => {
-  return {
-    value: menu.name,
-    payload: {
-      path: menu.path
-    }
-  }
-})
-
-const value = ref(options.filter(op => op.payload.path === window.location.pathname).map(op => op.value)[0] || options[0].value)
-
+const activeKey = ref(unref(menus[0].value))
 const menuBoxStyle = ref({})
 
 function affixChange(val?: boolean) {
@@ -41,17 +22,22 @@ function affixChange(val?: boolean) {
 
 <template>
   <div class="main">
-    <a-affix @change="affixChange">
-      <div class="menu-box" :style="menuBoxStyle">
-        <a-segmented v-model:value="value" :options="options"
-                     @change="(val: string)=>{
-                       $router.push(options.filter(op=>op.value===val)[0].payload.path)
-                     }" />
-      </div>
-    </a-affix>
-    <div class="content">
-      <RouterView />
-    </div>
+    <a-tabs v-model:activeKey="activeKey">
+      <template #renderTabBar>
+        <a-affix @change="affixChange">
+          <div class="menu-box" :style="menuBoxStyle">
+            <a-segmented v-model:value="activeKey" :options="menus" @change="(val: string) => activeKey = val" />
+          </div>
+        </a-affix>
+      </template>
+
+      <a-tab-pane v-for="menu in menus" :key="menu.value">
+        <div class="content">
+          <component :is="defineAsyncComponent(() => import(menu.component))" />
+        </div>
+      </a-tab-pane>
+
+    </a-tabs>
     <div class="footer">
       CopyRight © 2023 引导页 All Rights Reserved. 黔ICP备2023015771号-1
     </div>
