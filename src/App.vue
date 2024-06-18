@@ -7,7 +7,7 @@ const menuBoxStyle = ref({})
 
 function affixChange(val?: boolean) {
   menuBoxStyle.value = val ? {
-    padding: '12px',
+    padding: '6px',
     margin: '12px 0',
     border: '1px solid #d9d9d9',
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
