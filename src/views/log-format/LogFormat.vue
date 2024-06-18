@@ -3,6 +3,10 @@ import { SettingOutlined } from '@ant-design/icons-vue'
 import { reactive, ref, toRaw, type UnwrapRef, watch } from 'vue'
 import useFormat, { type AnyFormatConfig } from '@/utils/Format'
 import {CodeMirror} from '@/components/CodeEditor'
+import { message } from 'ant-design-vue';
+const [messageApi, contextHolder] = message.useMessage();
+
+messageApi.info('粘贴文本，双击格式化');
 
 const data = ref<string>('')
 
@@ -28,22 +32,26 @@ const onFinish = () => {
 }
 
 function dblclick(value: string) {
-  data.value = ''
-  setTimeout(()=>{
-    data.value = useFormat({...toRaw(config)}).anyFormat(value)
-  }, 100)
+  const formated = useFormat({ ...toRaw(config) }).anyFormat(value)
+  if (formated != value) {
+    data.value = ''
+    setTimeout(() => {
+      data.value = formated
+    }, 1)
+  }
 }
 </script>
 
 <template>
   <div>
     <CodeMirror @dblclick="dblclick" v-model:value="data" :lineWrapping="true" :style="{fontSize: '14px'}"/>
+    <span style="font-size: 14px; color: #00000059; margin: 20px">Tip：粘贴文本，双击格式化</span>
     <a-float-button :style="{bottom: '100px'}" @click="()=>{open=true}">
       <template #icon>
         <SettingOutlined />
       </template>
     </a-float-button>
-    <a-modal title="设置" v-model:open="open" :footer="null">
+    <a-modal title="LogFormat设置" v-model:open="open" :footer="null">
       <a-form
         :model="config"
         name="basic"
@@ -72,6 +80,12 @@ function dblclick(value: string) {
           <a-checkbox-group v-model:value="config.breakChars">
             <a-checkbox value=";" name="breakChars">;</a-checkbox>
             <a-checkbox value="," name="breakChars">,</a-checkbox>
+            <a-checkbox value="}" name="breakChars">}</a-checkbox>
+            <a-checkbox value="]" name="breakChars">]</a-checkbox>
+            <a-checkbox value=")" name="breakChars">)</a-checkbox>
+            <a-checkbox value=">" name="breakChars">&gt;</a-checkbox>
+            <a-checkbox value="=" name="breakChars">=</a-checkbox>
+            <a-checkbox value=";" name="breakChars">;</a-checkbox>
           </a-checkbox-group>
         </a-form-item>
         <a-form-item label="TabCount">

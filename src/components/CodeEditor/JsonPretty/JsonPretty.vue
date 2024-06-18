@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
-import { defineProps } from 'vue'
 
 const props = defineProps({
   data: { type: Object || String }
