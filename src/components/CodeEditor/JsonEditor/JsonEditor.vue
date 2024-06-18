@@ -1,0 +1,83 @@
+<template>
+  <div class="h-full">
+    <CodeMirrorEditor
+      v-bind="$attrs"
+      :value="model.data"
+      @change="handleValueChange"
+      @blur="handleBlur"
+      :mode="mode"
+    />
+    <Alert v-show="model.success" message="JSON格式错误" :description="model.msg" type="error" />
+  </div>
+</template>
+<script lang="ts">
+import { defineComponent, type PropType, ref, watch } from 'vue'
+import CodeMirrorEditor from '../CodeMirror/CodeMirror.vue'
+import { Alert } from 'ant-design-vue'
+
+import { validateJson } from '@/utils/jsonUtil'
+import { type Result } from '@/data'
+
+const MODE = {
+  JSON: 'application/json',
+  html: 'htmlmixed',
+  js: 'javascript'
+}
+
+const props = {
+  value: { type: [Object, String] as PropType<Record<string, any> | string> },
+  mode: { type: String, default: MODE.JSON },
+  validate: { type: Boolean, default: false },
+}
+
+export default defineComponent({
+  name: 'CodeEditor',
+  components: { CodeMirrorEditor, Alert },
+  props,
+  emits: ['change', 'error', 'update:value'],
+  setup(props, { emit }) {
+    const model = ref<Result>({
+      data: ''
+    })
+    getValue()
+
+    function getValue() {
+      const { value, mode } = props
+      if (mode !== MODE.JSON) {
+        model.value.data = value as string
+      } else {
+        model.value.data = validateJson(value).value
+      }
+    }
+
+    watch(
+      () => props.value,
+      () => getValue()
+    )
+    watch(
+      () => model.value.data,
+      (val) => {
+        emit('update:value', val)
+      }
+    )
+
+    function handleValueChange(v: string) {
+      model.value.data = validateJson(v).value
+      emit('change', v)
+    }
+
+    function handleBlur(v: string) {
+      const result = validateJson(v)
+      if (props.validate && result.error) {
+        model.value.success = true
+        model.value.msg = result.message
+        emit('error', model)
+      } else {
+        model.value.success = false
+      }
+    }
+
+    return { model, handleValueChange, handleBlur }
+  }
+})
+</script>

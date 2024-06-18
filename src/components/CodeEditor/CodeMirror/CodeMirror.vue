@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, unref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import CodeMirror from 'codemirror'
-import { MODE, type Nullable, THEME } from '../data'
+import { MODE, type Nullable, THEME } from '@/data'
 
 import './codemirror.css'
 // modes
