@@ -46,6 +46,7 @@ import 'codemirror/mode/htmlmixed/htmlmixed'
 import 'codemirror/mode/javascript/javascript'
 import 'codemirror/theme/idea.css'
 import 'codemirror/theme/material-palenight.css'
+import { isMacOs, isWindowOs } from '@/utils/is'
 
 const props = defineProps({
   value: { type: String },
@@ -54,7 +55,8 @@ const props = defineProps({
   tabSize: { type: Number, default: 4 },
   theme: { type: String, default: THEME.light },
   lineWrapping: { type: Boolean, default: false },
-  showCopyButton: { type: Boolean, default: false } // TODO
+  showCopyButton: { type: Boolean, default: false }, // TODO
+  fontSize: { type: Number, default: 14 }
 })
 const emits = defineEmits(['change', 'blur', 'dblclick'])
 
@@ -119,18 +121,40 @@ function refresh() {
   editor?.refresh()
 }
 
+const fontSize = ref(props.fontSize)
+
+const changeFontSizeListener = (e: WheelEvent) => {
+  let keyDown = (isMacOs() && e.metaKey) || (isWindowOs() && e.ctrlKey)
+  if (keyDown) {
+    if (e.deltaY < 0) {
+      fontSize.value = Math.max(fontSize.value - 1, 8)
+    } else if (e.deltaY > 0) {
+      fontSize.value = Math.min(fontSize.value + 1, 25)
+    }
+  }
+}
+
+function registerFontSize() {
+  document.addEventListener('wheel', changeFontSizeListener)
+}
+function unregisterFontSize() {
+  document.removeEventListener('wheel', changeFontSizeListener)
+}
+
 onMounted(async () => {
   await nextTick()
   await init()
+  registerFontSize()
 })
 
 onUnmounted(() => {
   editor = null
+  unregisterFontSize()
 })
 </script>
 
 <template>
-  <div class="code-mirror" ref="el" v-bind="$attrs"></div>
+  <div class="code-mirror relative !h-full w-full overflow-hidden" ref="el" v-bind="$attrs" :style="{fontSize: fontSize+'px'}"></div>
 </template>
 
 <style scoped>

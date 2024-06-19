@@ -51,8 +51,7 @@ function dblclick(value: string) {
 <template>
   <div>
     <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-    <CodeMirror @dblclick="dblclick" v-model:value="data" @change="cacheData" :lineWrapping="true"
-                :style="{fontSize: '14px'}" />
+    <CodeMirror @dblclick="dblclick" v-model:value="data" @change="cacheData" :lineWrapping="true" :style="{maxHeight: '100px'}"/>
     <a-float-button :style="{bottom: '100px'}" @click="()=>{open=true}">
       <template #icon>
         <SettingOutlined />

@@ -33,7 +33,7 @@ function affixChange(val?: boolean) {
 
       <a-tab-pane v-for="menu in menus" :key="menu.value">
         <div class="content">
-          <component :is="defineAsyncComponent(() => import(menu.component))" />
+          <component :is="defineAsyncComponent(() => import(/* @vite-ignore */menu.component))" />
         </div>
       </a-tab-pane>
 
