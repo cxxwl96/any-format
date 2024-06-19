@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CodeMirror } from '@/components/CodeEditor'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message } from 'ant-design-vue'
 
@@ -42,7 +42,8 @@ function delEscape() {
 </script>
 
 <template>
-  <CodeMirror class="editor" ref="el" v-model:value="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping />
+  <CodeMirror class="editor" ref="el" v-model:value="result.value" @change="handleChange" @dblclick="formatValidate"
+              lineWrapping />
   <a-space :size="[8, 16]" wrap style="margin: 20px 0">
     <a-button type="primary" @click="formatValidate">格式化校验</a-button>
     <a-button @click="compress">压缩</a-button>
@@ -53,7 +54,7 @@ function delEscape() {
     :description="result.message"
     :type="result.error?'error': 'success'"
     closable
-    v-show="result.value"
+    v-show="result.message || (result.value && result.error)"
   />
 </template>
 
