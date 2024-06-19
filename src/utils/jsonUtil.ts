@@ -14,7 +14,7 @@ export function validateJson(value: string | object | any): {
   try {
     result.value =
       jsonlint.parse(value) &&
-      isString(value) ? JSON.stringify(JSON.parse(value), null, 2) : JSON.stringify(value, null, 2);
+      isString(value) ? JSON.stringify(JSON.parse(value), null, 2) : JSON.stringify(value, null, 4);
   } catch (e: any) {
     if (e?.name === 'Error') {
       result.error = true;

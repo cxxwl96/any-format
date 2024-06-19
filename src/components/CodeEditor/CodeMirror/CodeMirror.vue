@@ -83,6 +83,7 @@ watch(
   { flush: 'post' }
 )
 
+
 async function init() {
   editor = CodeMirror(el.value!, {
     value: '',
@@ -137,6 +138,7 @@ const changeFontSizeListener = (e: WheelEvent) => {
 function registerFontSize() {
   document.addEventListener('wheel', changeFontSizeListener)
 }
+
 function unregisterFontSize() {
   document.removeEventListener('wheel', changeFontSizeListener)
 }
@@ -151,10 +153,17 @@ onUnmounted(() => {
   editor = null
   unregisterFontSize()
 })
+
+// 暴露方法
+defineExpose({
+  getValue: () => editor?.getValue(),
+  setValue: (value: string) => editor?.setValue(value),
+})
 </script>
 
 <template>
-  <div class="code-mirror relative !h-full w-full overflow-hidden" ref="el" v-bind="$attrs" :style="{fontSize: fontSize+'px'}"></div>
+  <div class="code-mirror relative !h-full w-full overflow-hidden" ref="el" v-bind="$attrs"
+       :style="{fontSize: fontSize+'px'}"></div>
 </template>
 
 <style scoped>

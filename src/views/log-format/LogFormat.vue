@@ -3,11 +3,6 @@ import { SettingOutlined } from '@ant-design/icons-vue'
 import { onMounted, reactive, ref, toRaw, type UnwrapRef } from 'vue'
 import useFormat, { type AnyFormatConfig } from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
-import { message } from 'ant-design-vue'
-
-const [messageApi] = message.useMessage()
-
-messageApi.info('粘贴文本，双击格式化')
 
 const data = ref<string>('')
 // load cache
@@ -50,7 +45,6 @@ function dblclick(value: string) {
 
 <template>
   <div>
-    <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
     <CodeMirror @dblclick="dblclick" v-model:value="data" @change="cacheData" :lineWrapping="true" />
     <a-float-button :style="{bottom: '100px'}" @click="()=>{open=true}">
       <template #icon>
