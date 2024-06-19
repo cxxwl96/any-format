@@ -29,11 +29,12 @@ import 'codemirror/addon/lint/lint.css'
 import 'codemirror/addon/lint/lint'
 import 'codemirror/addon/lint/yaml-lint'
 import 'codemirror/addon/scroll/annotatescrollbar'
-import 'codemirror/addon/search/search'
-import 'codemirror/addon/search/searchcursor'
-import 'codemirror/addon/search/jump-to-line'
-import 'codemirror/addon/search/matchesonscrollbar.css'
-import 'codemirror/addon/search/matchesonscrollbar'
+// 关闭搜索功能
+// import 'codemirror/addon/search/search'
+// import 'codemirror/addon/search/searchcursor'
+// import 'codemirror/addon/search/jump-to-line'
+// import 'codemirror/addon/search/matchesonscrollbar.css'
+// import 'codemirror/addon/search/matchesonscrollbar'
 import 'codemirror/addon/selection/active-line' //光标行背景高亮，配置里面也需要styleActiveLine设置为true
 import 'codemirror/keymap/sublime'
 // import 'codemirror/lib/codemirror.css'; // 会让maxHeight失效
