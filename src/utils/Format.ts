@@ -34,21 +34,31 @@ export default function useFormat(config: AnyFormatConfig = {
     if (!text) {
       return text
     }
-    // text = text.split(/\r\n|\r|\n/).map(line => line.trim()).join('\n')
+    const arr = text.split(/\r\n|\r|\n/).map(line => line.trim()).join('')
     let formatted = ''
     let level = 0
-    for (let i = 0; i < text.length; i++) {
-      const ch = text[i]
+    let lastCharBreak = false
+    for (let i = 0; i < arr.length; i++) {
+      let ch = arr[i]
       if (startChars.indexOf(ch) >= 0) {
         formatted = formatted.concat(ch)
         formatted = formatted.concat(breakSpace(++level))
+        lastCharBreak = true
       } else if (endChars.indexOf(ch) >= 0) {
         formatted = formatted.concat(breakSpace(--level))
         formatted = formatted.concat(ch)
+        lastCharBreak = true
       } else if (breakChars.indexOf(ch) >= 0) {
         formatted = formatted.concat(ch)
         formatted = formatted.concat(breakSpace(level))
+        lastCharBreak = true
       } else {
+        if (lastCharBreak) {
+          while (i<arr.length && (ch = arr[i]) === ' ') {
+            i++;
+          }
+          lastCharBreak = false
+        }
         formatted = formatted.concat(ch)
       }
     }
@@ -64,16 +74,7 @@ export default function useFormat(config: AnyFormatConfig = {
     return s
   }
 
-  // 压缩文本
-  function compressText(text: string) {
-    if (text) {
-      return text.split(/\r\n|\r|\n/).map(line => line.trim()).filter(line => line !== '').join('\n')
-    }
-    return text
-  }
-
   return {
-    anyFormat,
-    compressText
+    anyFormat
   }
 }

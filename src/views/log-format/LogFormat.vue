@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SettingOutlined } from '@ant-design/icons-vue'
-import { onMounted, reactive, ref, toRaw, type UnwrapRef } from 'vue'
+import { onMounted, reactive, ref, toRaw, unref, type UnwrapRef } from 'vue'
 import useFormat, { type AnyFormatConfig } from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
 
@@ -33,11 +33,11 @@ const onFinish = () => {
 }
 
 function dblclick(value: string) {
-  const formated = useFormat({ ...toRaw(config) }).anyFormat(value)
-  if (formated != value) {
+  const format = useFormat({ ...toRaw(config) }).anyFormat(unref(value))
+  if (format != value) {
     data.value = ''
     setTimeout(() => {
-      data.value = formated
+      data.value = format
     }, 1)
   }
 }

@@ -62,6 +62,7 @@ function affixChange(val?: boolean) {
 }
 
 .menu-box {
+  display: inline-flex;
   border-radius: 6px;
 }
 

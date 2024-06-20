@@ -20,17 +20,19 @@ function formatValidate() {
   if (!value || value === '') {
     message.info('请输入内容')
     result.value.value = ''
+    result.value.error = false
+    result.value.message = ''
     return
   }
   result.value = { ...validateJson(value) }
-  if (!result.value.error) {
+  if (!result.value.error && value !== result.value.value) {
     el.value.setValue(result.value.value)
   }
 }
 
 function compress() {
   formatValidate()
-  if (!result.value.error) {
+  if (result.value.value) {
     el.value.setValue(JSON.stringify(JSON.parse(result.value.value)))
   }
 }
@@ -53,8 +55,7 @@ function delEscape() {
     :message="result.error?'JSON格式错误':'正确的JSON'"
     :description="result.message"
     :type="result.error?'error': 'success'"
-    closable
-    v-show="result.message || (result.value && result.error)"
+    v-if="result.message"
   />
 </template>
 

@@ -9,12 +9,12 @@ export function validateJson(value: string | object | any): {
   const result = {
     value: '',
     error: false,
-    message: '',
+    message: 'OK',
   };
   try {
     result.value =
       jsonlint.parse(value) &&
-      isString(value) ? JSON.stringify(JSON.parse(value), null, 2) : JSON.stringify(value, null, 4);
+      isString(value) ? JSON.stringify(JSON.parse(value), null, 4) : JSON.stringify(value, null, 4);
   } catch (e: any) {
     if (e?.name === 'Error') {
       result.error = true;
