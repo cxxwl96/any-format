@@ -45,7 +45,8 @@ function affixChange(val?: boolean) {
 
     </a-tabs>
     <div class="footer">
-      CopyRight © 2023 引导页 All Rights Reserved. 黔ICP备2023015771号-1
+      <p>CopyRight © 2023 引导页 All Rights Reserved. 黔ICP备2023015771号-1</p>
+      <p>PowerBy cxxwl96@sina.com</p>
     </div>
     <a-back-top />
   </div>
@@ -58,7 +59,7 @@ function affixChange(val?: boolean) {
 
 .content {
   margin-top: 20px;
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh - 130px);
 }
 
 .menu-box {
