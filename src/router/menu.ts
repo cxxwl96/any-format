@@ -11,6 +11,22 @@ const menus: { value: string, payload?: any, component: string }[] = reactive(
     {
       value: 'JSON',
       component: '/src/views/json/JsonFormat.vue'
+    },
+    {
+      value: 'XML',
+      component: '/src/views/xml/XmlFormat.vue'
+    },
+    {
+      value: 'QRCode',
+      component: '/src/views/xml/XmlFormat.vue'
+    },
+    {
+      value: 'Base64',
+      component: '/src/views/xml/XmlFormat.vue'
+    },
+    {
+      value: 'UrlEncode',
+      component: '/src/views/xml/XmlFormat.vue'
     }
   ]
 )
