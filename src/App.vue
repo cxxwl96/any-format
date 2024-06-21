@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { ref, unref } from 'vue'
+import { defineAsyncComponent, h, ref, unref, watch } from 'vue'
 import { menus } from '@/router/menu'
-import router from '@/router'
 
 const activeKey = ref(sessionStorage.getItem('activeKey') as string || unref(menus[0].value))
 const menuBoxStyle = ref({})
 
 function handleChange(val: string) {
-  sessionStorage.setItem('activeKey', val)
-  router.push(val)
+  activeKey.value = val
+  sessionStorage.setItem('activeKey', activeKey.value)
 }
 
 function affixChange(val?: boolean) {
@@ -28,14 +27,23 @@ function affixChange(val?: boolean) {
 
 <template>
   <div class="main">
-    <a-affix @change="affixChange">
-      <div class="menu-box" :style="menuBoxStyle">
-        <a-segmented v-model:value="activeKey" :options="menus" @change="handleChange" />
-      </div>
-    </a-affix>
-    <div class="content">
-      <router-view />
-    </div>
+    <a-tabs v-model:activeKey="activeKey">
+      <template #renderTabBar>
+        <a-affix @change="affixChange">
+          <div class="menu-box" :style="menuBoxStyle">
+            <a-segmented v-model:value="activeKey" :options="menus" @change="handleChange" />
+          </div>
+        </a-affix>
+      </template>
+
+      <a-tab-pane v-for="menu in menus" :key="menu.value">
+        <div class="content">
+          <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
+          <component :is="defineAsyncComponent(() => import(/* @vite-ignore */menu.component))" />
+        </div>
+      </a-tab-pane>
+
+    </a-tabs>
     <div class="footer">
       <p>CopyRight © 2023 引导页 All Rights Reserved. 黔ICP备2023015771号-1</p>
       <p>PowerBy cxxwl96@sina.com</p>

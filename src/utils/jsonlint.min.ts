@@ -1,4 +1,4 @@
-// @ts-nocheck
+/* Jison generated parser */
 const jsonlint = (function () {
   const parser = {
     trace: function trace() {},
