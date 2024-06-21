@@ -103,3 +103,19 @@ export function isMacOs() {
 export function isWindowOs() {
   return /windows|win32/i.test(navigator.userAgent)
 }
+
+/**
+ * 是否JSON字符串
+ */
+export function isJsonString(text: any): boolean {
+  if (typeof text !== 'string') {
+    return false
+  }
+  let obj: any
+  try {
+    obj = JSON.parse(text)
+  } catch (e) {
+    return false
+  }
+  return typeof obj === 'object'
+}

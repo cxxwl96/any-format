@@ -3,7 +3,7 @@ import { CodeMirror } from '@/components/CodeEditor'
 import { type Ref, ref, unref } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
-import { isArray, isObject, isString } from '@/utils/is'
+import { isArray, isJsonString, isObject, isString } from '@/utils/is'
 
 const el = ref()
 const result = ref<{
@@ -30,9 +30,15 @@ function formatValidate() {
       description: result.value.message,
       placement: 'topRight'
     })
+  } else {
+    // message.success('正确的JSON')
+    notification['success']({
+      message: '正确的JSON',
+      description: 'OK',
+      placement: 'topRight'
+    })
   }
   if (!result.value.error && value !== result.value.value) {
-    message.success('正确的JSON')
     el.value.setValue(result.value.value)
   }
   return unref(result.value.value)
@@ -45,32 +51,31 @@ function compress() {
   }
 }
 
-function deepJson(json: Ref<any>) {
+function deepJson(json: Ref<any>, suffix: boolean) {
   if (isArray(json.value)) {
     for (const obj of json.value) {
-      deepJson(ref(obj))
+      deepJson(ref(obj), suffix)
     }
   } else if (isObject(json.value)) {
-    for (const jsonKey in json.value) {
-      if (isString(json.value[jsonKey])) {
-        try {
-          json.value[jsonKey] = JSON.parse(json.value[jsonKey])
-          deepJson(ref(json.value[jsonKey]))
-        } catch (e) {
-          // ignore
-        }
+    for (let key in json.value) {
+      const value = json.value[key]
+      if (isJsonString(value)) {
+        delete json.value[key]
+        key = suffix ? key + ' [@String]' : key
+        json.value[key] = JSON.parse(value)
+        deepJson(ref(json.value[key]), suffix)
       } else {
-        deepJson(ref(json.value[jsonKey]))
+        deepJson(ref(value), suffix)
       }
     }
   }
 }
 
-function deepDelEscape() {
+function deepDelEscape(suffix: boolean) {
   const value = formatValidate()
   if (value) {
     const json = ref(JSON.parse(value))
-    deepJson(json)
+    deepJson(json, suffix)
     el.value.setValue(JSON.stringify(json.value))
     formatValidate()
   }
@@ -92,7 +97,12 @@ function escape() {
     <a-space :size="[8, 16]" wrap>
       <a-button type="primary" @click="formatValidate">格式化校验</a-button>
       <a-button @click="compress">压缩</a-button>
-      <a-button @click="deepDelEscape">深度去除转义</a-button>
+      <a-dropdown-button @click="deepDelEscape(true)">
+        深度去除转义
+        <template #overlay>
+          <a-button @click="deepDelEscape(false)"> 不加 [@String] </a-button>
+        </template>
+      </a-dropdown-button>
       <a-button @click="delEscape">去除转义</a-button>
       <a-button @click="escape">转义</a-button>
     </a-space>
