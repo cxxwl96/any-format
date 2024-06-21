@@ -18,9 +18,9 @@ let config: UnwrapRef<AnyFormatConfig> = reactive(
     breakChars: [';', ','],
     tabCount: 4
   })
-if (localStorage.getItem('AnyFormatConfig')) {
+if (sessionStorage.getItem('AnyFormatConfig')) {
   try {
-    config = reactive(JSON.parse(localStorage.getItem('AnyFormatConfig') as string))
+    config = reactive(JSON.parse(sessionStorage.getItem('AnyFormatConfig') as string))
   } catch (error) {
     // ignore
   }
@@ -28,7 +28,7 @@ if (localStorage.getItem('AnyFormatConfig')) {
 const open = ref<boolean>(false)
 
 const onFinish = () => {
-  localStorage.setItem('AnyFormatConfig', JSON.stringify(toRaw(config)))
+  sessionStorage.setItem('AnyFormatConfig', JSON.stringify(toRaw(config)))
   open.value = false
 }
 

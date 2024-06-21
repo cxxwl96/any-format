@@ -31,7 +31,13 @@ function affixChange(val?: boolean) {
       <template #renderTabBar>
         <a-affix @change="affixChange">
           <div class="menu-box" :style="menuBoxStyle">
-            <a-segmented v-model:value="activeKey" :options="menus" @change="handleChange" />
+            <a-segmented v-model:value="activeKey" :options="menus" @change="handleChange">
+              <template #label="{ value, disabled }">
+                <span :style="{color: value===activeKey?'#1677ff': disabled ? 'rgba(0, 0, 0, 0.25)': '#000'}">
+                  {{ value }}
+                </span>
+              </template>
+            </a-segmented>
           </div>
         </a-affix>
       </template>
@@ -71,5 +77,9 @@ function affixChange(val?: boolean) {
   text-align: center;
   color: rgb(157 157 157 / 40%);
   font-size: 0.8rem;
+}
+
+.ant-segmented-item-selected {
+  color: #1677ff;
 }
 </style>

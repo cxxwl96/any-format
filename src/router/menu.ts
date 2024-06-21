@@ -4,7 +4,7 @@ import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
-const menus: { value: string, payload?: any, component: any }[] = reactive(
+const menus: { value: string, label?: string, component: any }[] = reactive(
   [
     {
       value: 'LogFormat',
@@ -16,19 +16,23 @@ const menus: { value: string, payload?: any, component: any }[] = reactive(
     },
     {
       value: 'XML',
-      component: shallowRef(XmlFormat)
+      component: shallowRef(XmlFormat),
+      disabled: true
     },
     {
       value: 'QRCode',
-      component: shallowRef(XmlFormat)
+      component: shallowRef(XmlFormat),
+      disabled: true
     },
     {
       value: 'Base64',
-      component: shallowRef(XmlFormat)
+      component: shallowRef(XmlFormat),
+      disabled: true
     },
     {
       value: 'UrlEncode',
-      component: shallowRef(XmlFormat)
+      component: shallowRef(XmlFormat),
+      disabled: true
     }
   ]
 )

@@ -158,7 +158,7 @@ onUnmounted(() => {
 // 暴露方法
 defineExpose({
   getValue: () => editor?.getValue(),
-  setValue: (value: string) => editor?.setValue(value),
+  setValue: (value: string) => editor?.setValue(value)
 })
 </script>
 
@@ -168,5 +168,8 @@ defineExpose({
 </template>
 
 <style scoped>
-
+.code-mirror {
+  border: 1px solid #DDDDDD;
+  padding: 10px 0;
+}
 </style>

@@ -91,8 +91,7 @@ function escape() {
 </script>
 
 <template>
-  <CodeMirror class="editor" ref="el" v-model:value="result.value" @change="handleChange" @dblclick="formatValidate"
-              lineWrapping />
+  <CodeMirror ref="el" v-model:value="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping />
   <div class="button-group">
     <a-space :size="[8, 16]" wrap>
       <a-button type="primary" @click="formatValidate">格式化校验</a-button>
@@ -100,7 +99,7 @@ function escape() {
       <a-dropdown-button @click="deepDelEscape(true)">
         深度去除转义
         <template #overlay>
-          <a-button @click="deepDelEscape(false)"> 不加 [@String] </a-button>
+          <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
         </template>
       </a-dropdown-button>
       <a-button @click="delEscape">去除转义</a-button>
@@ -110,10 +109,6 @@ function escape() {
 </template>
 
 <style scoped>
-.editor {
-  padding: 10px 0;
-}
-
 .button-group {
   position: fixed;
   right: 100px;
