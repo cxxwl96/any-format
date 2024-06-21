@@ -3,7 +3,7 @@ import { CodeMirror } from '@/components/CodeEditor'
 import { type Ref, ref, unref } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
-import { isArray, isJsonString, isObject, isString } from '@/utils/is'
+import { isArray, isJsonString, isObject } from '@/utils/is'
 
 const el = ref()
 const result = ref<{

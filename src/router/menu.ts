@@ -1,32 +1,34 @@
-import { reactive } from 'vue'
-import type { RouteComponent, RouteRecordRaw } from 'vue-router'
+import { reactive, shallowRef } from 'vue'
+import LogFormat from '@/views/log-format/LogFormat.vue'
+import JsonFormat from '@/views/json/JsonFormat.vue'
+import XmlFormat from '@/views/xml/XmlFormat.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
-const menus: { value: string, payload?: any, component: string }[] = reactive(
+const menus: { value: string, payload?: any, component: any }[] = reactive(
   [
     {
       value: 'LogFormat',
-      component: '/src/views/log-format/LogFormat.vue'
+      component: shallowRef(LogFormat)
     },
     {
       value: 'JSON',
-      component: '/src/views/json/JsonFormat.vue'
+      component: shallowRef(JsonFormat)
     },
     {
       value: 'XML',
-      component: '/src/views/xml/XmlFormat.vue'
+      component: shallowRef(XmlFormat)
     },
     {
       value: 'QRCode',
-      component: '/src/views/xml/XmlFormat.vue'
+      component: shallowRef(XmlFormat)
     },
     {
       value: 'Base64',
-      component: '/src/views/xml/XmlFormat.vue'
+      component: shallowRef(XmlFormat)
     },
     {
       value: 'UrlEncode',
-      component: '/src/views/xml/XmlFormat.vue'
+      component: shallowRef(XmlFormat)
     }
   ]
 )

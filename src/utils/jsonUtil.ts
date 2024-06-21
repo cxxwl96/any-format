@@ -1,5 +1,5 @@
-import jsonlint from './jsonlint.min';
-import { isString } from './is';
+import jsonlint from './jsonlint.min'
+import { isString } from './is'
 
 export function validateJson(value: string | object | any): {
   value: string;
