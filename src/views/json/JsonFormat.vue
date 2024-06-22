@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { CodeMirror } from '@/components/CodeEditor'
+import { CodeMirror, JsonEditor } from '@/components/CodeEditor'
 import { type Ref, ref, unref, watch } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
 
 const props = defineProps({
-  activeKey:  { type: String }
+  activeKey: { type: String }
 })
-watch(()=>props.activeKey, ()=>{
+watch(() => props.activeKey, () => {
   if (props.activeKey === 'JSON') {
     window.location.reload()
   }
@@ -105,13 +105,17 @@ function escape() {
   el.value.setValue(value.replace(/"/g, '\\"'))
 }
 
+function handleEvent(editor: any, e: Event) {
+  console.log(e)
+}
 </script>
 
 <template>
   <div>
     <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-    <CodeMirror ref="el" v-model:value="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping
+    <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping
                 style="margin-bottom: 20px;" />
+    <JsonEditor v-model="result.value" @event="handleEvent" mode="view" />
     <a-affix :offset-bottom="30">
       <div class="button-group">
         <a-space :size="[8, 16]" wrap>

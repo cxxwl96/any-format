@@ -120,7 +120,8 @@ import 'codemirror/addon/selection/active-line' //光标行背景高亮，配置
 import 'codemirror/keymap/sublime'
 
 const props = defineProps({
-  value: { type: String },
+  // 双重绑定一定要modelValue，更新时使用emit('update:modelValue')更新
+  modelValue: { type: String },
   mode: { type: String, default: MODE.JSON },
   readonly: { type: Boolean, default: false },
   tabSize: { type: Number, default: 4 },
@@ -129,19 +130,20 @@ const props = defineProps({
   showCopyButton: { type: Boolean, default: false }, // TODO
   fontSize: { type: Number, default: 14 }
 })
-const emits = defineEmits(['change', 'blur', 'dblclick'])
+const emits = defineEmits(['update:modelValue', 'change', 'blur', 'dblclick'])
 
 const el = ref()
 let editor: Nullable<CodeMirror.Editor>
 
 watch(
-  () => props.value,
+  () => props.modelValue,
   async (value) => {
     await nextTick()
     const oldValue = editor?.getValue()
     if (value != oldValue) {
       editor?.setValue(value ? value : '')
     }
+    emits('change', editor?.getValue())
   },
   { flush: 'post' }
 )
@@ -189,9 +191,10 @@ async function init() {
     lint: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers']
   })
-  editor?.setValue(props.value || '')
+  editor?.setValue(props.modelValue || '')
   editor?.on('change', () => {
     emits('change', editor?.getValue())
+    emits('update:modelValue', editor?.getValue())
     refresh()
   })
   editor?.on('blur', () => {
