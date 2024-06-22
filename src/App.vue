@@ -7,7 +7,7 @@ const menuBoxStyle = ref({})
 
 function handleChange(val: string) {
   activeKey.value = val
-  sessionStorage.setItem('activeKey', activeKey.value)
+  sessionStorage.setItem('activeKey', val)
 }
 
 function affixChange(val?: boolean) {
@@ -45,7 +45,7 @@ function affixChange(val?: boolean) {
       <a-tab-pane v-for="menu in menus" :key="menu.value">
         <div class="content">
           <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-          <component :is="menu.component" />
+          <component :is="menu.component" :activeKey="activeKey"/>
         </div>
       </a-tab-pane>
 
