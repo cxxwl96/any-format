@@ -18,7 +18,6 @@
     "@types/jsoneditor": "^9.9.5",
     "ant-design-vue": "^4.2.3",
     "codemirror": "^5.65.16",
-    "json-editor-vue3": "^1.1.1",
     "jsoneditor": "^10.1.0",
     "vkbeautify": "^0.99.3",
     "vue": "^3.4.21",
