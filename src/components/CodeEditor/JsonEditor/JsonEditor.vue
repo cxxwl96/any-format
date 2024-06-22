@@ -43,7 +43,7 @@ function init() {
   const onChange = () => {
     const setJson = (val: any) => {
       json = val
-      emits('update:modelValue', JSON.stringify(val)) // 双重绑定
+      emits('update:modelValue', setValue(val)) // 双重绑定
       emits('change', val)
       internalChange = true
       nextTick(() => {
@@ -125,6 +125,10 @@ function setEditorContent(value: any) {
 
 function parseValue(value: any) {
   return isJsonString(value) ? JSON.parse(value as string) : value
+}
+
+function setValue(value: any) {
+  return typeof value === 'string' ? JSON.parse(value) : value
 }
 
 watch(() => props.modelValue, (val) => {
