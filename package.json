@@ -17,6 +17,7 @@
     "@types/codemirror": "^5.60.15",
     "ant-design-vue": "^4.2.3",
     "codemirror": "^5.65.16",
+    "vkbeautify": "^0.99.3",
     "vue": "^3.4.21",
     "vue-json-pretty": "^2.4.0",
     "vue-router": "^4.3.0"

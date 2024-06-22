@@ -2,6 +2,7 @@ import { reactive, shallowRef } from 'vue'
 import LogFormat from '@/views/log-format/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
+import Code from '@/views/code/Code.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
 const menus: { value: string, label?: string, component: any }[] = reactive(
@@ -16,8 +17,7 @@ const menus: { value: string, label?: string, component: any }[] = reactive(
     },
     {
       value: 'XML',
-      component: shallowRef(XmlFormat),
-      disabled: true
+      component: shallowRef(XmlFormat)
     },
     {
       value: 'QRCode',
@@ -33,7 +33,11 @@ const menus: { value: string, label?: string, component: any }[] = reactive(
       value: 'UrlEncode',
       component: shallowRef(XmlFormat),
       disabled: true
-    }
+    },
+    {
+      value: 'Code',
+      component: shallowRef(Code)
+    },
   ]
 )
 

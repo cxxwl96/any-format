@@ -4,7 +4,7 @@ export const MODE = {
   JS: 'javascript',
   SQL: 'text/x-mysql',
   JAVA: 'text/x-java',
-  XML: 'application/xml',
+  XML: 'text/html',
   TypeScript: 'text/typescript',
   VUE: 'text/x-vue',
 }

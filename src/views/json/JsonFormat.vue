@@ -108,24 +108,27 @@ function escape() {
 </script>
 
 <template>
-  <CodeMirror ref="el" v-model:value="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping
-              style="margin-bottom: 20px;" />
-  <a-affix :offset-bottom="30">
-    <div class="button-group">
-      <a-space :size="[8, 16]" wrap>
-        <a-button type="primary" @click="formatValidate">格式化校验</a-button>
-        <a-button @click="compress">压缩</a-button>
-        <a-dropdown-button @click="deepDelEscape(true)">
-          深度去除转义
-          <template #overlay>
-            <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
-          </template>
-        </a-dropdown-button>
-        <a-button @click="delEscape">去除转义</a-button>
-        <a-button @click="escape">转义</a-button>
-      </a-space>
-    </div>
-  </a-affix>
+  <div>
+    <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
+    <CodeMirror ref="el" v-model:value="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping
+                style="margin-bottom: 20px;" />
+    <a-affix :offset-bottom="30">
+      <div class="button-group">
+        <a-space :size="[8, 16]" wrap>
+          <a-button type="primary" @click="formatValidate">格式化校验</a-button>
+          <a-button @click="compress">压缩</a-button>
+          <a-dropdown-button @click="deepDelEscape(true)">
+            深度去除转义
+            <template #overlay>
+              <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
+            </template>
+          </a-dropdown-button>
+          <a-button @click="delEscape">去除转义</a-button>
+          <a-button @click="escape">转义</a-button>
+        </a-space>
+      </div>
+    </a-affix>
+  </div>
 </template>
 
 <style scoped>
