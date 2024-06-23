@@ -50,7 +50,7 @@ function affixChange(val?: boolean) {
 
     </a-tabs>
     <div class="footer">
-      <p>CopyRight © 2023 引导页 All Rights Reserved. 黔ICP备2023015771号-1</p>
+      <p>CopyRight © 2024 引导页 All Rights Reserved. 黔ICP备2023015771号-1</p>
       <p>PowerBy cxxwl96@sina.com</p>
     </div>
     <a-back-top />
