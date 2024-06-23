@@ -3,6 +3,7 @@ import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
 import Code from '@/views/code/Code.vue'
+import QrCode from '@/views/qrcode/QrCode.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
 const menus: { value: string, label?: string, component: any }[] = reactive(
@@ -21,8 +22,7 @@ const menus: { value: string, label?: string, component: any }[] = reactive(
     },
     {
       value: 'QRCode',
-      component: shallowRef(XmlFormat),
-      disabled: true
+      component: shallowRef(QrCode)
     },
     {
       value: 'Base64',

@@ -19,6 +19,7 @@
     "ant-design-vue": "^4.2.3",
     "codemirror": "^5.65.16",
     "jsoneditor": "^10.1.0",
+    "qrcode-decoder": "^0.3.3",
     "vkbeautify": "^0.99.3",
     "vue": "^3.4.21",
     "vue-json-pretty": "^2.4.0",
