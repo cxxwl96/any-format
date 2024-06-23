@@ -13,6 +13,7 @@ function handleChange(value: string) {
 // 格式化
 function handleFormat() {
   data.value = vkbeautify.xml(unref(data.value))
+  console.log('aaa')
 }
 
 // 压缩
@@ -24,7 +25,7 @@ function compress() {
 <template>
   <div>
     <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-    <CodeMirror ref="el" v-model:value="data" @change="handleChange" @dblclick="handleFormat" :mode="MODE.XML"
+    <CodeMirror ref="el" v-model="data" @change="handleChange" @dblclick="handleFormat" :mode="MODE.XML"
                 :theme="'eclipse'" />
     <a-divider />
     <a-affix :offset-bottom="30">
