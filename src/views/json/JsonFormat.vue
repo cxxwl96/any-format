@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { CodeMirror, JsonEditor } from '@/components/CodeEditor'
-import { h, type Ref, ref, unref, watch } from 'vue'
+import { type Ref, ref, unref, watch } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
-import { SearchOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
   activeKey: { type: String }
@@ -113,7 +112,9 @@ function escape() {
   el.value.setValue(value.replace(/"/g, '\\"'))
 }
 
+// 切换视图
 const codemirrorView = ref(true)
+
 function toggleView() {
   codemirrorView.value = !codemirrorView.value
 }
@@ -123,7 +124,7 @@ function toggleView() {
   <div>
     <div v-if="codemirrorView">
       <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-      <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping/>
+      <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping />
     </div>
     <JsonEditor v-else v-model="result.value" mode="tree" />
     <a-divider />
@@ -140,7 +141,7 @@ function toggleView() {
           </a-dropdown-button>
           <a-button @click="delEscape" v-if="codemirrorView">去除转义</a-button>
           <a-button @click="escape" v-if="codemirrorView">转义</a-button>
-          <a-divider type="vertical" v-if="codemirrorView" style="background-color: #d9d9d9"/>
+          <a-divider type="vertical" v-if="codemirrorView" style="background-color: #d9d9d9" />
           <a-button @click="toggleView">切换视图</a-button>
         </a-space>
       </div>

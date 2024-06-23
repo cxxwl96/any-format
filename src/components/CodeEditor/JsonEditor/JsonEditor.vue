@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import JsonEditor, {
-  type Color, type MenuItem, type MenuItemNode, type ParseError,
-  type SchemaValidationError,
+  type Color,
+  type MenuItem,
+  type MenuItemNode,
   type SelectionPosition,
   type SerializableNode
 } from 'jsoneditor'
@@ -106,9 +107,9 @@ function init() {
             let path = '$'
             for (let p of node.path) {
               if (typeof p === 'number') {
-                path += '['+p+']'
+                path += '[' + p + ']'
               } else {
-                path += '.'+p
+                path += '.' + p
               }
             }
             navigator.clipboard.writeText(path)
@@ -205,6 +206,7 @@ onUnmounted(() => {
 code {
   background-color: #f5f5f5;
 }
+
 div.json-editor-vue > div > div.jsoneditor-menu {
   background-color: #ff0000;
   border-bottom: 1px solid #3883fa;

@@ -10,15 +10,31 @@ function handleChange(value: string) {
   sessionStorage.setItem('XmlFormatData', value)
 }
 
-function formatValidate() {
+// 格式化
+function handleFormat() {
   data.value = vkbeautify.xml(unref(data.value))
+}
+
+// 压缩
+function compress() {
+  data.value = vkbeautify.xmlmin(unref(data.value))
 }
 </script>
 
 <template>
   <div>
     <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-    <CodeMirror ref="el" v-model:value="data" @change="handleChange" @dblclick="formatValidate" :mode="MODE.XML" :theme="'eclipse'" />
+    <CodeMirror ref="el" v-model:value="data" @change="handleChange" @dblclick="handleFormat" :mode="MODE.XML"
+                :theme="'eclipse'" />
+    <a-divider />
+    <a-affix :offset-bottom="30">
+      <div class="button-group">
+        <a-space :size="[8, 16]" wrap>
+          <a-button type="primary" @click="handleFormat">格式化</a-button>
+          <a-button @click="compress">压缩</a-button>
+        </a-space>
+      </div>
+    </a-affix>
   </div>
 </template>
 
