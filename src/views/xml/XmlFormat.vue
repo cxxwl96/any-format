@@ -13,7 +13,6 @@ function handleChange(value: string) {
 // 格式化
 function handleFormat() {
   data.value = vkbeautify.xml(unref(data.value))
-  console.log('aaa')
 }
 
 // 压缩
@@ -29,7 +28,7 @@ function compress() {
                 :theme="'eclipse'" />
     <a-divider />
     <a-affix :offset-bottom="30">
-      <div class="button-group">
+      <div class="bottom-button-group">
         <a-space :size="[8, 16]" wrap>
           <a-button type="primary" @click="handleFormat">格式化</a-button>
           <a-button @click="compress">压缩</a-button>
@@ -40,5 +39,4 @@ function compress() {
 </template>
 
 <style scoped>
-
 </style>

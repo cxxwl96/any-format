@@ -129,7 +129,7 @@ function toggleView() {
     <JsonEditor v-else v-model="result.value" mode="tree" />
     <a-divider />
     <a-affix :offset-bottom="30">
-      <div class="button-group">
+      <div class="bottom-button-group">
         <a-space :size="[8, 16]" wrap>
           <a-button type="primary" @click="formatValidate" v-if="codemirrorView">格式化校验</a-button>
           <a-button @click="compress" v-if="codemirrorView">压缩</a-button>
@@ -150,12 +150,4 @@ function toggleView() {
 </template>
 
 <style scoped>
-.button-group {
-  padding: 8px 8px 13px 8px;
-  border-radius: 6px;
-  border: 1px solid #d9d9d9;
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(2px);
-  display: inline-block;
-}
 </style>

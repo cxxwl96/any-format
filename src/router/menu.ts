@@ -1,5 +1,5 @@
 import { reactive, shallowRef } from 'vue'
-import LogFormat from '@/views/log-format/LogFormat.vue'
+import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
 import Code from '@/views/code/Code.vue'
