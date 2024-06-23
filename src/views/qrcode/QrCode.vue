@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import QrCode from 'qrcode-decoder'
 
-
 const data = ref('')
 const qrCodeRef = ref()
 const segmentedData = ['L', 'M', 'Q', 'H']
@@ -48,6 +47,9 @@ const decodeQR = (file: File) => {
         <a-textarea
           v-model:value="data"
           :auto-size="{ minRows: 10, maxRows: 30 }"
+          allowClear
+          showCount
+          placeholder="输入schema生成二维码"
         />
       </a-col>
       <a-col flex="3">
