@@ -18,7 +18,7 @@ function formatValidate() {
 <template>
   <div>
     <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-    <CodeMirror ref="el" v-model:value="data" @change="handleChange" @dblclick="formatValidate" :mode="MODE.XML" :theme="'base16-light'" />
+    <CodeMirror ref="el" v-model:value="data" @change="handleChange" @dblclick="formatValidate" :mode="MODE.XML" :theme="'eclipse'" />
   </div>
 </template>
 

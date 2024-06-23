@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { CodeMirror, JsonEditor } from '@/components/CodeEditor'
-import { type Ref, ref, unref, watch } from 'vue'
+import { h, type Ref, ref, unref, watch } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
+import { SearchOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
   activeKey: { type: String }
@@ -68,15 +69,22 @@ function deepJson(json: Ref<any>, suffix: boolean) {
       deepJson(ref(obj), suffix)
     }
   } else if (isObject(json.value)) {
+    const suffixStr = ' [@String]'
     for (let key in json.value) {
       const value = json.value[key]
       if (isJsonString(value)) {
         delete json.value[key]
-        key = suffix ? key + ' [@String]' : key
+        key = suffix ? key + suffixStr : key
         json.value[key] = JSON.parse(value)
         deepJson(ref(json.value[key]), suffix)
       } else {
-        deepJson(ref(value), suffix)
+        if (!suffix && key.endsWith(suffixStr)) {
+          deepJson(ref(value), suffix)
+          delete json.value[key]
+          json.value[key.substring(0, key.length - suffixStr.length)] = value
+        } else {
+          deepJson(ref(value), suffix)
+        }
       }
     }
   }
@@ -105,30 +113,35 @@ function escape() {
   el.value.setValue(value.replace(/"/g, '\\"'))
 }
 
-function handleEvent(editor: any, e: Event) {
-  console.log(e)
+const codemirrorView = ref(true)
+function toggleView() {
+  codemirrorView.value = !codemirrorView.value
 }
 </script>
 
 <template>
   <div>
-    <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
-    <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping
-                style="margin-bottom: 20px;" />
-    <JsonEditor v-model="result.value" @event="handleEvent" mode="view" />
+    <div v-if="codemirrorView">
+      <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
+      <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping/>
+    </div>
+    <JsonEditor v-else v-model="result.value" mode="tree" />
+    <a-divider />
     <a-affix :offset-bottom="30">
       <div class="button-group">
         <a-space :size="[8, 16]" wrap>
-          <a-button type="primary" @click="formatValidate">格式化校验</a-button>
-          <a-button @click="compress">压缩</a-button>
-          <a-dropdown-button @click="deepDelEscape(true)">
+          <a-button type="primary" @click="formatValidate" v-if="codemirrorView">格式化校验</a-button>
+          <a-button @click="compress" v-if="codemirrorView">压缩</a-button>
+          <a-dropdown-button @click="deepDelEscape(true)" v-if="codemirrorView">
             深度去除转义
             <template #overlay>
               <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
             </template>
           </a-dropdown-button>
-          <a-button @click="delEscape">去除转义</a-button>
-          <a-button @click="escape">转义</a-button>
+          <a-button @click="delEscape" v-if="codemirrorView">去除转义</a-button>
+          <a-button @click="escape" v-if="codemirrorView">转义</a-button>
+          <a-divider type="vertical" v-if="codemirrorView" style="background-color: #d9d9d9"/>
+          <a-button @click="toggleView">切换视图</a-button>
         </a-space>
       </div>
     </a-affix>

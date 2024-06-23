@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import JsonEditor, { type Color, type SelectionPosition, type SerializableNode } from 'jsoneditor'
+import JsonEditor, {
+  type Color, type MenuItem, type MenuItemNode, type ParseError,
+  type SchemaValidationError,
+  type SelectionPosition,
+  type SerializableNode
+} from 'jsoneditor'
 import 'jsoneditor/dist/jsoneditor.min.css'
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Nullable } from '@/data'
-import { isJsonString } from '@/utils/is'
 
 const props = defineProps({
   // 双重绑定一定要modelValue，更新时使用emit('update:modelValue')更新
@@ -44,7 +48,7 @@ function init() {
     const setJson = (val: any) => {
       json = val
       emits('update:modelValue', setValue(val)) // 双重绑定
-      emits('change', val)
+      emits('change', setValue(val))
       internalChange = true
       nextTick(() => {
         internalChange = false
@@ -89,11 +93,38 @@ function init() {
   const onValidationError = (errors: any) => {
     emits('validationError', editor, errors)
   }
+  const onCreateMenu = (menuItems: MenuItem[], node: MenuItemNode): MenuItem[] => {
+    const menus: MenuItem[] = [...menuItems]
+    // 添加复制JSONPath菜单
+    if (node && node.type === 'single') {
+      const menu: MenuItem = {
+        text: 'CopyPath',
+        title: 'Copy the json path',
+        className: 'jsoneditor-duplicate',
+        click: () => {
+          if (node.path) {
+            let path = '$'
+            for (let p of node.path) {
+              if (typeof p === 'number') {
+                path += '['+p+']'
+              } else {
+                path += '.'+p
+              }
+            }
+            navigator.clipboard.writeText(path)
+          }
+        }
+      }
+      menus.splice(Math.max(menus.length - 1, 0), 0, menu)
+    }
+    return menus
+  }
   const finalOptions = {
     indentation: props.indentation,
     mode: props.mode,
     modes: props.modes,
     language: props.language,
+    colorPicker: true,
     ...props.options,
     onChange,
     onFocus,
@@ -103,7 +134,8 @@ function init() {
     onTextSelectionChange,
     onSelectionChange,
     onColorPicker,
-    onValidationError
+    onValidationError,
+    onCreateMenu
   }
   editor = new JsonEditor(
     jsonEditorRef.value,
@@ -124,10 +156,20 @@ function setEditorContent(value: any) {
 }
 
 function parseValue(value: any) {
-  return isJsonString(value) ? JSON.parse(value as string) : value
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value as string)
+    } catch (e) {
+      return value
+    }
+  }
+  return value
 }
 
 function setValue(value: any) {
+  if (typeof props.modelValue === 'string') {
+    return typeof value === 'object' ? JSON.stringify(value) : value
+  }
   return typeof value === 'string' ? JSON.parse(value) : value
 }
 
@@ -162,5 +204,9 @@ onUnmounted(() => {
 
 code {
   background-color: #f5f5f5;
+}
+div.json-editor-vue > div > div.jsoneditor-menu {
+  background-color: #ff0000;
+  border-bottom: 1px solid #3883fa;
 }
 </style>
