@@ -1,4 +1,5 @@
-import jsonlint from './jsonlint.min'
+// @ts-nocheck
+import { jsonlint } from './jsonlint.js'
 import { isString } from './is'
 
 export function validateJson(value: string | object | any): {
