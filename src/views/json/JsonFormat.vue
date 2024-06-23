@@ -129,22 +129,20 @@ function toggleView() {
     <JsonEditor v-else v-model="result.value" mode="tree" />
     <a-divider />
     <a-affix :offset-bottom="30">
-      <div class="bottom-button-group">
-        <a-space :size="[8, 16]" wrap>
-          <a-button type="primary" @click="formatValidate" v-if="codemirrorView">格式化校验</a-button>
-          <a-button @click="compress" v-if="codemirrorView">压缩</a-button>
-          <a-dropdown-button @click="deepDelEscape(true)" v-if="codemirrorView">
-            深度去除转义
-            <template #overlay>
-              <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
-            </template>
-          </a-dropdown-button>
-          <a-button @click="delEscape" v-if="codemirrorView">去除转义</a-button>
-          <a-button @click="escape" v-if="codemirrorView">转义</a-button>
-          <a-divider type="vertical" v-if="codemirrorView" style="background-color: #d9d9d9" />
-          <a-button @click="toggleView">切换视图</a-button>
-        </a-space>
-      </div>
+      <a-space :size="[8, 16]" wrap class="bottom-button-group">
+        <a-button type="primary" @click="formatValidate" v-if="codemirrorView">格式化校验</a-button>
+        <a-button @click="compress" v-if="codemirrorView">压缩</a-button>
+        <a-dropdown-button @click="deepDelEscape(true)" v-if="codemirrorView">
+          深度去除转义
+          <template #overlay>
+            <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
+          </template>
+        </a-dropdown-button>
+        <a-button @click="delEscape" v-if="codemirrorView">去除转义</a-button>
+        <a-button @click="escape" v-if="codemirrorView">转义</a-button>
+        <a-divider type="vertical" v-if="codemirrorView" style="background-color: #d9d9d9" />
+        <a-button @click="toggleView">切换视图</a-button>
+      </a-space>
     </a-affix>
   </div>
 </template>

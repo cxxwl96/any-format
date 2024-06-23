@@ -28,12 +28,10 @@ function compress() {
                 :theme="'eclipse'" />
     <a-divider />
     <a-affix :offset-bottom="30">
-      <div class="bottom-button-group">
-        <a-space :size="[8, 16]" wrap>
-          <a-button type="primary" @click="handleFormat">格式化</a-button>
-          <a-button @click="compress">压缩</a-button>
-        </a-space>
-      </div>
+      <a-space :size="[8, 16]" wrap class="bottom-button-group">
+        <a-button type="primary" @click="handleFormat">格式化</a-button>
+        <a-button @click="compress">压缩</a-button>
+      </a-space>
     </a-affix>
   </div>
 </template>
