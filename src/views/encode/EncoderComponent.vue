@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, unref } from 'vue'
 import { message } from 'ant-design-vue'
 import { Base64 } from 'js-base64'
+import { useCopyToClipboard } from '@/utils/useCopyToClipboard';
+const { clipboardRef, copiedRef } = useCopyToClipboard();
 
 const data = ref('')
 const resultData = ref('')
@@ -14,8 +16,10 @@ const copyResult = (e: MouseEvent) => {
     } else {
       document.getSelection()?.empty()
     }
-    navigator.clipboard.writeText(resultData.value)
-    message.success('复制成功')
+    clipboardRef.value = resultData.value
+    if (unref(copiedRef)) {
+      message.success('复制成功')
+    }
   }
 }
 
