@@ -6,8 +6,14 @@ import { Base64 } from 'js-base64'
 const data = ref('')
 const resultData = ref('')
 
-const copyResult = () => {
+const copyResult = (e: MouseEvent) => {
   if (resultData.value) {
+    e.preventDefault()
+    if (window.getSelection) {
+      window.getSelection()?.removeAllRanges()
+    } else {
+      document.getSelection()?.empty()
+    }
     navigator.clipboard.writeText(resultData.value)
     message.success('复制成功')
   }
@@ -61,29 +67,55 @@ const switchData = () => {
   data.value = resultData.value
   resultData.value = value
 }
-
+const dragging = ref(false)
+const handleDragFile = (event: DragEvent) => {
+  var files = event.dataTransfer?.files
+  if (!files) {
+    message.error('请拖拽有效文件')
+  } else if (files.length > 1) {
+    message.error('仅支持单文件拖拽')
+  } else if (files[0].size > 2 * 1024 * 1024) {
+    message.error('仅支持2MB大小的文件拖拽')
+  } else {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      data.value = e.target?.result as string
+      base64Encode()
+    }
+    reader.readAsBinaryString(files[0])
+  }
+  dragging.value = false
+}
 </script>
 <template>
   <div class="base64-content">
-    <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：双击结果栏拷贝结果</div>
     <a-row :gutter="20">
       <a-col flex="5">
+        <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：输入文本或拖拽文件到此处，默认进行Base64编码
+        </div>
         <a-textarea
           v-model:value="data"
           :auto-size="{ minRows: 10, maxRows: 25 }"
           allowClear
           showCount
-          placeholder="Input：输入文本或拖拽文件进行编码"
+          placeholder="输入文本或拖拽文件到此处，默认进行Base64编码"
+          @dragenter.prevent="dragging=true"
+          @dragleave.prevent="dragging=false"
+          @dragover.prevent
+          @drop.prevent="handleDragFile"
+          class="drag-zone"
+          :class="{'drag-over': dragging}"
         />
       </a-col>
       <a-col flex="5">
+        <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：双击结果栏拷贝结果</div>
         <a-textarea
           v-model:value="resultData"
           :auto-size="{ minRows: 10, maxRows: 25 }"
           allowClear
           showCount
-          placeholder="Output：结果，双击拷贝结果"
-          @dblclick="copyResult"
+          placeholder="结果，双击拷贝结果"
+          @dblclick.prevent="copyResult"
         />
       </a-col>
     </a-row>
@@ -107,5 +139,15 @@ const switchData = () => {
 .base64-content {
   width: 80%;
   margin: 0 auto;
+}
+
+.drag-zone {
+  transition: background-color 0.3s;
+}
+
+.drag-zone.drag-over {
+  cursor: move;
+  border-radius: 6px;
+  border: 1px solid #4096ff;
 }
 </style>
