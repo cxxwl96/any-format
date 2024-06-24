@@ -86,7 +86,9 @@ function dblclick(value: string) {
             <a-checkbox value=")" name="breakChars">)</a-checkbox>
             <a-checkbox value=">" name="breakChars">&gt;</a-checkbox>
             <a-checkbox value="=" name="breakChars">=</a-checkbox>
-            <a-checkbox value=";" name="breakChars">;</a-checkbox>
+            <a-checkbox value=":" name="breakChars">:</a-checkbox>
+            <a-checkbox value="$" name="breakChars">$</a-checkbox>
+            <a-checkbox value="&" name="breakChars">&</a-checkbox>
           </a-checkbox-group>
         </a-form-item>
         <a-form-item label="TabCount">
