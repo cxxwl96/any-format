@@ -27,7 +27,7 @@ function compress() {
     <CodeMirror ref="el" v-model="data" @change="handleChange" @dblclick="handleFormat" :mode="MODE.XML"
                 :theme="'eclipse'" />
     <a-divider />
-    <a-affix :offset-bottom="30">
+    <a-affix :offset-bottom="50">
       <a-space :size="[8, 16]" wrap class="bottom-button-group">
         <a-button type="primary" @click="handleFormat">格式化</a-button>
         <a-button @click="compress">压缩</a-button>

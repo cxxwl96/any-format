@@ -8,7 +8,11 @@ const data = ref<string>('')
 // load cache
 onMounted(() => data.value = sessionStorage.getItem('LogFormatData') || '')
 // data cache
-const cacheData = (value: string) => sessionStorage.setItem('LogFormatData', value)
+const cacheData = (value: string | undefined) => {
+  if (value != undefined) {
+    sessionStorage.setItem('LogFormatData', value)
+  }
+}
 
 
 let config: UnwrapRef<AnyFormatConfig> = reactive(

@@ -124,7 +124,7 @@ const handleDragFile = (event: DragEvent) => {
       </a-col>
     </a-row>
     <a-divider />
-    <a-affix :offset-bottom="30">
+    <a-affix :offset-bottom="50">
       <a-space :size="[8, 16]" wrap class="bottom-button-group">
         <a-button type="primary" @click="base64Encode">Base64编码</a-button>
         <a-button @click="base64Decode">Base64解码</a-button>
