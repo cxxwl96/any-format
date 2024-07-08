@@ -1,19 +1,10 @@
 <script setup lang="ts">
 import { CodeMirror, JsonEditor } from '@/components/CodeEditor'
-import { type Ref, ref, unref, watch } from 'vue'
+import { type Ref, ref, unref } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
 import { SwapOutlined } from '@ant-design/icons-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
-
-const props = defineProps({
-  activeKey: { type: String }
-})
-watch(() => props.activeKey, () => {
-  if (props.activeKey === 'JSON') {
-    window.location.reload()
-  }
-})
 
 const el = ref()
 const result = ref<{

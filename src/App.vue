@@ -8,6 +8,10 @@ const menuBoxStyle = ref({})
 function handleChange(val: string) {
   activeKey.value = val
   sessionStorage.setItem('activeKey', val)
+  // 是否需要刷新页面，为了解决affix失效问题
+  if (menus.filter(item => item.reloadOnActive).map(item => item.value).indexOf(val) >= 0) {
+    window.location.reload()
+  }
 }
 
 function affixChange(val?: boolean) {
@@ -44,7 +48,7 @@ function affixChange(val?: boolean) {
 
       <a-tab-pane v-for="menu in menus" :key="menu.value">
         <div class="content">
-          <component :is="menu.component" :activeKey="activeKey"/>
+          <component :is="menu.component" />
         </div>
       </a-tab-pane>
 

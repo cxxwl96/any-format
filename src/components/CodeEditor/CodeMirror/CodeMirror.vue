@@ -189,6 +189,7 @@ async function init() {
     autoCloseTags: true,
     foldGutter: true,
     lint: true,
+    autofocus: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers']
   })
   editor?.setValue(props.modelValue || '')
