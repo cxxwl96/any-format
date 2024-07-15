@@ -5,3 +5,9 @@
     background-color: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(2px);
 }
+
+.tip-font {
+    font-size: 14px;
+    color: #00000059;
+    margin: 10px;
+}

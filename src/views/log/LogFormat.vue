@@ -49,7 +49,7 @@ function dblclick(value: string) {
 
 <template>
   <div>
-    <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
+    <div class="tip-font">Tip：粘贴文本，双击格式化</div>
     <CodeMirror @dblclick="dblclick" v-model="data" @change="cacheData" :lineWrapping="true" />
     <a-float-button :style="{bottom: '100px'}" @click="()=>{open=true}">
       <template #icon>

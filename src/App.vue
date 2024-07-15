@@ -68,7 +68,7 @@ function affixChange(val?: boolean) {
 
 .content {
   margin-top: 20px;
-  min-height: calc(100vh - 130px);
+  min-height: calc(100vh - 154px);
 }
 
 .menu-box {
@@ -77,6 +77,7 @@ function affixChange(val?: boolean) {
 }
 
 .footer {
+  margin-top: 24px;
   text-align: center;
   color: rgb(157 157 157 / 40%);
   font-size: 0.8rem;

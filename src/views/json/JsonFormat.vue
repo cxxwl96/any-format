@@ -156,7 +156,7 @@ function toggleView() {
 <template>
   <div>
     <div v-if="codemirrorView">
-      <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：粘贴文本，双击格式化</div>
+      <div class="tip-font">Tip：粘贴文本，双击格式化</div>
       <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping />
     </div>
     <JsonEditor v-else v-model="result.value" mode="tree" />

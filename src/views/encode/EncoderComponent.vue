@@ -95,7 +95,7 @@ const handleDragFile = (event: DragEvent) => {
   <div class="base64-content">
     <a-row :gutter="20">
       <a-col flex="5">
-        <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：输入文本或拖拽文件到此处，默认进行Base64编码
+        <div class="tip-font">Tip：输入文本或拖拽文件到此处，默认进行Base64编码
         </div>
         <a-textarea
           v-model:value="data"
@@ -112,7 +112,7 @@ const handleDragFile = (event: DragEvent) => {
         />
       </a-col>
       <a-col flex="5">
-        <div style="font-size: 14px; color: #00000059; margin: 10px">Tip：双击结果栏拷贝结果</div>
+        <div class="tip-font">Tip：双击结果栏拷贝结果</div>
         <a-textarea
           v-model:value="resultData"
           :auto-size="{ minRows: 10, maxRows: 25 }"
