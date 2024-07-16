@@ -117,9 +117,7 @@ const handleMatchAll = () => {
       placeholder="输入匹配文本" />
     <div>
       <div class="tip-font">
-        共匹配到
-        <a-tag :bordered="false" color="geekblue">{{ form.matchResult.length }}</a-tag>
-        个结果：
+        共匹配到<a-tag :bordered="false" color="geekblue" style="margin: 0">{{ form.matchResult.length }}</a-tag>个结果：
       </div>
       <a-list :data-source="form.matchResult" bordered>
         <template #renderItem="{ item }">

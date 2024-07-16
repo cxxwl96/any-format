@@ -2,29 +2,17 @@
 import { ref, unref } from 'vue'
 import { message } from 'ant-design-vue'
 import { Base64 } from 'js-base64'
-import { useCopyToClipboard } from '@/utils/useCopyToClipboard';
-const { clipboardRef, copiedRef } = useCopyToClipboard();
+import CryptoJS from 'crypto-js'
+import { useCopyToClipboard } from '@/utils/useCopyToClipboard'
+
+const { clipboardRef, copiedRef } = useCopyToClipboard()
 
 const data = ref('')
 const resultData = ref('')
 
-const copyResult = (e: MouseEvent) => {
-  if (resultData.value) {
-    e.preventDefault()
-    if (window.getSelection) {
-      window.getSelection()?.removeAllRanges()
-    } else {
-      document.getSelection()?.empty()
-    }
-    clipboardRef.value = resultData.value
-    if (unref(copiedRef)) {
-      message.success('复制成功')
-    }
-  }
-}
-
 type OperateType = 'encode' | 'decode'
 
+// 编解码操作
 const encoderOperation = (type: OperateType, call: (val: string) => string) => {
   if (data.value) {
     const prefix = type === 'encode' ? '编码' : '解码'
@@ -40,37 +28,46 @@ const encoderOperation = (type: OperateType, call: (val: string) => string) => {
     } else {
       message.error(prefix + '失败')
     }
+  } else {
+    message.error('请输入编解码文本')
   }
 }
 
-const base64Encode = () => {
-  encoderOperation('encode', (val) => Base64.encode(val))
-}
-const base64Decode = () => {
-  encoderOperation('decode', (val) => Base64.decode(val))
-}
-const urlEncode = () => {
-  encoderOperation('encode', (val) => encodeURIComponent(val))
-}
-const urlDecode = () => {
-  encoderOperation('decode', (val) => decodeURIComponent(val))
-}
-const unicodeEncode = () => {
-  encoderOperation('encode', (val) => {
-    const value = escape(val)
-    return value.replace(/%u/g, '\\u')
-  })
-}
-const unicodeDecode = () => {
-  encoderOperation('decode', (val) => {
-    return unescape(val.replace(/\\u/g, '%u'))
-  })
-}
+// 编解码菜单
+const encoderButtons = ref<{
+  title: string,
+  handleEncode: () => void,
+  handleDecode?: () => void,
+}[]>([
+  {
+    title: 'Base64',
+    handleEncode: () => encoderOperation('encode', (val) => Base64.encode(val)),
+    handleDecode: () => encoderOperation('decode', (val) => Base64.decode(val))
+  },
+  {
+    title: 'URL',
+    handleEncode: () => encoderOperation('encode', (val) => encodeURIComponent(val)),
+    handleDecode: () => encoderOperation('decode', (val) => decodeURIComponent(val))
+  },
+  {
+    title: 'Unicode',
+    handleEncode: () => encoderOperation('encode', (val) => escape(val).replace(/%u/g, '\\u')),
+    handleDecode: () => encoderOperation('decode', (val) => unescape(val.replace(/\\u/g, '%u')))
+  },
+  {
+    title: 'MD5',
+    handleEncode: () => encoderOperation('encode', (val) => CryptoJS.MD5(val).toString())
+  }
+])
+
+// 交换内容
 const switchData = () => {
   const value = data.value
   data.value = resultData.value
   resultData.value = value
 }
+
+// 拖拽文件
 const dragging = ref(false)
 const handleDragFile = (event: DragEvent) => {
   var files = event.dataTransfer?.files
@@ -84,11 +81,27 @@ const handleDragFile = (event: DragEvent) => {
     const reader = new FileReader()
     reader.onload = (e) => {
       data.value = e.target?.result as string
-      base64Encode()
+      encoderButtons.value[0].handleEncode()
     }
     reader.readAsBinaryString(files[0])
   }
   dragging.value = false
+}
+
+// 拷贝结果
+const copyResult = (e: MouseEvent) => {
+  if (resultData.value) {
+    e.preventDefault()
+    if (window.getSelection) {
+      window.getSelection()?.removeAllRanges()
+    } else {
+      document.getSelection()?.empty()
+    }
+    clipboardRef.value = resultData.value
+    if (unref(copiedRef)) {
+      message.success('复制成功')
+    }
+  }
 }
 </script>
 <template>
@@ -126,13 +139,14 @@ const handleDragFile = (event: DragEvent) => {
     <a-divider />
     <a-affix :offset-bottom="50">
       <a-space :size="[8, 16]" wrap class="bottom-button-group">
-        <a-button type="primary" @click="base64Encode">Base64编码</a-button>
-        <a-button @click="base64Decode">Base64解码</a-button>
-        <a-button type="primary" @click="urlEncode">URL编码</a-button>
-        <a-button @click="urlDecode">URL解码</a-button>
-        <a-button type="primary" @click="unicodeEncode">Unicode编码</a-button>
-        <a-button @click="unicodeDecode">Unicode解码</a-button>
-        <a-divider type="vertical" style="background-color: #d9d9d9" />
+        <a-space v-for="item in encoderButtons" :key="item.title">
+          <span>{{ item.title }}</span>
+          <a-button-group>
+            <a-button @click="item.handleEncode" type="primary">编码</a-button>
+            <a-button @click="item.handleDecode" v-if="item.handleDecode">解码</a-button>
+          </a-button-group>
+          <a-divider type="vertical" style="background-color: #d9d9d9" />
+        </a-space>
         <a-button @click="switchData">交换内容</a-button>
       </a-space>
     </a-affix>
