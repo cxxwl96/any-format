@@ -69,7 +69,7 @@ function init() {
       const json = editor?.get()
       setJson(json)
     } catch (error) {
-      // console.log(error);
+      // ignore
     }
   }
   const onFocus = (event: Event) => {

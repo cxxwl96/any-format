@@ -4,7 +4,7 @@ import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
 import Code from '@/views/code/Code.vue'
 import QrCode from '@/views/qrcode/QrCode.vue'
-import EncoderComponent from '@/views/encode/EncoderComponent.vue'
+import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
@@ -30,7 +30,7 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
     },
     {
       value: 'Encoder',
-      component: shallowRef(EncoderComponent)
+      component: shallowRef(Encoder)
     },
     {
       value: 'RegExp',

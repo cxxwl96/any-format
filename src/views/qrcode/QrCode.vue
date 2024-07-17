@@ -68,7 +68,7 @@ const decodeQR = (file: File) => {
           </a-flex>
           <a-divider vertical />
           <a-upload-dragger accept="image/*" :showUploadList="false" :action="undefined" @change="handleDrop"
-                            @reject="console.log('文件类型不符')" :customRequest="()=>{}" style="width: 100%">
+                            :customRequest="()=>{}" style="width: 100%">
             <p class="ant-upload-drag-icon"><span role="img" aria-label="inbox" class="anticon anticon-inbox"><svg
               focusable="false" data-icon="inbox" width="1em" height="1em" fill="currentColor" aria-hidden="true"
               viewBox="0 0 1024 1024"><path
