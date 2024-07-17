@@ -14,7 +14,7 @@ const cacheData = (value: string | undefined) => {
   }
 }
 
-
+// LogFormat设置
 let config: UnwrapRef<AnyFormatConfig> = reactive(
   {
     startChars: ['{', '[', '('],
@@ -29,13 +29,14 @@ if (sessionStorage.getItem('AnyFormatConfig')) {
     // ignore
   }
 }
+// 保存设置
 const open = ref<boolean>(false)
-
 const onFinish = () => {
   sessionStorage.setItem('AnyFormatConfig', JSON.stringify(toRaw(config)))
   open.value = false
 }
 
+// 双击格式化
 function dblclick(value: string) {
   const format = useFormat({ ...toRaw(config) }).anyFormat(unref(value))
   if (format != value) {
