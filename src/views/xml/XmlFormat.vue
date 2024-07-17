@@ -76,7 +76,7 @@ function handleSort(asc: boolean = true) {
     }
     return sortedElements
   }
-  data.value = xmlHeader + '\r' + deepSort(Array.from(xmlDoc.children), asc).map(item => item.outerHTML).join('\r')
+  data.value = xmlHeader + deepSort(Array.from(xmlDoc.children), asc).map(item => item.outerHTML).join('\r')
   handleFormat()
 }
 </script>
