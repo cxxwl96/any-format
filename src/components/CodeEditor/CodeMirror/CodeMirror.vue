@@ -127,6 +127,7 @@ const props = defineProps({
   tabSize: { type: Number, default: 4 },
   theme: { type: String, default: THEME.light },
   lineWrapping: { type: Boolean, default: false },
+  autofocus: { type: Boolean, default: true },
   showCopyButton: { type: Boolean, default: false }, // TODO
   fontSize: { type: Number, default: 14 }
 })
@@ -180,6 +181,7 @@ async function init() {
     tabSize: props.tabSize,
     theme: props.theme,
     lineWrapping: props.lineWrapping,
+    autofocus: props.autofocus,
     lineNumbers: true,
     spellcheck: true,
     autocorrect: true,
@@ -189,7 +191,6 @@ async function init() {
     autoCloseTags: true,
     foldGutter: true,
     lint: true,
-    autofocus: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers']
   })
   editor?.setValue(props.modelValue || '')

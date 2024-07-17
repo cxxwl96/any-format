@@ -83,6 +83,7 @@ export function getTextFromClipboard() {
               reader.readAsText(blob, 'utf-8')
               reader.onload = function() {
                 resolve(reader.result as string || '')
+                reject(reader.result as string || '')
               }
             })
           }
