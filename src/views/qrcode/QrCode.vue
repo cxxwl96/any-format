@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import QrCode from 'qrcode-decoder'
+import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 
 const data = ref('')
 const qrCodeRef = ref()
@@ -42,6 +43,11 @@ const decodeQR = (file: File) => {
 
 <template>
   <div class="qrcode-content">
+    <a-row>
+      <div class="tip-font">
+        Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴Scheme</a>生成二维码
+      </div>
+    </a-row>
     <a-row :gutter="20" justify="center">
       <a-col flex="7">
         <a-textarea

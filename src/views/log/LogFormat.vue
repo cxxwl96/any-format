@@ -3,6 +3,7 @@ import { SettingOutlined } from '@ant-design/icons-vue'
 import { onMounted, reactive, ref, toRaw, unref, type UnwrapRef } from 'vue'
 import useFormat, { type AnyFormatConfig } from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
+import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 
 const data = ref<string>('')
 // load cache
@@ -50,7 +51,9 @@ function dblclick(value: string) {
 
 <template>
   <div>
-    <div class="tip-font">Tip：粘贴文本，双击格式化</div>
+    <div class="tip-font">
+      Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+    </div>
     <CodeMirror @dblclick="dblclick" v-model="data" @change="cacheData" :lineWrapping="true" />
     <a-float-button :style="{bottom: '100px'}" @click="()=>{open=true}">
       <template #icon>

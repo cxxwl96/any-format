@@ -5,6 +5,7 @@ import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
 import { SwapOutlined } from '@ant-design/icons-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
+import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 
 const el = ref()
 const result = ref<{
@@ -156,7 +157,9 @@ function toggleView() {
 <template>
   <div>
     <div v-if="codemirrorView">
-      <div class="tip-font">Tip：粘贴文本，双击格式化</div>
+      <div class="tip-font">
+        Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+      </div>
       <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping />
     </div>
     <JsonEditor v-else v-model="result.value" mode="tree" />

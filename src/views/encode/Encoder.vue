@@ -3,7 +3,7 @@ import { ref, unref } from 'vue'
 import { message } from 'ant-design-vue'
 import { Base64 } from 'js-base64'
 import CryptoJS from 'crypto-js'
-import { useCopyToClipboard } from '@/utils/useCopyToClipboard'
+import { getTextFromClipboard, useCopyToClipboard } from '@/utils/useCopyToClipboard'
 
 const { clipboardRef, copiedRef } = useCopyToClipboard()
 
@@ -108,7 +108,8 @@ const copyResult = (e: MouseEvent) => {
   <div class="base64-content">
     <a-row :gutter="20">
       <a-col flex="5">
-        <div class="tip-font">Tip：输入文本或拖拽文件到此处，默认进行Base64编码
+        <div class="tip-font">
+          Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>或拖拽文件到此处，默认进行Base64编码
         </div>
         <a-textarea
           v-model:value="data"

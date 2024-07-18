@@ -3,6 +3,7 @@ import { CodeMirror, MODE } from '@/components/CodeEditor'
 import { ref, unref } from 'vue'
 import vkbeautify from 'vkbeautify'
 import { notification } from 'ant-design-vue'
+import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 
 const data = ref<string>(sessionStorage.getItem('XmlFormatData') as string || '')
 
@@ -83,7 +84,9 @@ function handleSort(asc: boolean = true) {
 
 <template>
   <div>
-    <div class="tip-font">Tip：粘贴文本，双击格式化</div>
+    <div class="tip-font">
+      Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+    </div>
     <CodeMirror ref="el" v-model="data" @change="handleChange" @dblclick="handleFormat" :mode="MODE.XML"
                 :theme="'eclipse'" />
     <a-divider />
