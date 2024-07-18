@@ -72,5 +72,24 @@ export function copyTextToClipboard(input: string, { target = document.body }: O
 }
 
 export function getTextFromClipboard() {
-  return navigator.clipboard.readText()
+  const promise = new Promise<string>((resolve, reject) => {
+    // @ts-ignore
+    navigator.permissions.query({ name: 'clipboard-read' }).then((result) => {
+      if (result.state === 'granted' || result.state === 'prompt') {
+        navigator.clipboard.read().then((data) => {
+          if (data.length > 0) {
+            data[0].getType('text/plain').then((blob) => {
+              const reader = new FileReader()
+              reader.readAsText(blob, 'utf-8')
+              reader.onload = function() {
+                resolve(reader.result as string || '')
+                reject(reader.result as string || '')
+              }
+            })
+          }
+        })
+      }
+    })
+  })
+  return promise
 }

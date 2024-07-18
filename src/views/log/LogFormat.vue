@@ -4,7 +4,6 @@ import { onMounted, reactive, ref, toRaw, unref, type UnwrapRef } from 'vue'
 import useFormat, { type AnyFormatConfig } from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
-import Clipboard from 'clipboard'
 
 const data = ref<string>('')
 // load cache
