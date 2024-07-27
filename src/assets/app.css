@@ -11,3 +11,10 @@
     color: #00000059;
     margin: 10px;
 }
+
+.tip-font, .tip-font > a {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
