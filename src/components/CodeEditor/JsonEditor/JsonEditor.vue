@@ -10,7 +10,7 @@ import 'jsoneditor/dist/jsoneditor.min.css'
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Nullable } from '@/data'
 import { useCopyToClipboard } from '@/utils/useCopyToClipboard'
-const { clipboardRef, copiedRef } = useCopyToClipboard();
+const { clipboardRef } = useCopyToClipboard();
 
 const props = defineProps({
   // 双重绑定一定要modelValue，更新时使用emit('update:modelValue')更新
