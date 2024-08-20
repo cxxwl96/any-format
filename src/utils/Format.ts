@@ -21,6 +21,11 @@ export interface AnyFormatConfig {
   tabCount: number,
 }
 
+interface MatchRes {
+  matched: boolean;
+  text: string;
+}
+
 export default function useFormat(config: AnyFormatConfig = {
   startChars: ['{', '[', '('],
   endChars: ['}', ']', ')'],
@@ -38,31 +43,59 @@ export default function useFormat(config: AnyFormatConfig = {
     let formatted = ''
     let level = 0
     let lastCharBreak = false
-    for (let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < arr.length;) {
       let ch = arr[i]
-      if (startChars.indexOf(ch) >= 0) {
-        formatted = formatted.concat(ch)
+      let matchRes: MatchRes
+      if ((matchRes = isMatched(startChars, arr, i)).matched) {
+        formatted = formatted.concat(matchRes.text)
         formatted = formatted.concat(breakSpace(++level))
         lastCharBreak = true
-      } else if (endChars.indexOf(ch) >= 0) {
+        i += matchRes.text.length
+      } else if ((matchRes = isMatched(endChars, arr, i)).matched) {
         formatted = formatted.concat(breakSpace(--level))
-        formatted = formatted.concat(ch)
+        formatted = formatted.concat(matchRes.text)
         lastCharBreak = true
-      } else if (breakChars.indexOf(ch) >= 0) {
-        formatted = formatted.concat(ch)
+        i += matchRes.text.length
+      } else if ((matchRes = isMatched(breakChars, arr, i)).matched) {
+        formatted = formatted.concat(matchRes.text)
         formatted = formatted.concat(breakSpace(level))
         lastCharBreak = true
+        i += matchRes.text.length
       } else {
         if (lastCharBreak) {
-          while (i<arr.length && (ch = arr[i]) === ' ') {
-            i++;
+          while (i < arr.length && (ch = arr[i]) === ' ') {
+            i++
           }
           lastCharBreak = false
         }
         formatted = formatted.concat(ch)
+        i++
       }
     }
     return formatted.split(/\r\n|\r|\n/).filter(line => line.trim() !== '').join('\n')
+  }
+
+  function isMatched(conditions: string[], arr: string, index: number): MatchRes {
+    let newConditions: string[] = [...conditions]
+    let i = index + 1
+    for (; i < arr.length; i++) {
+      const tempConditions = newConditions.filter(s => s.startsWith(arr.substring(index, i)))
+      if (tempConditions.length > 0) {
+        newConditions = tempConditions
+      } else {
+        break
+      }
+    }
+    if (newConditions.length === 1 && newConditions[0] === arr.substring(index, Math.max(index, i - 1))) {
+      return {
+        matched: true,
+        text: newConditions[0]
+      }
+    }
+    return {
+      matched: false,
+      text: ''
+    }
   }
 
   function breakSpace(level: number) {

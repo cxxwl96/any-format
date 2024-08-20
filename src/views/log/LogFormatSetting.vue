@@ -12,6 +12,7 @@ watch(() => props.show, (value: boolean) => {
 const emits = defineEmits(['update:show'])
 watch(() => open.value, (value: boolean) => {
   emits('update:show', value)
+  initForm()
 })
 
 // LogFormat设置
@@ -21,16 +22,19 @@ let form: UnwrapRef<AnyFormatConfig> = reactive({
     breakChars: [';', ','],
     tabCount: 4
   })
-if (sessionStorage.getItem('AnyFormatConfig')) {
-  try {
-    form = reactive(JSON.parse(sessionStorage.getItem('AnyFormatConfig') as string))
-  } catch (error) {
-    // ignore
+const initForm = () => {
+  if (localStorage.getItem('AnyFormatConfig')) {
+    try {
+      form = reactive(JSON.parse(localStorage.getItem('AnyFormatConfig') as string))
+    } catch (error) {
+      // ignore
+    }
   }
 }
+initForm()
 // 保存设置
 const onFinish = () => {
-  sessionStorage.setItem('AnyFormatConfig', JSON.stringify(toRaw(form)))
+  localStorage.setItem('AnyFormatConfig', JSON.stringify(toRaw(form)))
   open.value = false
 }
 // 暴露方法
@@ -50,13 +54,13 @@ defineExpose({
       @finish="onFinish"
     >
       <a-form-item label="StartChars">
-        <a-select v-model:value="form.startChars" mode="tags" style="width: 100%" />
+        <a-select v-model:value="form.startChars" mode="tags" :token-separators="[' ']" style="width: 100%" />
       </a-form-item>
       <a-form-item label="EndChars">
-        <a-select v-model:value="form.endChars" mode="tags" style="width: 100%" />
+        <a-select v-model:value="form.endChars" mode="tags" :token-separators="[' ']" style="width: 100%" />
       </a-form-item>
       <a-form-item label="BreakChars">
-        <a-select v-model:value="form.breakChars" mode="tags" style="width: 100%" />
+        <a-select v-model:value="form.breakChars" mode="tags" :token-separators="[' ']" style="width: 100%" />
       </a-form-item>
       <a-form-item label="TabCount">
         <a-input-number v-model:value="form.tabCount" :min="0" :max="16" />
