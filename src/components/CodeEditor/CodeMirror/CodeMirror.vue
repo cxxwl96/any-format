@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onMounted, onUnmounted, ref, unref, watch } from 'vue'
+import { isMacOs, isWindowOs } from '@/utils/is'
 import CodeMirror from 'codemirror'
 import { MODE, type Nullable, THEME } from '@/data'
 
@@ -81,8 +82,6 @@ import 'codemirror/theme/idea.css'
 import 'codemirror/theme/darcula.css'
 import 'codemirror/theme/yonce.css'
 import 'codemirror/theme/zenburn.css'
-
-import { isMacOs, isWindowOs } from '@/utils/is'
 
 // 插件
 import 'codemirror/addon/comment/comment'
