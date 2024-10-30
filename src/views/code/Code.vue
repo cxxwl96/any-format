@@ -30,14 +30,14 @@ function nextMode() {
 <template>
   <div>
     <a-form :model="form" layout="inline">
-      <a-form-item label="主题">
+      <a-form-item label="主题" class="button-select-group">
         <a-button @click="lastTheme">Last</a-button>
         <a-select v-model:value="form.theme" style="width: 200px">
           <a-select-option v-for="theme in themes" :key="theme" :value="theme">{{ theme }}</a-select-option>
         </a-select>
         <a-button @click="nextTheme">Next</a-button>
       </a-form-item>
-      <a-form-item label="模式">
+      <a-form-item label="模式" class="button-select-group">
         <a-button @click="lastMode">Last</a-button>
         <a-select v-model:value="form.mode" style="width: 200px">
           <a-select-option v-for="mode in modes" :key="mode" :value="mode">{{ mode }}</a-select-option>
@@ -54,5 +54,17 @@ function nextMode() {
 </template>
 
 <style scoped>
-
+.button-select-group{
+  button:first-child{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  button:last-child{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  :global(.ant-select-selector) {
+    border-radius: 0;
+  }
+}
 </style>

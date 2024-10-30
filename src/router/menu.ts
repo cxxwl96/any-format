@@ -6,6 +6,7 @@ import Code from '@/views/code/Code.vue'
 import QrCode from '@/views/qrcode/QrCode.vue'
 import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
+import Runner from '@/views/runner/Runner.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
 const menus: { value: string, label?: string, component: any, reloadOnActive?: boolean }[] = reactive(
@@ -39,6 +40,10 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
     {
       value: 'Code',
       component: shallowRef(Code)
+    },
+    {
+      value: 'Runner',
+      component: shallowRef(Runner)
     }
   ]
 )
