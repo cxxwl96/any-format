@@ -14,14 +14,14 @@ document.context = {
    * 响应状态：xhr.status
    * 响应文本：xhr.responseText
    */
-  xhr: (url: string, config: {
+  xhr: (url: string, config?: {
     method?: string;
     async?: string;
     timeout?: number;
     header?: { [key: string]: string };
     body?: Document | XMLHttpRequestBodyInit | null
   }) => {
-    const { method, async, timeout, header } = config
+    const { method, async, timeout, header } = config || {}
     const xhr = new XMLHttpRequest()
     xhr.open(method || 'GET', url, !!async)
     if (async) {
