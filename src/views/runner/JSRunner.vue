@@ -3,12 +3,12 @@ import { CodeMirror } from '@/components/CodeEditor'
 import { ref, watch } from 'vue'
 import './Context'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
-import { useCacheData } from '@/utils/CacheData'
+import { useSessionCache } from '@/utils/CacheData'
 
-const cacheData = useCacheData('JSRunner')
+const sessionCache = useSessionCache('JSRunner')
 
 const props = defineProps({ modelValue: String })
-const script = ref<string>(props.modelValue || cacheData.load())
+const script = ref<string>(props.modelValue || sessionCache.load())
 const result = ref<{ data: any; success: boolean; }>({ data: '', success: true })
 watch(() => props.modelValue, (value) => script.value = value || '')
 
@@ -32,7 +32,7 @@ const handleRunner = () => {
   <div class="js-runner">
     <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
     <AButton type="primary" @click="handleRunner" class="run-btn">运行脚本</AButton>
-    <CodeMirror v-model="script" @change="cacheData.cache" theme="darcula" mode="javascript" />
+    <CodeMirror v-model="script" @change="sessionCache.cache" theme="darcula" mode="javascript" />
     <div class="tip-font">运行结果：</div>
     <ATextarea v-model:value="result.data" :style="{color: result.success ? 'black' : 'red'}" />
   </div>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { reactive, ref, toRaw, type UnwrapRef, watch } from 'vue'
 import type { AnyFormatConfig } from '@/utils/Format'
+import { useLocalCache } from '@/utils/CacheData'
+
+const sessionCache = useLocalCache('AnyFormatConfig')
 
 const props = defineProps({
   show: Boolean
@@ -23,9 +26,9 @@ let form: UnwrapRef<AnyFormatConfig> = reactive({
     tabCount: 4
   })
 const initForm = () => {
-  if (localStorage.getItem('AnyFormatConfig')) {
+  if (sessionCache.load()) {
     try {
-      form = reactive(JSON.parse(localStorage.getItem('AnyFormatConfig') as string))
+      form = reactive(sessionCache.load())
     } catch (error) {
       // ignore
     }
@@ -34,7 +37,7 @@ const initForm = () => {
 initForm()
 // 保存设置
 const onFinish = () => {
-  localStorage.setItem('AnyFormatConfig', JSON.stringify(toRaw(form)))
+  sessionCache.cache(toRaw(form))
   open.value = false
 }
 // 暴露方法

@@ -4,10 +4,10 @@ import { ref, unref } from 'vue'
 import vkbeautify from 'vkbeautify'
 import { notification } from 'ant-design-vue'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
-import { useCacheData } from '@/utils/CacheData'
+import { useSessionCache } from '@/utils/CacheData'
 
-const cacheData = useCacheData('XmlFormat')
-const data = ref<string>(cacheData.load())
+const sessionCache = useSessionCache('XmlFormat')
+const data = ref<string>(sessionCache.load())
 
 // 格式化
 function handleFormat() {
@@ -84,7 +84,7 @@ function handleSort(asc: boolean = true) {
     <div class="tip-font">
       Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
     </div>
-    <CodeMirror ref="el" v-model="data" @change="cacheData.cache" @dblclick="handleFormat" :mode="MODE.XML"
+    <CodeMirror ref="el" v-model="data" @change="sessionCache.cache" @dblclick="handleFormat" :mode="MODE.XML"
                 :theme="'eclipse'" />
     <a-divider />
     <a-affix :offset-bottom="50">

@@ -5,13 +5,13 @@ import useFormat from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
-import { useCacheData } from '@/utils/CacheData'
+import { useSessionCache } from '@/utils/CacheData'
 
-const cacheData = useCacheData('LogFormat')
+const sessionCache = useSessionCache('LogFormat')
 
 const settingRef = ref()
 const showSetting = ref<boolean>()
-const data = ref<string>(cacheData.load())
+const data = ref<string>(sessionCache.load())
 
 
 // 双击格式化
@@ -31,7 +31,7 @@ function dblclick(value: string) {
     <div class="tip-font">
       Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
     </div>
-    <CodeMirror @dblclick="dblclick" v-model="data" @change="cacheData.cache" :lineWrapping="true" />
+    <CodeMirror @dblclick="dblclick" v-model="data" @change="sessionCache.cache" :lineWrapping="true" />
     <a-float-button :style="{bottom: '100px'}" @click="()=>{showSetting=true}">
       <template #icon>
         <SettingOutlined />
