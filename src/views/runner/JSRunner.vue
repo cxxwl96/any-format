@@ -8,7 +8,6 @@ import { useCacheData } from '@/utils/CacheData'
 const cacheData = useCacheData('JSRunner')
 
 const props = defineProps({ modelValue: String })
-const emits = defineEmits(['update:modelValue'])
 const script = ref<string>(props.modelValue || cacheData.load())
 const result = ref<{ data: any; success: boolean; }>({ data: '', success: true })
 watch(() => props.modelValue, (value) => script.value = value || '')
@@ -27,21 +26,13 @@ const handleRunner = () => {
     result.value.success = false
   }
 }
-const handleChange = (value: string) => {
-  cacheData.cache(value)
-  emits('update:modelValue', value)
-}
-// 暴露方法
-defineExpose({
-  run: () => handleRunner()
-})
 </script>
 
 <template>
   <div class="js-runner">
-    <AButton type="primary" @click="handleRunner" class="run-btn">运行脚本</AButton>
     <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
-    <CodeMirror v-model="script" @change="handleChange" theme="darcula" mode="javascript" />
+    <AButton type="primary" @click="handleRunner" class="run-btn">运行脚本</AButton>
+    <CodeMirror v-model="script" @change="cacheData.cache" theme="darcula" mode="javascript" />
     <div class="tip-font">运行结果：</div>
     <ATextarea v-model:value="result.data" :style="{color: result.success ? 'black' : 'red'}" />
   </div>
