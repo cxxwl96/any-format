@@ -6,17 +6,16 @@ import { message, notification } from 'ant-design-vue'
 import { SwapOutlined } from '@ant-design/icons-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { useCacheData } from '@/utils/CacheData'
+
+const cacheData = useCacheData('JsonFormat')
 
 const el = ref()
 const result = ref<{
   value: string;
   error: boolean;
   message: string;
-}>({ value: sessionStorage.getItem('JsonFormatData') as string || '', error: false, message: '' })
-
-function handleChange(value: string) {
-  sessionStorage.setItem('JsonFormatData', value)
-}
+}>({ value: cacheData.load(), error: false, message: '' })
 
 // 格式化校验
 function formatValidate(tip: boolean = true) {
@@ -160,7 +159,7 @@ function toggleView() {
       <div class="tip-font">
         Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
       </div>
-      <CodeMirror ref="el" v-model="result.value" @change="handleChange" @dblclick="formatValidate" lineWrapping />
+      <CodeMirror ref="el" v-model="result.value" @change="cacheData.cache" @dblclick="formatValidate" lineWrapping />
     </div>
     <JsonEditor v-else v-model="result.value" mode="tree" />
     <a-divider />

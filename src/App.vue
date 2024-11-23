@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { ref, unref } from 'vue'
 import { menus } from '@/router/menu'
+import { useCacheData } from '@/utils/CacheData'
 
-const activeKey = ref(sessionStorage.getItem('activeKey') as string || unref(menus[0].value))
+const cacheData = useCacheData('activeKey')
+
+const activeKey = ref(cacheData.load() as string || unref(menus[0].value))
 const menuBoxStyle = ref({})
 
 function handleChange(val: string) {
+  const menu = menus.filter(menu => menu.value === val)[0]
   activeKey.value = val
-  sessionStorage.setItem('activeKey', val)
+  cacheData.cache(val)
   // 是否需要刷新页面，为了解决affix失效问题
-  if (menus.filter(item => item.reloadOnActive).map(item => item.value).indexOf(val) >= 0) {
+  if (menu.reloadOnActive) {
     window.location.reload()
   }
 }

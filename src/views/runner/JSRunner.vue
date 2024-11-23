@@ -3,10 +3,13 @@ import { CodeMirror } from '@/components/CodeEditor'
 import { ref, watch } from 'vue'
 import './Context'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { useCacheData } from '@/utils/CacheData'
+
+const cacheData = useCacheData('JSRunner')
 
 const props = defineProps({ modelValue: String })
 const emits = defineEmits(['update:modelValue'])
-const script = ref<string>(props.modelValue || '')
+const script = ref<string>(props.modelValue || cacheData.load())
 const result = ref<{ data: any; success: boolean; }>({ data: '', success: true })
 watch(() => props.modelValue, (value) => script.value = value || '')
 
@@ -25,6 +28,7 @@ const handleRunner = () => {
   }
 }
 const handleChange = (value: string) => {
+  cacheData.cache(value)
   emits('update:modelValue', value)
 }
 // 暴露方法

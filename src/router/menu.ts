@@ -2,7 +2,7 @@ import { reactive, shallowRef } from 'vue'
 import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
-import Code from '@/views/code/Code.vue'
+import CodeDemo from '@/views/code/CodeDemo.vue'
 import QrCode from '@/views/qrcode/QrCode.vue'
 import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
@@ -13,12 +13,12 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
   [
     {
       value: 'LogFormat',
-      component: shallowRef(LogFormat)
+      component: shallowRef(LogFormat),
     },
     {
       value: 'JSON',
       component: shallowRef(JsonFormat),
-      reloadOnActive: true
+      reloadOnActive: true,
     },
     {
       value: 'XML',
@@ -27,23 +27,23 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
     },
     {
       value: 'QRCode',
-      component: shallowRef(QrCode)
+      component: shallowRef(QrCode),
     },
     {
       value: 'Encoder',
-      component: shallowRef(Encoder)
+      component: shallowRef(Encoder),
     },
     {
       value: 'RegExp',
-      component: shallowRef(RegExp)
+      component: shallowRef(RegExp),
     },
     {
       value: 'Code',
-      component: shallowRef(Code)
+      component: shallowRef(CodeDemo),
     },
     {
       value: 'JSRunner',
-      component: shallowRef(JSRunner)
+      component: shallowRef(JSRunner),
     }
   ]
 )
