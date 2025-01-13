@@ -7,6 +7,7 @@ import QrCode from '@/views/qrcode/QrCode.vue'
 import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
 import JSRunner from '@/views/runner/JSRunner.vue'
+import TextComparator from '@/views/comparator/TextComparator.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
 const menus: { value: string, label?: string, component: any, reloadOnActive?: boolean }[] = reactive(
@@ -26,6 +27,10 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
       reloadOnActive: true,
     },
     {
+      value: 'TextCompare',
+      component: shallowRef(TextComparator),
+    },
+    {
       value: 'QRCode',
       component: shallowRef(QrCode),
     },
@@ -37,10 +42,10 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
       value: 'RegExp',
       component: shallowRef(RegExp),
     },
-    {
-      value: 'Code',
-      component: shallowRef(CodeDemo),
-    },
+    // {
+    //   value: 'Code',
+    //   component: shallowRef(CodeDemo),
+    // },
     {
       value: 'JSRunner',
       component: shallowRef(JSRunner),
