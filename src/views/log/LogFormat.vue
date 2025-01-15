@@ -1,26 +1,38 @@
 <script setup lang="ts">
-import { SettingOutlined } from '@ant-design/icons-vue'
-import { ref, toRaw, unref } from 'vue'
+import { SettingOutlined, SwapOutlined } from '@ant-design/icons-vue'
+import { type Ref, ref, toRaw, unref } from 'vue'
 import useFormat from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
+import { MonacoDiffEditor } from '@/components/monaco'
 
-const sessionCache = useSessionCache('LogFormat')
+const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
+const sessionCacheModified = useSessionCache('LogFormat_Modified')
 
 const settingRef = ref()
 const showSetting = ref<boolean>()
-const data = ref<string>(sessionCache.load())
+const showDiff = ref<boolean>()
+const originValue = ref<string>(sessionCacheOrigin.load())
+const modifiedValue = ref<string>(sessionCacheModified.load())
 
 
 // 双击格式化
-function dblclick(value: string) {
+function originDblClickHandler(value: string) {
+  dblClickHandler(value, originValue)
+}
+
+function modifiedDblClickHandler(value: string) {
+  dblClickHandler(value, modifiedValue)
+}
+
+function dblClickHandler(value: string, target: Ref<string>) {
   const format = useFormat({ ...toRaw(settingRef.value.getConfig()) }).anyFormat(unref(value))
   if (format != value) {
-    data.value = ''
+    target.value = ''
     setTimeout(() => {
-      data.value = format
+      target.value = format
     }, 1)
   }
 }
@@ -28,10 +40,34 @@ function dblclick(value: string) {
 
 <template>
   <div>
-    <div class="tip-font">
-      Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+    <div v-if="!showDiff">
+      <div class="tip-font">
+        Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+      </div>
+      <CodeMirror @dblclick="originDblClickHandler" v-model="originValue" @change="sessionCacheOrigin.cache"
+                  :lineWrapping="true" />
     </div>
-    <CodeMirror @dblclick="dblclick" v-model="data" @change="sessionCache.cache" :lineWrapping="true" />
+    <MonacoDiffEditor v-else v-model:origin-value="originValue" v-model:modified-value="modifiedValue"
+                      @originChange="sessionCacheOrigin.cache"
+                      @modifiedChange="sessionCacheModified.cache"
+                      @originDblClick="originDblClickHandler" @modifiedDblClick="modifiedDblClickHandler" show-tool>
+      <template #toolTip>
+        <div class="tip-font">
+          Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴左边</a>，双击格式化；<a
+          @click="async () => {modifiedValue = await getTextFromClipboard()}">粘贴右边</a>，双击格式化。
+        </div>
+      </template>
+    </MonacoDiffEditor>
+    <a-affix :offset-bottom="50">
+      <a-space :size="[8, 16]" wrap class="bottom-button-group">
+        <a-button type="primary" @click="showDiff=!showDiff">
+          <template #icon>
+            <SwapOutlined />
+          </template>
+          {{ showDiff ? '返回' : '文本对比'}}
+        </a-button>
+      </a-space>
+    </a-affix>
     <a-float-button :style="{bottom: '100px'}" @click="()=>{showSetting=true}">
       <template #icon>
         <SettingOutlined />

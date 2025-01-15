@@ -15,6 +15,7 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
     {
       value: 'LogFormat',
       component: shallowRef(LogFormat),
+      reloadOnActive: true,
     },
     {
       value: 'JSON',

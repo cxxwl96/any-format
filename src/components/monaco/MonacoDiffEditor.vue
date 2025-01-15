@@ -18,7 +18,7 @@ const props = defineProps({
   language: { type: String, required: false, default: 'json' },
   theme: { type: String, required: false, default: THEME.VS }
 })
-const emits = defineEmits(['update:originValue', 'update:modifiedValue', 'originDblClick', 'modifiedDblClick'])
+const emits = defineEmits(['update:originValue', 'update:modifiedValue', 'originChange', 'modifiedChange', 'originDblClick', 'modifiedDblClick'])
 
 const editorRef = ref()
 let editor: monaco.editor.IStandaloneDiffEditor
@@ -92,16 +92,18 @@ const initDiffEditor = () => {
     modified: modifiedModel
   })
 
-  // 更新文本
+  // change事件
   originModel.onDidChangeContent(() => {
     originValue.value = originModel.getValue()
     emits('update:originValue', originModel.getValue())
+    emits('originChange', originModel.getValue())
   })
   modifiedModel.onDidChangeContent(() => {
     modifiedValue.value = modifiedModel.getValue()
     emits('update:modifiedValue', modifiedModel.getValue())
+    emits('modifiedChange', modifiedModel.getValue())
   })
-  // 双击事件
+  // dblclick事件
   editor.getOriginalEditor().onMouseDown(e => {
     if (e.event.detail === 2) {
       emits('originDblClick', originModel.getValue())
