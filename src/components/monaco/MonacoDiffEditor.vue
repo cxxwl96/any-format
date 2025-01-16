@@ -24,8 +24,6 @@ const editorRef = ref()
 let editor: monaco.editor.IStandaloneDiffEditor
 let originModel: monaco.editor.ITextModel
 let modifiedModel: monaco.editor.ITextModel
-const originValue = ref<string>(props.originValue)
-const modifiedValue = ref<string>(props.modifiedValue)
 const showDiff = ref<boolean>(false)
 const side = ref<boolean>(true)
 const wordWrap = ref<boolean>(false)
@@ -36,12 +34,12 @@ onMounted(() => initDiffEditor())
 onBeforeUnmount(() => editor?.dispose())
 
 watch(() => props.originValue, value => {
-  if (originValue.value != value) {
+  if (originModel?.getValue() != value) {
     originModel?.setValue(value)
   }
 })
 watch(() => props.modifiedValue, value => {
-  if (modifiedValue.value != value) {
+  if (modifiedModel?.getValue() != value) {
     modifiedModel?.setValue(value)
   }
 })
@@ -72,6 +70,7 @@ const initDiffEditor = () => {
     }
   }
 
+  // 创建对比编辑器
   editor = monaco.editor.createDiffEditor(editorRef.value, {
     ...defaultDiffOptions,
     theme: props.theme, // 主题
@@ -84,22 +83,17 @@ const initDiffEditor = () => {
     }
   })
 
-  originModel = monaco.editor.createModel(props.originValue, props.language)
-  modifiedModel = monaco.editor.createModel(props.modifiedValue, props.language)
-
   editor.setModel({
-    original: originModel,
-    modified: modifiedModel
+    original: (originModel = monaco.editor.createModel(props.originValue, props.language)),
+    modified: (modifiedModel = monaco.editor.createModel(props.modifiedValue, props.language))
   })
 
   // change事件
   originModel.onDidChangeContent(() => {
-    originValue.value = originModel.getValue()
     emits('update:originValue', originModel.getValue())
     emits('originChange', originModel.getValue())
   })
   modifiedModel.onDidChangeContent(() => {
-    modifiedValue.value = modifiedModel.getValue()
     emits('update:modifiedValue', modifiedModel.getValue())
     emits('modifiedChange', modifiedModel.getValue())
   })
@@ -114,6 +108,7 @@ const initDiffEditor = () => {
       emits('modifiedDblClick', modifiedModel.getValue())
     }
   })
+  // TODO drag事件
 }
 // editor刚初始化时第一次点击不会收缩相同的行，模拟点击两次按钮
 let showDiffClickNum = 0

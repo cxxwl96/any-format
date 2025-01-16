@@ -4,6 +4,7 @@ import { message } from 'ant-design-vue'
 import { Base64 } from 'js-base64'
 import CryptoJS from 'crypto-js'
 import { getTextFromClipboard, useCopyToClipboard } from '@/utils/useCopyToClipboard'
+import { handleDragEvent } from '@/utils/Event'
 
 const { clipboardRef, copiedRef } = useCopyToClipboard()
 
@@ -70,21 +71,10 @@ const switchData = () => {
 // 拖拽文件
 const dragging = ref(false)
 const handleDragFile = (event: DragEvent) => {
-  var files = event.dataTransfer?.files
-  if (!files) {
-    message.error('请拖拽有效文件')
-  } else if (files.length > 1) {
-    message.error('仅支持单文件拖拽')
-  } else if (files[0].size > 2 * 1024 * 1024) {
-    message.error('仅支持2MB大小的文件拖拽')
-  } else {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      data.value = e.target?.result as string
-      encoderButtons.value[0].handleEncode()
-    }
-    reader.readAsBinaryString(files[0])
-  }
+  handleDragEvent(event, (value) => {
+    data.value = value
+    encoderButtons.value[0].handleEncode()
+  })
   dragging.value = false
 }
 

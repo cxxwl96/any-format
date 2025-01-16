@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SettingOutlined, SwapOutlined } from '@ant-design/icons-vue'
-import { type Ref, ref, toRaw, unref } from 'vue'
+import { type Ref, ref, toRaw, unref, watch } from 'vue'
 import useFormat from '@/utils/Format'
 import { CodeMirror } from '@/components/CodeEditor'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
@@ -10,13 +10,15 @@ import { MonacoDiffEditor } from '@/components/monaco'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
+const sessionCacheShowDiff = useSessionCache('LogFormat_ShowDiff')
 
 const settingRef = ref()
 const showSetting = ref<boolean>()
-const showDiff = ref<boolean>()
+const showDiff = ref<boolean>(sessionCacheShowDiff.load())
 const originValue = ref<string>(sessionCacheOrigin.load())
 const modifiedValue = ref<string>(sessionCacheModified.load())
 
+watch(() => showDiff.value, (value) => sessionCacheShowDiff.cache(value))
 
 // 双击格式化
 function originDblClickHandler(value: string) {
@@ -58,21 +60,24 @@ function dblClickHandler(value: string, target: Ref<string>) {
         </div>
       </template>
     </MonacoDiffEditor>
+    <a-divider />
     <a-affix :offset-bottom="50">
       <a-space :size="[8, 16]" wrap class="bottom-button-group">
+        <a-button type="ghost" @click="showSetting=true">
+          <template #icon>
+            <SettingOutlined />
+          </template>
+          设置
+        </a-button>
+        <a-divider type="vertical" style="background-color: #d9d9d9" />
         <a-button type="primary" @click="showDiff=!showDiff">
           <template #icon>
             <SwapOutlined />
           </template>
-          {{ showDiff ? '返回' : '文本对比'}}
+          {{ showDiff ? '返回' : '文本对比' }}
         </a-button>
       </a-space>
     </a-affix>
-    <a-float-button :style="{bottom: '100px'}" @click="()=>{showSetting=true}">
-      <template #icon>
-        <SettingOutlined />
-      </template>
-    </a-float-button>
     <LogFormatSetting ref="settingRef" v-model:show="showSetting" />
   </div>
 </template>
