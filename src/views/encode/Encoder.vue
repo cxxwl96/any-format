@@ -4,7 +4,7 @@ import { message } from 'ant-design-vue'
 import { Base64 } from 'js-base64'
 import CryptoJS from 'crypto-js'
 import { getTextFromClipboard, useCopyToClipboard } from '@/utils/useCopyToClipboard'
-import { handleDragEvent } from '@/utils/Event'
+import { handleReadDragFileEvent } from '@/utils/Event'
 
 const { clipboardRef, copiedRef } = useCopyToClipboard()
 
@@ -71,8 +71,8 @@ const switchData = () => {
 // 拖拽文件
 const dragging = ref(false)
 const handleDragFile = (event: DragEvent) => {
-  handleDragEvent(event, (value) => {
-    data.value = value
+  handleReadDragFileEvent(event, (value) => {
+    data.value = value as string
     encoderButtons.value[0].handleEncode()
   })
   dragging.value = false

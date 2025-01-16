@@ -17,7 +17,7 @@ const commonCache = (mode: Mode, key: string) => {
   }
   return {
     cache: (value: any) => {
-      if (value) {
+      if (value || value === '') {
         const data = read()
         data[key] = value
         write(data)

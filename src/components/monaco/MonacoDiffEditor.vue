@@ -8,8 +8,10 @@ import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { toggleFullScreen } from '@/utils/FullScreen'
+import { handleToggleFullScreen } from '@/utils/FullScreen'
 import { defaultDiffOptions, THEME } from './data'
+import { handleReadDragFileEvent } from '@/utils/Event'
+import { FullscreenOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
   originValue: { type: String, required: false, default: '' },
@@ -80,7 +82,8 @@ const initDiffEditor = () => {
       revealLineCount: 1,
       minimumLineCount: 1,
       contextLineCount: 1
-    }
+    },
+    placeholder: '请粘贴文本或拖拽文件...'
   })
 
   editor.setModel({
@@ -108,11 +111,31 @@ const initDiffEditor = () => {
       emits('modifiedDblClick', modifiedModel.getValue())
     }
   })
-  // TODO drag事件
+  // drag事件
+  const dragFileHandler = (codeEditor: monaco.editor.IStandaloneCodeEditor) => {
+    const node = codeEditor.getDomNode()
+    node?.addEventListener('dragover', e => {
+      e.preventDefault() // 阻止默认行为
+      e.stopPropagation() // 阻止事件冒泡
+    })
+    node?.addEventListener('drop', e => {
+      e.preventDefault() // 阻止默认行为
+      e.stopPropagation() // 阻止事件冒泡
+      // 读取文件内容
+      handleReadDragFileEvent(e, value => codeEditor.setValue(value as string))
+    })
+  }
+  dragFileHandler(editor.getOriginalEditor())
+  dragFileHandler(editor.getModifiedEditor())
+}
+// 清空编辑器内容
+const handleClearText = () => {
+  originModel.setValue('')
+  modifiedModel.setValue('')
 }
 // editor刚初始化时第一次点击不会收缩相同的行，模拟点击两次按钮
 let showDiffClickNum = 0
-const showDiffHandler = () => {
+const handleShowDiffHandler = () => {
   if (showDiff.value && showDiffClickNum == 0) {
     setTimeout(() => {
       showDiff.value = false
@@ -129,9 +152,10 @@ const showDiffHandler = () => {
   </div>
   <a-flex justify="flex-end" align="center" v-if="showTool">
     <a-space>
-      <a-button type="link" @click="toggleFullScreen(editorRef)">全屏</a-button>
+      <a @click="handleToggleFullScreen(editorRef)"><FullscreenOutlined />全屏</a>
+      <a @click="handleClearText()"><DeleteOutlined />清除</a>
       <a-switch v-model:checked="showDiff" checked-children="Diff" un-checked-children="All"
-                @change="showDiffHandler" />
+                @change="handleShowDiffHandler" />
       <a-switch v-model:checked="side" checked-children="Side" un-checked-children="UnSide" />
       <a-switch v-model:checked="wordWrap" checked-children="Wrap" un-checked-children="UnWrap" />
     </a-space>

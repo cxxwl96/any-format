@@ -2,7 +2,7 @@
 function isFullScreen() {
   return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement;
 }
-export function toggleFullScreen(element?: HTMLElement) {
+export function handleToggleFullScreen(element?: HTMLElement) {
   if (!element) {
     element = document.documentElement;
   }
