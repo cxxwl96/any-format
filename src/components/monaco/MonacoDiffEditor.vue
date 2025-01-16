@@ -165,8 +165,8 @@ const handleShowDiffHandler = () => {
       <a v-if="diffCount>0" @click="editor.goToDiff('next')">
         <ArrowRightOutlined />
       </a>
+      <a-divider type="vertical" />
     </a-space>
-    <a-divider type="vertical" />
     <a-space>
       <a @click="handleToggleFullScreen(editorRef)">
         <FullscreenOutlined />
