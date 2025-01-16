@@ -2,7 +2,8 @@
 import { nextTick, onMounted, onUnmounted, ref, unref, watch } from 'vue'
 import { isMacOs, isWindowOs } from '@/utils/is'
 import CodeMirror from 'codemirror'
-import { MODE, type Nullable, THEME } from '@/data'
+import { MODE, THEME } from '../data'
+import { type Nullable } from '@/data'
 
 // codemirror
 // import 'codemirror/lib/codemirror.css'; // 会让maxHeight失效
