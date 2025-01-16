@@ -7,9 +7,9 @@ import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
-import { defaultDiffOptions, THEME } from './data'
+import { defaultDiffOptions, type Language, THEME } from './data'
 import { handleReadDragFileEvent } from '@/utils/Event'
 import { FullscreenOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 
@@ -17,7 +17,7 @@ const props = defineProps({
   originValue: { type: String, required: false, default: '' },
   modifiedValue: { type: String, required: false, default: '' },
   showTool: { type: Boolean, required: false, default: false },
-  language: { type: String, required: false, default: 'json' },
+  language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
   theme: { type: String, required: false, default: THEME.VS }
 })
 const emits = defineEmits(['update:originValue', 'update:modifiedValue', 'originChange', 'modifiedChange', 'originDblClick', 'modifiedDblClick'])
