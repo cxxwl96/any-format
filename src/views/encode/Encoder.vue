@@ -136,7 +136,7 @@ const copyResult = (e: MouseEvent) => {
             <a-button @click="item.handleEncode" type="primary">编码</a-button>
             <a-button @click="item.handleDecode" v-if="item.handleDecode">解码</a-button>
           </a-button-group>
-          <a-divider type="vertical" style="background-color: #d9d9d9" />
+          <a-divider type="vertical" />
         </a-space>
         <a-button @click="switchData">交换内容</a-button>
       </a-space>

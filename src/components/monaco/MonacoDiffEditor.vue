@@ -11,7 +11,7 @@ import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 import { defaultDiffOptions, type Language, THEME } from './data'
 import { handleReadDragFileEvent } from '@/utils/Event'
-import { FullscreenOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import { FullscreenOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
   originValue: { type: String, required: false, default: '' },
@@ -26,9 +26,10 @@ const editorRef = ref()
 let editor: monaco.editor.IStandaloneDiffEditor
 let originModel: monaco.editor.ITextModel
 let modifiedModel: monaco.editor.ITextModel
-const showDiff = ref<boolean>(false)
-const side = ref<boolean>(true)
-const wordWrap = ref<boolean>(false)
+const showDiff = ref<boolean>(false) // 是否只显示差异
+const side = ref<boolean>(true) // 是否分栏
+const wordWrap = ref<boolean>(false) // 是否自动换行
+const diffCount = ref<number>(0) // 差异个数
 
 // 初始化编辑器
 onMounted(() => initDiffEditor())
@@ -127,6 +128,8 @@ const initDiffEditor = () => {
   }
   dragFileHandler(editor.getOriginalEditor())
   dragFileHandler(editor.getModifiedEditor())
+  // 更新事件
+  editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
 }
 // 清空编辑器内容
 const handleClearText = () => {
@@ -152,8 +155,25 @@ const handleShowDiffHandler = () => {
   </div>
   <a-flex justify="flex-end" align="center" v-if="showTool">
     <a-space>
-      <a @click="handleToggleFullScreen(editorRef)"><FullscreenOutlined />全屏</a>
-      <a @click="handleClearText()"><DeleteOutlined />清除</a>
+      <a v-if="diffCount>0" @click="editor.goToDiff('previous')">
+        <ArrowLeftOutlined />
+      </a>
+      <span v-if="props.originValue || props.modifiedValue"
+            :style="{color: diffCount>0?'red':'green'}"
+            class="un-select">{{ diffCount > 0 ? '存在' + diffCount + '处差异' : '完全相同'
+        }}</span>
+      <a v-if="diffCount>0" @click="editor.goToDiff('next')">
+        <ArrowRightOutlined />
+      </a>
+    </a-space>
+    <a-divider type="vertical" />
+    <a-space>
+      <a @click="handleToggleFullScreen(editorRef)">
+        <FullscreenOutlined />
+        全屏</a>
+      <a @click="handleClearText()">
+        <DeleteOutlined />
+        清除</a>
       <a-switch v-model:checked="showDiff" checked-children="Diff" un-checked-children="All"
                 @change="handleShowDiffHandler" />
       <a-switch v-model:checked="side" checked-children="Side" un-checked-children="UnSide" />

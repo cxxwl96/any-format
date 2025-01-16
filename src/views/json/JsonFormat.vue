@@ -181,7 +181,7 @@ function toggleView() {
             <a-button @click="fieldSort(false)">字段降序</a-button>
           </template>
         </a-dropdown-button>
-        <a-divider type="vertical" v-if="codemirrorView" style="background-color: #d9d9d9" />
+        <a-divider type="vertical" v-if="codemirrorView" />
         <a-button type="primary" @click="toggleView">
           <template #icon>
             <SwapOutlined />

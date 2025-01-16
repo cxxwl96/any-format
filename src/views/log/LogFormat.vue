@@ -69,7 +69,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
           </template>
           设置
         </a-button>
-        <a-divider type="vertical" style="background-color: #d9d9d9" />
+        <a-divider type="vertical" />
         <a-button type="primary" @click="showDiff=!showDiff">
           <template #icon>
             <SwapOutlined />
