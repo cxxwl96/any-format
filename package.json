@@ -28,7 +28,8 @@
     "vkbeautify": "^0.99.3",
     "vue": "^3.4.21",
     "vue-json-pretty": "^2.4.0",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "x2js": "^3.4.4"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",

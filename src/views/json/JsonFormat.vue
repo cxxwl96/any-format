@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CodeMirror, JsonEditor } from '@/components/CodeEditor'
+import { CodeMirror, JsonEditor, MODE } from '@/components/CodeEditor'
 import { type Ref, ref, unref } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
@@ -7,6 +7,8 @@ import { SwapOutlined } from '@ant-design/icons-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import { useSessionCache } from '@/utils/CacheData'
+import { XML2JSON } from '@/data'
+import vkbeautify from 'vkbeautify'
 
 const sessionCache = useSessionCache('JsonFormat')
 
@@ -15,7 +17,9 @@ const result = ref<{
   value: string;
   error: boolean;
   message: string;
+  xmlValue?: string;
 }>({ value: sessionCache.load(), error: false, message: '' })
+const openModal = ref<boolean>(false)
 
 // 格式化校验
 function formatValidate(tip: boolean = true) {
@@ -145,6 +149,28 @@ function fieldSort(asc: boolean) {
   }
 }
 
+// JSON转XML
+const handleJson2Xml = () => {
+  const value = formatValidate(false)
+  if (value) {
+    try {
+      const xml = XML2JSON.js2xml(JSON.parse(value)).replace(/&quot;/g, '"')
+      result.value.xmlValue = vkbeautify.xml(xml)
+      notification['success']({
+        message: '转换成功',
+        placement: 'topRight'
+      })
+      openModal.value = true
+    } catch (e: any) {
+      notification['error']({
+        message: '转换失败',
+        description: e?.message,
+        placement: 'topRight'
+      })
+    }
+  }
+}
+
 // 切换视图
 const codemirrorView = ref(true)
 
@@ -159,39 +185,56 @@ function toggleView() {
       <div class="tip-font">
         Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
       </div>
-      <CodeMirror ref="el" v-model="result.value" @change="sessionCache.cache" @dblclick="formatValidate" lineWrapping />
+      <CodeMirror ref="el" v-model="result.value" @change="sessionCache.cache" @dblclick="formatValidate" />
     </div>
     <JsonEditor v-else v-model="result.value" mode="tree" />
     <a-divider />
     <a-affix :offset-bottom="50">
-      <a-space :size="[8, 16]" wrap class="bottom-button-group">
-        <a-button type="primary" @click="formatValidate" v-if="codemirrorView">格式化校验</a-button>
-        <a-button @click="compress" v-if="codemirrorView">压缩</a-button>
-        <a-dropdown-button @click="deepDelEscape(true)" v-if="codemirrorView">
-          深度去除转义
-          <template #overlay>
-            <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
-          </template>
-        </a-dropdown-button>
-        <a-button @click="delEscape" v-if="codemirrorView">去除转义</a-button>
-        <a-button @click="escape" v-if="codemirrorView">转义</a-button>
-        <a-dropdown-button @click="fieldSort(true)" v-if="codemirrorView">
-          字段升序
-          <template #overlay>
-            <a-button @click="fieldSort(false)">字段降序</a-button>
-          </template>
-        </a-dropdown-button>
-        <a-divider type="vertical" v-if="codemirrorView" />
+      <div class="bottom-button-group">
+        <div v-if="codemirrorView" class="codemirror-button">
+          <a-button type="primary" @click="formatValidate">格式化校验</a-button>
+          <a-button @click="compress">压缩</a-button>
+          <a-dropdown-button @click="deepDelEscape(true)">
+            深度去除转义
+            <template #overlay>
+              <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
+            </template>
+          </a-dropdown-button>
+          <a-button @click="delEscape">去除转义</a-button>
+          <a-button @click="escape">转义</a-button>
+          <a-dropdown-button @click="fieldSort(true)">
+            字段升序
+            <template #overlay>
+              <a-button @click="fieldSort(false)">字段降序</a-button>
+            </template>
+          </a-dropdown-button>
+          <a-divider type="vertical"/>
+          <a-button type="primary" @click="handleJson2Xml">JSON转XML</a-button>
+          <a-divider type="vertical"/>
+        </div>
         <a-button type="primary" @click="toggleView">
           <template #icon>
             <SwapOutlined />
           </template>
           切换视图
         </a-button>
-      </a-space>
+      </div>
     </a-affix>
+    <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
+      <CodeMirror v-model="result.xmlValue" :mode="MODE.XML" :theme="'eclipse'" style="height: 70vh"/>
+    </a-modal>
   </div>
 </template>
 
 <style scoped>
+.bottom-button-group {
+  display: inline-block;
+  .codemirror-button {
+    display: inline-block;
+    margin-right: 5px;
+    * {
+      margin: 5px;
+    }
+  }
+}
 </style>
