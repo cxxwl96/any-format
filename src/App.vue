@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, unref } from 'vue'
-import { menus } from '@/router/menu'
+import { menus as originMenus } from '@/router/menu'
 import { useSessionCache } from '@/utils/CacheData'
 
 const sessionCache = useSessionCache('activeKey')
 
+const menus = originMenus.filter(menu => !menu.hide)
 const activeKey = ref(sessionCache.load() as string || unref(menus[0].value))
 const menuBoxStyle = ref({})
 

@@ -8,9 +8,10 @@ import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
 import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
+import Test from '@/views/test/Test.vue'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
-const menus: { value: string, label?: string, component: any, reloadOnActive?: boolean }[] = reactive(
+const menus: { value: string, label?: string, component: any, hide?: boolean, reloadOnActive?: boolean }[] = reactive(
   [
     {
       value: 'LogFormat',
@@ -43,13 +44,19 @@ const menus: { value: string, label?: string, component: any, reloadOnActive?: b
       value: 'RegExp',
       component: shallowRef(RegExp),
     },
-    // {
-    //   value: 'Code',
-    //   component: shallowRef(CodeDemo),
-    // },
     {
       value: 'JSRunner',
       component: shallowRef(JSRunner),
+    },
+    {
+      value: 'Code',
+      component: shallowRef(CodeDemo),
+      hide: true
+    },
+    {
+      value: 'Test',
+      component: shallowRef(Test),
+      hide: true
     }
   ]
 )
