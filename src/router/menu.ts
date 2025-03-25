@@ -50,7 +50,7 @@ const menus: { value: string, label?: string, component: any, hide?: boolean, re
       component: shallowRef(JSRunner),
     },
     {
-      value: '画板（beta）',
+      value: '画板（beta版）',
       component: shallowRef(Excalidraw),
     },
     {

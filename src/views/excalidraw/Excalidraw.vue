@@ -12,6 +12,7 @@ import { onMounted } from 'vue'
 
 let excalidrawApp;
 onMounted(() => {
+  // @ts-ignore
   let root = ReactDOM.createRoot(document.getElementById('excalidraw'))
   root.render(React.createElement(
     'div',
