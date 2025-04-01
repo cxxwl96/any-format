@@ -42,7 +42,7 @@ const decodeQR = (file: File) => {
 </script>
 
 <template>
-  <div class="qrcode-content">
+  <div class="qrcode-content content-top-blank">
     <a-row>
       <div class="tip-font">
         Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴Scheme</a>生成二维码

@@ -41,7 +41,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
 </script>
 
 <template>
-  <div>
+  <div class="content">
     <div v-if="!showDiff">
       <div class="tip-font">
         Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴文本</a>，双击格式化

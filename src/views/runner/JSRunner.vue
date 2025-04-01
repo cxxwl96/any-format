@@ -29,7 +29,7 @@ const handleRunner = () => {
 </script>
 
 <template>
-  <div class="js-runner">
+  <div class="js-runner content-top-blank">
     <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
     <AButton type="primary" @click="handleRunner" class="run-btn">运行脚本</AButton>
     <CodeMirror v-model="script" @change="sessionCache.cache" theme="darcula" mode="javascript" />

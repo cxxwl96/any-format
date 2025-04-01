@@ -180,7 +180,7 @@ function toggleView() {
 </script>
 
 <template>
-  <div>
+  <div class="content">
     <div v-if="codemirrorView">
       <div class="tip-font">
         Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化

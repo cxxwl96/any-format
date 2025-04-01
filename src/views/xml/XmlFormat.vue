@@ -110,7 +110,7 @@ const handleXml2Json = () => {
 </script>
 
 <template>
-  <div>
+  <div class="content">
     <div class="tip-font">
       Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
     </div>

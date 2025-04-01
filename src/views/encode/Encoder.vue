@@ -95,7 +95,7 @@ const copyResult = (e: MouseEvent) => {
 }
 </script>
 <template>
-  <div class="base64-content">
+  <div class="encode-content content-top-blank">
     <a-row :gutter="20">
       <a-col flex="5">
         <div class="tip-font">
@@ -145,7 +145,7 @@ const copyResult = (e: MouseEvent) => {
 </template>
 
 <style scoped>
-.base64-content {
+.encode-content {
   width: 80%;
   margin: 0 auto;
 }

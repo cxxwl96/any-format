@@ -10,61 +10,68 @@ import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
 import Test from '@/views/test/Test.vue'
 import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
+import type { MenuItem } from '@/components/DragableMenu'
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
-const menus: { value: string, label?: string, component: any, hide?: boolean, reloadOnActive?: boolean }[] = reactive(
-  [
-    {
-      value: 'LogFormat',
-      component: shallowRef(LogFormat),
-      reloadOnActive: true,
-    },
-    {
-      value: 'JSON',
-      component: shallowRef(JsonFormat),
-      reloadOnActive: true,
-    },
-    {
-      value: 'XML',
-      component: shallowRef(XmlFormat),
-      reloadOnActive: true,
-    },
-    {
-      value: 'TextCompare',
-      component: shallowRef(TextComparator),
-    },
-    {
-      value: 'QRCode',
-      component: shallowRef(QrCode),
-    },
-    {
-      value: 'Encoder',
-      component: shallowRef(Encoder),
-    },
-    {
-      value: 'RegExp',
-      component: shallowRef(RegExp),
-    },
-    {
-      value: 'JSRunner',
-      component: shallowRef(JSRunner),
-    },
-    {
-      value: '画板（beta版）',
-      component: shallowRef(Excalidraw),
-    },
-    {
-      value: 'Code',
-      component: shallowRef(CodeDemo),
-      hide: true
-    },
-    {
-      value: 'Test',
-      component: shallowRef(Test),
-      hide: true
-    }
-  ]
-)
+const menus: MenuItem[] = [
+  {
+    label: 'LogFormat',
+    key: 'LogFormat',
+    component: shallowRef(LogFormat),
+  },
+  {
+    label: 'JSON',
+    key: 'JSON',
+    component: shallowRef(JsonFormat),
+  },
+  {
+    label: 'XML',
+    key: 'XML',
+    component: shallowRef(XmlFormat),
+  },
+  {
+    label: 'TextCompare',
+    key: 'TextCompare',
+    component: shallowRef(TextComparator)
+  },
+  {
+    label: 'QRCode',
+    key: 'QRCode',
+    component: shallowRef(QrCode)
+  },
+  {
+    label: 'Encoder',
+    key: 'Encoder',
+    component: shallowRef(Encoder)
+  },
+  {
+    label: 'RegExp',
+    key: 'RegExp',
+    component: shallowRef(RegExp)
+  },
+  {
+    label: 'JSRunner',
+    key: 'JSRunner',
+    component: shallowRef(JSRunner)
+  },
+  {
+    label: '画板（beta版）',
+    key: 'Excalidraw',
+    component: shallowRef(Excalidraw)
+  },
+  {
+    label: '代码',
+    key: 'Code',
+    component: shallowRef(CodeDemo),
+    hide: true
+  },
+  {
+    label: '测试',
+    key: 'Test',
+    component: shallowRef(Test),
+    hide: true
+  }
+];
 
 export {
   menus

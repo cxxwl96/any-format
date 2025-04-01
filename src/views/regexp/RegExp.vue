@@ -84,7 +84,7 @@ const handleMatchAll = () => {
 </script>
 
 <template>
-  <a-flex class="reg-content" vertical gap="large">
+  <a-flex class="reg-content content-top-blank" vertical gap="large">
     <a-row align="middle" :gutter="16">
       <a-col>
         <div class="tip-font" style="margin: 0">正则表达式：</div>
