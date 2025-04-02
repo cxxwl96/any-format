@@ -9,7 +9,7 @@
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <img src="https://any-format.cxxwl96.com/favicon.png" alt="Menu Icon" class="icon-img">
+    <img src="/favicon.png" alt="Menu Icon" class="icon-img">
   </div>
   <div
     ref="menuRef"
@@ -18,6 +18,10 @@
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
+    <div class="pushpin" @click="toggleAffix">
+      <svg v-if="isAffix" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3zM9 5v6.606L7.404 14h9.192L15 11.606V5z"/></svg>
+      <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m13.827 1.69l8.486 8.485l-1.415 1.414l-.707-.707l-4.242 4.243l-.707 3.536l-1.415 1.414l-4.242-4.243l-4.95 4.95l-1.414-1.414l4.95-4.95l-4.243-4.243l1.414-1.414l3.536-.707l4.242-4.243l-.707-.707zm.707 3.536l-4.67 4.67l-2.822.565l6.5 6.5l.564-2.822l4.671-4.67z"/></svg>
+    </div>
     <button
       v-for="item in menus"
       :key="item.key"
@@ -33,6 +37,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed, type PropType, watch } from 'vue'
 import type { MenuItem } from './index.js'
+import { useSessionCache } from '@/utils/CacheData'
+const sessionCache = useSessionCache('affixMenu')
 
 // 接收菜单列表属性
 const props = defineProps({
@@ -40,9 +46,7 @@ const props = defineProps({
     type: Array as PropType<MenuItem[]>,
     default: () => []
   },
-  activeKey: {
-    type: String,
-  }
+  activeKey: String,
 });
 const emits = defineEmits(['change', 'update:activeKey']);
 
@@ -60,16 +64,12 @@ watch(() => props.activeKey, (value) => {
 // 初始化图标和菜单的引用
 const iconRef = ref();
 const menuRef = ref();
-// 菜单是否打开的状态
-const isMenuOpen = ref(false);
 // 图标位置
 const left = ref(0);
-const top = ref(70);
+const top = ref(55);
 // 菜单位置
 const menuLeftPos = ref(0);
 const menuTop = ref(0);
-// 拖拽状态
-const isDragging = ref(false);
 // 拖拽起始位置
 const startX = ref(0);
 const startY = ref(0);
@@ -89,10 +89,22 @@ const hideDelay = 1000;
 // 定时器引用
 let snapTimer: NodeJS.Timeout;
 let hideTimer: NodeJS.Timeout;
+// 拖拽状态
+const isDragging = ref(false);
 // 图标是否隐藏一半的状态
-let isIconHidden: boolean = false;
+const isIconHidden = ref(false);
 // 鼠标是否悬停在图标或菜单上的状态
 const isMouseOver = ref(false);
+// 是否钉住菜单
+const isAffix = ref(sessionCache.load() || false);
+// 菜单是否打开的状态
+const isMenuOpen = ref(isAffix.value);
+
+// 切换是否固定菜单
+const toggleAffix = () => {
+  isAffix.value = !isAffix.value;
+  sessionCache.cache(isAffix.value);
+}
 
 // 选择菜单项的函数
 const selectMenuItem = (item: MenuItem) => {
@@ -100,6 +112,14 @@ const selectMenuItem = (item: MenuItem) => {
   emits('change', item)
   emits('update:activeKey', item.key)
 };
+
+// 关闭菜单
+const closeMenu = () => {
+  if (isAffix.value) {
+    return
+  }
+  isMenuOpen.value = false
+}
 
 // 计算菜单应从左侧还是右侧展开
 const isMenuLeft = computed(() => {
@@ -205,7 +225,7 @@ const endDrag = () => {
       iconRef.value.style.transition = `left ${snapDuration}ms, top ${snapDuration}ms`;
       // 当鼠标不在图标或菜单上时才关闭菜单
       if (!isMouseOver.value) {
-        isMenuOpen.value = false;
+        closeMenu();
       }
       if (!isDragging.value && !isMouseOver.value) {
         hideTimer = setTimeout(() => {
@@ -229,8 +249,8 @@ const endDrag = () => {
   } else if (top.value > clientHeight - iconHeight) {
     top.value = clientHeight - iconHeight;
   }
-
-  updateMenuPosition();
+  // 避免图标拖出浏览器后菜单位置超出
+  setTimeout(updateMenuPosition, 0);
 };
 
 // 更新菜单位置的函数
@@ -253,14 +273,14 @@ const closeMenuOnOutsideClick = (e: MouseEvent) => {
     !iconRef.value.contains(e.target) &&
     !menuRef.value.contains(e.target)
   ) {
-    isMenuOpen.value = false;
+    closeMenu()
   }
 };
 
 // 鼠标移入显示完整图标的函数
 const showFullIcon = () => {
   clearTimeout(hideTimer);
-  isIconHidden = false;
+  isIconHidden.value = false;
   const iconWidth = iconRef.value.offsetWidth;
   const iconHeight = iconRef.value.offsetHeight;
   const { clientWidth, clientHeight } = document.documentElement;
@@ -279,8 +299,8 @@ const showFullIcon = () => {
 
 // 隐藏图标一半的函数
 const hideHalfIcon = () => {
-  if (isDragging.value) return;
-  isIconHidden = true;
+  if (isDragging.value || isAffix.value) return;
+  isIconHidden.value = true;
   const iconWidth = iconRef.value.offsetWidth;
   const iconHeight = iconRef.value.offsetHeight;
   const { clientWidth, clientHeight } = document.documentElement;
@@ -296,7 +316,7 @@ const hideHalfIcon = () => {
   }
   iconRef.value.style.transition = `left ${snapDuration}ms, top ${snapDuration}ms`;
   // 当图标隐藏时关闭菜单
-  isMenuOpen.value = false;
+  closeMenu()
 };
 
 // 鼠标移入图标或菜单时的处理函数
@@ -421,5 +441,20 @@ onBeforeUnmount(() => {
   background-color: #ffffff;
   color: rgb(22, 119, 255);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+}
+
+.pushpin {
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+}
+.pushpin > svg {
+  width: 80%;
+  height: 80%;
 }
 </style>
