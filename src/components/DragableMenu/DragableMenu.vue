@@ -98,7 +98,7 @@ const isIconHidden = ref(false);
 // 鼠标是否悬停在图标或菜单上的状态
 const isMouseOver = ref(false);
 // 是否钉住菜单
-const isAffix = ref(sessionCache.load() || false);
+const isAffix = ref(sessionCache.load() || true);
 // 菜单是否打开的状态
 const isMenuOpen = ref(isAffix.value);
 
