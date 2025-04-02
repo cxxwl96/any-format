@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed, type PropType, unref, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, type PropType, watch } from 'vue'
 import type { MenuItem } from './index.js'
 
 // 接收菜单列表属性
@@ -64,7 +64,7 @@ const menuRef = ref();
 const isMenuOpen = ref(false);
 // 图标位置
 const left = ref(0);
-const top = ref(0);
+const top = ref(70);
 // 菜单位置
 const menuLeftPos = ref(0);
 const menuTop = ref(0);
@@ -79,7 +79,7 @@ const initialTop = ref(0);
 // 点击阈值，用于区分点击和拖拽
 const clickThreshold = 5;
 // 吸附距离
-const snapDistance = 50;
+const snapDistance = 10;
 // 吸附动画时长
 const snapDuration = 800;
 // 鼠标松开后延迟吸附的时间
@@ -89,7 +89,6 @@ const hideDelay = 1000;
 // 定时器引用
 let snapTimer: NodeJS.Timeout;
 let hideTimer: NodeJS.Timeout;
-let openTimer: NodeJS.Timeout;
 // 图标是否隐藏一半的状态
 let isIconHidden: boolean = false;
 // 鼠标是否悬停在图标或菜单上的状态
@@ -305,13 +304,11 @@ const handleMouseEnter = () => {
   isMouseOver.value = true;
   clearTimeout(hideTimer);
   showFullIcon();
-  openTimer = setTimeout(()=>isMenuOpen.value = true, 500)
 };
 
 // 鼠标移出图标或菜单时的处理函数
 const handleMouseLeave = () => {
   isMouseOver.value = false;
-  clearTimeout(openTimer)
   if (!isDragging.value) {
     hideTimer = setTimeout(() => {
       hideHalfIcon();
@@ -350,8 +347,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* 统一图标和菜单的高度 */
-
 .draggable-icon {
   position: fixed;
   width: 45px;
@@ -373,7 +368,7 @@ onBeforeUnmount(() => {
 }
 
 .menu {
-  position: absolute;
+  position: fixed;
   display: flex;
   flex-wrap: wrap; /* 让菜单项换行显示 */
   max-height: 200px; /* 设置菜单的最大高度为400px */

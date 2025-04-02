@@ -180,50 +180,48 @@ function toggleView() {
 </script>
 
 <template>
-  <div class="content">
-    <div v-if="codemirrorView">
-      <div class="tip-font">
-        Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
-      </div>
-      <CodeMirror ref="el" v-model="result.value" @change="sessionCache.cache" @dblclick="formatValidate" />
+  <div v-if="codemirrorView">
+    <div class="tip-font">
+      Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
     </div>
-    <JsonEditor v-else v-model="result.value" mode="tree" />
-    <a-divider />
-    <a-affix :offset-bottom="50">
-      <div class="bottom-button-group">
-        <div v-if="codemirrorView" class="codemirror-button">
-          <a-button type="primary" @click="formatValidate">格式化校验</a-button>
-          <a-button @click="compress">压缩</a-button>
-          <a-dropdown-button @click="deepDelEscape(true)">
-            深度去除转义
-            <template #overlay>
-              <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
-            </template>
-          </a-dropdown-button>
-          <a-button @click="delEscape">去除转义</a-button>
-          <a-button @click="escape">转义</a-button>
-          <a-dropdown-button @click="fieldSort(true)">
-            字段升序
-            <template #overlay>
-              <a-button @click="fieldSort(false)">字段降序</a-button>
-            </template>
-          </a-dropdown-button>
-          <a-divider type="vertical"/>
-          <a-button type="primary" @click="handleJson2Xml">JSON转XML</a-button>
-          <a-divider type="vertical"/>
-        </div>
-        <a-button type="primary" @click="toggleView">
-          <template #icon>
-            <SwapOutlined />
-          </template>
-          切换视图
-        </a-button>
-      </div>
-    </a-affix>
-    <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-      <CodeMirror v-model="result.xmlValue" :mode="MODE.XML" :theme="'eclipse'" style="height: 70vh"/>
-    </a-modal>
+    <CodeMirror ref="el" v-model="result.value" @change="sessionCache.cache" @dblclick="formatValidate" />
   </div>
+  <JsonEditor v-else v-model="result.value" mode="tree" />
+  <a-divider />
+  <a-affix :offset-bottom="50">
+    <div class="bottom-button-group">
+      <div v-if="codemirrorView" class="codemirror-button">
+        <a-button type="primary" @click="formatValidate">格式化校验</a-button>
+        <a-button @click="compress">压缩</a-button>
+        <a-dropdown-button @click="deepDelEscape(true)">
+          深度去除转义
+          <template #overlay>
+            <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
+          </template>
+        </a-dropdown-button>
+        <a-button @click="delEscape">去除转义</a-button>
+        <a-button @click="escape">转义</a-button>
+        <a-dropdown-button @click="fieldSort(true)">
+          字段升序
+          <template #overlay>
+            <a-button @click="fieldSort(false)">字段降序</a-button>
+          </template>
+        </a-dropdown-button>
+        <a-divider type="vertical"/>
+        <a-button type="primary" @click="handleJson2Xml">JSON转XML</a-button>
+        <a-divider type="vertical"/>
+      </div>
+      <a-button type="primary" @click="toggleView">
+        <template #icon>
+          <SwapOutlined />
+        </template>
+        切换视图
+      </a-button>
+    </div>
+  </a-affix>
+  <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
+    <CodeMirror v-model="result.xmlValue" :mode="MODE.XML" :theme="'eclipse'" style="height: 70vh"/>
+  </a-modal>
 </template>
 
 <style scoped>

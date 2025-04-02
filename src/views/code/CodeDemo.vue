@@ -32,30 +32,28 @@ function nextMode() {
 </script>
 
 <template>
-  <div>
-    <a-form :model="form" layout="inline">
-      <a-form-item label="主题" class="button-select-group">
-        <a-button @click="lastTheme">Last</a-button>
-        <a-select v-model:value="form.theme" style="width: 200px">
-          <a-select-option v-for="theme in themes" :key="theme" :value="theme">{{ theme }}</a-select-option>
-        </a-select>
-        <a-button @click="nextTheme">Next</a-button>
-      </a-form-item>
-      <a-form-item label="模式" class="button-select-group">
-        <a-button @click="lastMode">Last</a-button>
-        <a-select v-model:value="form.mode" style="width: 200px">
-          <a-select-option v-for="mode in modes" :key="mode" :value="mode">{{ mode }}</a-select-option>
-        </a-select>
-        <a-button @click="nextMode">Next</a-button>
-      </a-form-item>
-      <a-form-item label="自动换行">
-        <a-switch v-model:checked="form.lineWrapper" />
-      </a-form-item>
-    </a-form>
-    <CodeMirror ref="el" v-model="data" @change="sessionCache.cache" :theme="form.theme" :mode="form.mode"
-                :line-wrapping="form.lineWrapper"
-                style="margin-top: 20px" />
-  </div>
+  <a-form :model="form" layout="inline">
+    <a-form-item label="主题" class="button-select-group">
+      <a-button @click="lastTheme">Last</a-button>
+      <a-select v-model:value="form.theme" style="width: 200px">
+        <a-select-option v-for="theme in themes" :key="theme" :value="theme">{{ theme }}</a-select-option>
+      </a-select>
+      <a-button @click="nextTheme">Next</a-button>
+    </a-form-item>
+    <a-form-item label="模式" class="button-select-group">
+      <a-button @click="lastMode">Last</a-button>
+      <a-select v-model:value="form.mode" style="width: 200px">
+        <a-select-option v-for="mode in modes" :key="mode" :value="mode">{{ mode }}</a-select-option>
+      </a-select>
+      <a-button @click="nextMode">Next</a-button>
+    </a-form-item>
+    <a-form-item label="自动换行">
+      <a-switch v-model:checked="form.lineWrapper" />
+    </a-form-item>
+  </a-form>
+  <CodeMirror ref="el" v-model="data" @change="sessionCache.cache" :theme="form.theme" :mode="form.mode"
+              :line-wrapping="form.lineWrapper"
+              style="margin-top: 20px" />
 </template>
 
 <style scoped>

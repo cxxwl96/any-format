@@ -95,7 +95,7 @@ const copyResult = (e: MouseEvent) => {
 }
 </script>
 <template>
-  <div class="encode-content content-top-blank">
+  <div class="content-center">
     <a-row :gutter="20">
       <a-col flex="5">
         <div class="tip-font">
@@ -145,11 +145,6 @@ const copyResult = (e: MouseEvent) => {
 </template>
 
 <style scoped>
-.encode-content {
-  width: 80%;
-  margin: 0 auto;
-}
-
 .drag-zone {
   transition: background-color 0.3s;
 }

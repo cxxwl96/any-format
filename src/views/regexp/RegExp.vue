@@ -84,7 +84,7 @@ const handleMatchAll = () => {
 </script>
 
 <template>
-  <a-flex class="reg-content content-top-blank" vertical gap="large">
+  <a-flex class="content-center" vertical gap="large">
     <a-row align="middle" :gutter="16">
       <a-col>
         <div class="tip-font" style="margin: 0">正则表达式：</div>
@@ -128,9 +128,4 @@ const handleMatchAll = () => {
   </a-flex>
 </template>
 
-<style scoped>
-.reg-content {
-  width: 80%;
-  margin: 0 auto;
-}
-</style>
+<style scoped></style>

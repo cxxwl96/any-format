@@ -1,4 +1,4 @@
-import { reactive, shallowRef } from 'vue'
+import { shallowRef } from 'vue'
 import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
@@ -55,9 +55,12 @@ const menus: MenuItem[] = [
     component: shallowRef(JSRunner)
   },
   {
-    label: '画板（beta版）',
+    label: '画板',
     key: 'Excalidraw',
-    component: shallowRef(Excalidraw)
+    component: shallowRef(Excalidraw),
+    hideHeader: true,
+    hideFooter: true,
+    fullScreen: true,
   },
   {
     label: '代码',

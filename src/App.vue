@@ -19,21 +19,21 @@ function handleChange(menu: MenuItem) {
 </script>
 
 <template>
+  <div class="header" v-if="!activeMenu.hideHeader">
+    <div class="glitch text-3D neon">
+      {{activeMenu.label}}
+    </div>
+    <div class="bottom-border-line"/>
+  </div>
   <DragableMenu :menuItems="menus" :activeKey="activeMenu.key" @change="handleChange" />
-  <component :is="activeMenu.component" />
-  <div class="footer">
-    <p>CopyRight © 2024 引导页 All Rights Reserved. 黔ICP备2023015771号-1</p>
+  <div :class="{content: !activeMenu.fullScreen}">
+    <component :is="activeMenu.component" />
+  </div>
+  <div class="footer" v-if="!activeMenu.hideFooter">
+    <p>CopyRight © 2023 - {{new Date().getFullYear()}} By cxxwl96 All Rights Reserved. 黔ICP备2023015771号-1</p>
     <p>PowerBy cxxwl96@sina.com</p>
   </div>
   <a-back-top />
 </template>
 
-<style scoped>
-.footer {
-  margin-top: 24px;
-  text-align: center;
-  color: rgb(157 157 157 / 40%);
-  font-size: 0.8rem;
-}
-
-</style>
+<style scoped></style>

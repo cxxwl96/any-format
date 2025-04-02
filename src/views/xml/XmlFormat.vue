@@ -110,32 +110,29 @@ const handleXml2Json = () => {
 </script>
 
 <template>
-  <div class="content">
-    <div class="tip-font">
-      Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
-    </div>
-    <CodeMirror ref="el" v-model="data" @change="sessionCache.cache" @dblclick="handleFormat" :mode="MODE.XML"
-                :theme="'eclipse'" />
-    <a-divider />
-    <a-affix :offset-bottom="50">
-      <a-space :size="[8, 16]" wrap class="bottom-button-group">
-        <a-button type="primary" @click="handleFormat">格式化</a-button>
-        <a-button @click="handleCompress">压缩</a-button>
-        <a-dropdown-button @click="handleSort">
-          节点升序
-          <template #overlay>
-            <a-button @click="handleSort(false)">节点降序</a-button>
-          </template>
-        </a-dropdown-button>
-        <a-divider type="vertical"/>
-        <a-button type="primary" @click="handleXml2Json">XML转JSON</a-button>
-      </a-space>
-    </a-affix>
-    <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-      <CodeMirror v-model="jsonValue" :mode="MODE.JSON" style="height: 70vh"/>
-    </a-modal>
+  <div class="tip-font">
+    Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
   </div>
+  <CodeMirror ref="el" v-model="data" @change="sessionCache.cache" @dblclick="handleFormat" :mode="MODE.XML"
+              :theme="'eclipse'" />
+  <a-divider />
+  <a-affix :offset-bottom="50">
+    <a-space :size="[8, 16]" wrap class="bottom-button-group">
+      <a-button type="primary" @click="handleFormat">格式化</a-button>
+      <a-button @click="handleCompress">压缩</a-button>
+      <a-dropdown-button @click="handleSort">
+        节点升序
+        <template #overlay>
+          <a-button @click="handleSort(false)">节点降序</a-button>
+        </template>
+      </a-dropdown-button>
+      <a-divider type="vertical"/>
+      <a-button type="primary" @click="handleXml2Json">XML转JSON</a-button>
+    </a-space>
+  </a-affix>
+  <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
+    <CodeMirror v-model="jsonValue" :mode="MODE.JSON" style="height: 70vh"/>
+  </a-modal>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

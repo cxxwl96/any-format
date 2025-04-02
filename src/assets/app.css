@@ -1,8 +1,95 @@
 .content {
     padding: 20px 40px;
 }
-.content-top-blank {
-    padding-top: 40px;
+.content-center {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.header {
+    margin: 20px 50px;
+    font-family: 'Arial Black', 'sans-serif';
+    font-size: 2rem;
+    font-weight: bold;
+}
+.header > .bottom-border-line {
+    padding-bottom: 5px;
+    position: relative;
+}
+.header > .bottom-border-line::before,
+.header > .bottom-border-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 100%;
+    height: 1px;
+    background-color: #4a5568;
+}
+.header > .bottom-border-line::after {
+    box-shadow: 0 2px 0 #4a5568;
+    transform: translateY(1px);
+}
+
+/*霓虹灯*/
+.neon {
+    color: #fff;
+    text-shadow: 0 0 5px #0ff,
+    0 0 10px #0ff,
+    0 0 20px #0ff,
+    0 0 40px #0ff;
+    animation: neon 1.5s ease-in-out infinite;
+}
+
+@keyframes neon {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/*3D立体字*/
+.text-3D {
+    color: #4a5568;
+    text-shadow: 1px 1px 0 #cbd5e0,
+    2px 2px 0 #cbd5e0,
+    3px 3px 0 #cbd5e0;
+    transform: rotateX(20deg);
+}
+
+/*故障效果*/
+.glitch {
+    animation: glitch 2s infinite;
+    position: relative;
+}
+
+@keyframes glitch {
+    0% {
+        text-shadow: none
+    }
+    95% {
+        text-shadow: none
+    }
+    96% {
+        text-shadow: -2px 0 red,
+        22px 0 blue;
+        transform: translate(2px);
+    }
+    97% {
+        transform: translate(-3px)
+    }
+    98% {
+        transform: translate(0)
+    }
+}
+
+.footer {
+    padding: 24px;
+    text-align: center;
+    color: rgb(157 157 157 / 60%);
+    font-size: 0.8rem;
 }
 
 .tip-font {
