@@ -5,9 +5,9 @@
     :style="{ left: left + 'px', top: top + 'px'}"
     @mousedown="startDrag"
     @mouseup="endDrag"
-    @click="toggleMenu"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
+    @click="toggleMenu"
   >
     <img src="/favicon.png" alt="Menu Icon" class="icon-img">
   </div>
@@ -15,6 +15,8 @@
     ref="menuRef"
     :class="{ 'menu': true, 'menu-left': isMenuLeft, 'menu-open': isMenuOpen }"
     :style="{ top: menuTop + 'px', left: menuLeftPos + 'px' }"
+    @mousedown="startDrag"
+    @mouseup="endDrag"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
@@ -109,16 +111,16 @@ const toggleAffix = () => {
 // 选择菜单项的函数
 const selectMenuItem = (item: MenuItem) => {
   activeMenuItem.value = item;
-  emits('change', item)
-  emits('update:activeKey', item.key)
+  emits('change', item);
+  emits('update:activeKey', item.key);
 };
 
 // 关闭菜单
 const closeMenu = () => {
   if (isAffix.value) {
-    return
+    return;
   }
-  isMenuOpen.value = false
+  isMenuOpen.value = false;
 }
 
 // 计算菜单应从左侧还是右侧展开
