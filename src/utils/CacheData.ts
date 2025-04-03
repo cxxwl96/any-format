@@ -7,39 +7,48 @@ const Storage = {
 }
 type Mode = keyof typeof Storage
 
-const commonCache = (mode: Mode, key: string, subKey: string) => {
+const commonCache = (mode: Mode, key: string, subKey?: string) => {
   const storage = Storage[mode]
   const read = () => {
-    return JSON.parse(storage.getItem(key) || '{}')
+    return subKey ? JSON.parse(storage.getItem(key) || '{}') : null
   }
-  const write = (value: { [subKey: string]: any }) => {
-    storage.setItem(key, JSON.stringify(value))
+  const write = (value: { [subKey: string]: any } | any) => {
+    storage.setItem(key, subKey ? JSON.stringify(value) : value)
   }
   return {
     cache: (value: any) => {
       if (typeof value === 'boolean' || value || value === '') {
         const data = read()
-        data[subKey] = value
+        if (subKey) {
+          data[subKey] = value
+        }
         write(data)
       }
     },
     load: (model?: Ref<any>): any => {
-      const value = read()[subKey]
+      let value: any
+      if (subKey) {
+        value = read()[subKey]
+      } else {
+        value = read()
+      }
       if (model) {
         model.value = value
       }
       return value
     },
+    clear: () => storage.clear()
   }
 }
 
-export const useSession = (key: string, subKey: string) => {
+export const useSession = (key: string, subKey?: string) => {
   return commonCache('Session', key, subKey);
 }
 
-export const useLocal = (key: string, subKey: string) => {
+export const useLocal = (key: string, subKey?: string) => {
   return commonCache('Local', key, subKey);
 }
+
 export const useSessionCache = (subKey: string) => {
   return commonCache('Session', 'CacheData', subKey);
 }

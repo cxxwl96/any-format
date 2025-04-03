@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, unref } from 'vue'
+import { onMounted, ref, unref } from 'vue'
 import { menus } from '@/router/menu'
-import { useSessionCache } from '@/utils/CacheData'
+import { useLocal, useSessionCache } from '@/utils/CacheData'
 import DragableMenu from '@/components/DragableMenu/DragableMenu.vue'
 import type { MenuItem } from '@/components/DragableMenu'
+import PackageJson from '../package.json'
 
 const sessionCache = useSessionCache('activeKey')
 
@@ -16,6 +17,15 @@ function handleChange(menu: MenuItem) {
   activeMenu.value = menu
   sessionCache.cache(menu.key)
 }
+
+onMounted(() => {
+  const localCache = useLocal('app', 'version')
+  if (localCache.load() !== PackageJson.version) {
+    sessionCache.clear()
+    localCache.cache(PackageJson.version)
+    window.location.reload()
+  }
+})
 </script>
 
 <template>
