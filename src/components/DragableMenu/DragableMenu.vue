@@ -98,7 +98,7 @@ const isIconHidden = ref(false);
 // 鼠标是否悬停在图标或菜单上的状态
 const isMouseOver = ref(false);
 // 是否钉住菜单
-const isAffix = ref(sessionCache.load() || true);
+const isAffix = ref(sessionCache.load());
 // 菜单是否打开的状态
 const isMenuOpen = ref(isAffix.value);
 
@@ -368,11 +368,14 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+$icon-size: 45px;
+$button-size: 25px;
+
 .draggable-icon {
   position: fixed;
-  width: 45px;
-  height: 45px;
+  width: $icon-size;
+  height: $icon-size;
   background-color: #f4f4f4;
   display: flex;
   align-items: center;
@@ -394,7 +397,7 @@ onBeforeUnmount(() => {
   display: flex;
   flex-wrap: wrap; /* 让菜单项换行显示 */
   max-height: 200px; /* 设置菜单的最大高度为400px */
-  max-width: 60vw;
+  max-width: 90vw;
   overflow-y: auto; /* 当菜单项超出最大高度时显示滚动条 */
   background-color: #f4f4f4;
   border: none;
@@ -406,57 +409,53 @@ onBeforeUnmount(() => {
   transform-origin: left;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   z-index: 99999;
+  &:not(.menu-left) {
+    right: 30px;
+    transform-origin: right;
+  }
+  button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    height: $button-size; /* 让按钮高度固定 */
+    padding: 0 11px;
+    display: flex;
+    align-items: center;
+    border-radius: 3px;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    &.active {
+      background-color: #ffffff;
+      color: rgb(22, 119, 255);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
+    }
+  }
 }
 
 .menu-left {
   left: 30px;
 }
 
-.menu:not(.menu-left) {
-  right: 30px;
-  transform-origin: right;
-}
-
 .menu-open {
   transform: scaleX(1) translateY(5px);
 }
 
-.menu button {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  height: 25px; /* 让按钮高度固定 */
-  padding: 0 11px;
-  display: flex;
-  align-items: center;
-  border-radius: 3px;
-  font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-}
-
-.menu button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.menu button.active {
-  background-color: #ffffff;
-  color: rgb(22, 119, 255);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
-}
-
 .pushpin {
-  width: 25px;
-  height: 25px;
+  width: $button-size;
+  height: $button-size;
   margin-right: 5px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-}
-.pushpin > svg {
-  width: 80%;
-  height: 80%;
+  & > svg {
+    width: 80%;
+    height: 80%;
+  }
 }
 </style>

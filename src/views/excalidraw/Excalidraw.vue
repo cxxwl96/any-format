@@ -8,10 +8,30 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 
 import '@excalidraw/excalidraw/index.css'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import type {OrderedExcalidrawElement} from '@excalidraw/excalidraw/element/types'
+import type {AppState, BinaryFiles, LibraryItems} from '@excalidraw/excalidraw/types'
+import {useLocal} from '@/utils/CacheData'
 
-let excalidrawApp;
+interface ExcalidrawProps {
+  elements?: readonly OrderedExcalidrawElement[];
+  appState?: AppState;
+  files?: BinaryFiles;
+  libraryItems?: LibraryItems;
+}
+
+const localCache = useLocal('excalidraw', 'data');
+const excalidrawApi = ref()
+const initialData = ref<ExcalidrawProps>(localCache.load() as ExcalidrawProps || {})
+
+const processTypeError = () => {
+  if (initialData.value.appState?.collaborators) {
+    // @ts-ignore
+    initialData.value.appState.collaborators = Array.from(initialData.value.appState.collaborators)
+  }
+}
 onMounted(() => {
+  processTypeError()
   // @ts-ignore
   let root = ReactDOM.createRoot(document.getElementById('excalidraw'))
   root.render(React.createElement(
@@ -21,30 +41,27 @@ onMounted(() => {
     },
     React.createElement(Excalidraw, {
       initialData: {
-        // elements: elements,
-        // libraryItems: libs,
-        appState: {
-          // theme,
-          // activeTool,
-          // name,
-          // scrollX,
-          // scrollY,
-          // zoom,
-          // offsetLeftm,
-          // offsetTop,
-        },
+        elements: initialData.value.elements,
+        appState: initialData.value.appState,
+        files: initialData.value.files,
+        libraryItems: initialData.value.libraryItems,
       },
       langCode: "zh-CN",
-      // onChange: this.onChange,
-      // onLibraryChange: this.onLibraryChange,
-      excalidrawAPI: (e: any) => {
-        excalidrawApp = e;
+      onChange: (elements, appState, files) => {
+        initialData.value.elements = elements
+        initialData.value.appState = appState
+        initialData.value.files = files
+        localCache.cache(initialData.value)
+      },
+      onLibraryChange: (libraryItems) => {
+        initialData.value.libraryItems = libraryItems
+        localCache.cache(initialData.value)
+      },
+      excalidrawAPI: (api) => {
+        excalidrawApi.value = api;
       },
     })
   ))
 })
 </script>
-
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>
