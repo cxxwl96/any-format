@@ -40,7 +40,7 @@
 import { ref, onMounted, onBeforeUnmount, computed, type PropType, watch } from 'vue'
 import type { MenuItem } from './index.js'
 import { useSessionCache } from '@/utils/CacheData'
-const sessionCache = useSessionCache('affixMenu')
+const affixMenuCache = useSessionCache('affixMenu')
 
 // 接收菜单列表属性
 const props = defineProps({
@@ -98,14 +98,22 @@ const isIconHidden = ref(false);
 // 鼠标是否悬停在图标或菜单上的状态
 const isMouseOver = ref(false);
 // 是否钉住菜单
-const isAffix = ref(sessionCache.load());
+const loadAffix = () => {
+  let affix = affixMenuCache.load() as boolean;
+  if (affix === undefined || affix === null) {
+    affix = true;
+    affixMenuCache.cache(affix);
+  }
+  return affix;
+}
+const isAffix = ref(loadAffix());
 // 菜单是否打开的状态
 const isMenuOpen = ref(isAffix.value);
 
 // 切换是否固定菜单
 const toggleAffix = () => {
   isAffix.value = !isAffix.value;
-  sessionCache.cache(isAffix.value);
+  affixMenuCache.cache(isAffix.value);
 }
 
 // 选择菜单项的函数

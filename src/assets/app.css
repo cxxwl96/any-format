@@ -107,6 +107,7 @@
 
 .tip-font > a {
     color: #1677ff;
+    cursor: pointer;
 }
 
 .un-select {
