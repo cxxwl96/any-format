@@ -6,6 +6,7 @@ import CodeDemo from '@/views/code/CodeDemo.vue'
 import QrCode from '@/views/qrcode/QrCode.vue'
 import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
+import Cron from '@/views/cron/Cron.vue'
 import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
 import Test from '@/views/test/Test.vue'
@@ -50,6 +51,11 @@ const menus: MenuItem[] = [
     component: shallowRef(RegExp)
   },
   {
+    label: 'Cron',
+    key: 'Cron',
+    component: shallowRef(Cron)
+  },
+  {
     label: 'JSRunner',
     key: 'JSRunner',
     component: shallowRef(JSRunner)
@@ -72,6 +78,9 @@ const menus: MenuItem[] = [
     label: '测试',
     key: 'Test',
     component: shallowRef(Test),
+    hideHeader: true,
+    hideFooter: true,
+    fullScreen: true,
     hide: true
   }
 ];

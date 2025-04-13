@@ -1,5 +1,5 @@
 <template>
-  <div>asdf</div>
+  <div></div>
 </template>
 
 <script setup lang="ts">
