@@ -26,7 +26,7 @@ const handleDrop = ({ file }: { file: any }) => {
     return
   }
   decodeQR(file.originFileObj).then(res => {
-    if (res.data) {
+    if (res?.data) {
       message.success('识别成功')
       data.value = res.data
     } else {

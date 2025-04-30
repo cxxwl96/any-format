@@ -1,4 +1,6 @@
 import { shallowRef } from 'vue'
+import type { MenuItem } from '@/components/DragableMenu'
+import { getEnv } from '@/data/env'
 import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
@@ -11,7 +13,8 @@ import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
 import Test from '@/views/test/Test.vue'
 import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
-import type { MenuItem } from '@/components/DragableMenu'
+
+const isDev = getEnv('DEV')
 
 // ['AnyFormat', 'JSON', 'XML', 'HTML', 'SQL', 'QRCode', 'Base64', 'Encode', 'Hex']
 const menus: MenuItem[] = [
@@ -72,7 +75,7 @@ const menus: MenuItem[] = [
     label: '代码',
     key: 'Code',
     component: shallowRef(CodeDemo),
-    hide: true
+    hide: !isDev
   },
   {
     label: '测试',
@@ -81,7 +84,7 @@ const menus: MenuItem[] = [
     hideHeader: true,
     hideFooter: true,
     fullScreen: true,
-    hide: true
+    hide: !isDev
   }
 ];
 
