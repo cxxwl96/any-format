@@ -6,5 +6,5 @@ export interface MenuItem {
   hideHeader?: boolean;
   hideFooter?: boolean;
   hide?: boolean;
-  fullScreen?:boolean;
+  fullContent?:boolean;
 }

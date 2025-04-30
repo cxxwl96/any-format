@@ -4,15 +4,16 @@ import { getEnv } from '@/data/env'
 import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
-import CodeDemo from '@/views/code/CodeDemo.vue'
 import QrCode from '@/views/qrcode/QrCode.vue'
 import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
 import Cron from '@/views/cron/Cron.vue'
 import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
-import Test from '@/views/test/Test.vue'
 import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
+
+// for test demo
+import Demo from '@/views/demo/Demo.vue'
 
 const isDev = getEnv('DEV')
 
@@ -69,21 +70,13 @@ const menus: MenuItem[] = [
     component: shallowRef(Excalidraw),
     hideHeader: true,
     hideFooter: true,
-    fullScreen: true,
+    fullContent: true,
   },
   {
-    label: '代码',
-    key: 'Code',
-    component: shallowRef(CodeDemo),
-    hide: !isDev
-  },
-  {
-    label: '测试',
-    key: 'Test',
-    component: shallowRef(Test),
-    hideHeader: true,
-    hideFooter: true,
-    fullScreen: true,
+    label: '来个Demo',
+    key: 'Demo',
+    component: shallowRef(Demo),
+    fullContent: false,
     hide: !isDev
   }
 ];

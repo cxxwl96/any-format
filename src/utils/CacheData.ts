@@ -1,6 +1,5 @@
 import type { Ref } from "vue"
 
-
 const Storage = {
   Local: localStorage,
   Session: sessionStorage,

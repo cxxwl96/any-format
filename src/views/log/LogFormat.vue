@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SettingOutlined, SwapOutlined } from '@ant-design/icons-vue'
 import { type Ref, ref, toRaw, unref, watch } from 'vue'
-import useFormat from '@/utils/Format'
+import useFormat from './Format'
 import { CodeMirror } from '@/components/CodeEditor'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'

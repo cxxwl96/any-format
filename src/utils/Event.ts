@@ -1,5 +1,12 @@
 import { message } from 'ant-design-vue'
 
+/**
+ * 读取拖拽文件内容
+ *
+ * @param event
+ * @param callback
+ * @param options
+ */
 export const handleReadDragFileEvent = async (event: DragEvent, callback: (content: string | string[]) => void, options?: {
   limit: number,
   maxSize: number

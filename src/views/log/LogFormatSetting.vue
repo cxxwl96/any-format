@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, toRaw, type UnwrapRef, watch } from 'vue'
-import type { AnyFormatConfig } from '@/utils/Format'
+import type { AnyFormatConfig } from './Format'
 import { useLocalCache } from '@/utils/CacheData'
 
 const sessionCache = useLocalCache('AnyFormatConfig')

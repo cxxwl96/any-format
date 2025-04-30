@@ -68,7 +68,7 @@ const iconRef = ref();
 const menuRef = ref();
 // 图标位置
 const left = ref(0);
-const top = ref(55);
+const top = ref(60);
 // 菜单位置
 const menuLeftPos = ref(0);
 const menuTop = ref(0);
@@ -377,7 +377,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-$icon-size: 45px;
+$icon-size: 35px;
 $button-size: 25px;
 
 .draggable-icon {
@@ -413,7 +413,7 @@ $button-size: 25px;
   padding: 5px 10px;
   gap: 0; /* 去除间隙 */
   transition: transform 500ms ease;
-  transform: scaleX(0) translateY(5px);
+  transform: scaleX(0);
   transform-origin: left;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   z-index: 99999;
@@ -449,7 +449,7 @@ $button-size: 25px;
 }
 
 .menu-open {
-  transform: scaleX(1) translateY(5px);
+  transform: scaleX(1);
 }
 
 .pushpin {

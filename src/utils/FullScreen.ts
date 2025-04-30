@@ -2,6 +2,12 @@
 function isFullScreen() {
   return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.msFullscreenElement;
 }
+
+/**
+ * 全屏
+ *
+ * @param element
+ */
 export function handleToggleFullScreen(element?: HTMLElement) {
   if (!element) {
     element = document.documentElement;

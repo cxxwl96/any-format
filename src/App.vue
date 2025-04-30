@@ -36,7 +36,7 @@ onMounted(() => {
     <div class="bottom-border-line"/>
   </div>
   <DragableMenu :menuItems="menus" :activeKey="activeMenu.key" @change="handleChange" />
-  <div :class="{content: !activeMenu.fullScreen}">
+  <div :class="{content: true, 'content-padding': !activeMenu.fullContent}">
     <component :is="activeMenu.component" />
   </div>
   <div class="footer" v-if="!activeMenu.hideFooter">
