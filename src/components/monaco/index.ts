@@ -1,4 +1,4 @@
 import MonacoDiffEditor from './MonacoDiffEditor.vue'
-import { THEME } from './data'
+import MonacoEditor from './MonacoEditor.vue'
 
-export { MonacoDiffEditor, THEME }
+export { MonacoDiffEditor, MonacoEditor }

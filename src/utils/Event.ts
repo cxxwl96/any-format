@@ -8,8 +8,8 @@ import { message } from 'ant-design-vue'
  * @param options
  */
 export const handleReadDragFileEvent = async (event: DragEvent, callback: (content: string | string[]) => void, options?: {
-  limit: number,
-  maxSize: number
+  limit?: number,
+  maxSize?: number
 }) => {
   const opts = {
     limit: 1,
@@ -48,7 +48,7 @@ export const handleReadDragFileEvent = async (event: DragEvent, callback: (conte
       reader.onload = (e) => {
         resolve(e.target?.result as string || '')
       }
-      reader.readAsText(files[0])
+      reader.readAsText(files[i])
     })
     textArr.push(text)
   }

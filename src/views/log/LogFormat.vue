@@ -6,7 +6,7 @@ import { CodeMirror } from '@/components/CodeEditor'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
-import { MonacoDiffEditor } from '@/components/monaco'
+import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
@@ -48,10 +48,16 @@ function dblClickHandler(value: string, target: Ref<string>) {
     <CodeMirror @dblclick="originDblClickHandler" v-model="originValue" @change="sessionCacheOrigin.cache"
                 :lineWrapping="true" />
   </div>
-  <MonacoDiffEditor v-else v-model:origin-value="originValue" v-model:modified-value="modifiedValue"
+  <MonacoDiffEditor v-else
+                    v-model:origin-value="originValue"
+                    v-model:modified-value="modifiedValue"
                     @originChange="sessionCacheOrigin.cache"
                     @modifiedChange="sessionCacheModified.cache"
-                    @originDblClick="originDblClickHandler" @modifiedDblClick="modifiedDblClickHandler" show-tool>
+                    @originDblClick="originDblClickHandler"
+                    @modifiedDblClick="modifiedDblClickHandler"
+                    show-tool
+                    style="height: calc(100vh - 200px)"
+  >
     <template #toolTip>
       <div class="tip-font">
         Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴左边</a>，双击格式化；<a

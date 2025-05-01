@@ -1,11 +1,12 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import { handleReadDragFileEvent } from '@/utils/Event'
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
+import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
-export const THEME = {
-  VS: 'vs',
-  VS_DARK: 'vs-dark',
-  HC_LIGHT: 'hs-light',
-  HC_BLACK: 'hs-black'
-}
+export type Theme = 'vs' | 'vs-dark' | 'hs-light' | 'hs-black'
 export type Language = 'plaintext' | 'abap' | 'apex' | 'azcli' | 'bat' | 'bicep' | 'cameligo' | 'clojure' | 'coffee' | 'cpp' | 'csharp' | 'csp' | 'css' | 'cypher' | 'dart' | 'dockerfile' | 'ecl' | 'elixir' | 'flow9' | 'freemarker2' | 'fsharp' | 'go' | 'graphql' | 'handlebars' | 'hcl' | 'html' | 'ini' | 'java' | 'javascript' | 'julia' | 'kotlin' | 'less' | 'lexon' | 'liquid' | 'lua' | 'm3' | 'markdown' | 'mdx' | 'mips' | 'msdax' | 'mysql' | 'objective-c' | 'pascal' | 'pascaligo' | 'perl' | 'pgsql' | 'php' | 'pla' | 'postiats' | 'powerquery' | 'powershell' | 'protobuf' | 'pug' | 'python' | 'qsharp' | 'r' | 'razor' | 'redis' | 'redshift' | 'restructuredtext' | 'ruby' | 'rust' | 'sb' | 'scala' | 'scheme' | 'scss' | 'shell' | 'solidity' | 'sophia' | 'sparql' | 'sql' | 'st' | 'swift' | 'systemverilog' | 'tcl' | 'twig' | 'typescript' | 'typespec' | 'vb' | 'wgsl' | 'xml' | 'yaml' | 'json'
 export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstructionOptions = {
   theme: 'vs', // 主题，'vs','vs-dark','hc-black','hc-light'
@@ -66,4 +67,40 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   unicodeHighlight: {
     ambiguousCharacters: false // 禁用 unicode 字符的高亮显示
   }
+}
+
+// 初始化环境
+export const initMonacoEnvironment = () => {
+  self.MonacoEnvironment = {
+    getWorker(_, label) {
+      if (label === 'json') {
+        return new jsonWorker()
+      }
+      if (label === 'css' || label === 'scss' || label === 'less') {
+        return new cssWorker()
+      }
+      if (label === 'html' || label === 'handlebars' || label === 'razor') {
+        return new htmlWorker()
+      }
+      if (label === 'typescript' || label === 'javascript') {
+        return new tsWorker()
+      }
+      return new editorWorker()
+    }
+  }
+}
+
+// 拖拽文件到编辑器内
+export const dragFileInEditorHandler = (codeEditor: monaco.editor.IStandaloneCodeEditor) => {
+  const node = codeEditor.getDomNode()
+  node?.addEventListener('dragover', e => {
+    e.preventDefault() // 阻止默认行为
+    e.stopPropagation() // 阻止事件冒泡
+  })
+  node?.addEventListener('drop', e => {
+    e.preventDefault() // 阻止默认行为
+    e.stopPropagation() // 阻止事件冒泡
+    // 读取文件内容
+    handleReadDragFileEvent(e, value => codeEditor.setValue(value as string))
+  })
 }

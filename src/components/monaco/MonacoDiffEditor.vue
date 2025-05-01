@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
-import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
-import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
-import { defaultDiffOptions, type Language, THEME } from './data'
-import { handleReadDragFileEvent } from '@/utils/Event'
+import {
+  defaultDiffOptions,
+  dragFileInEditorHandler,
+  initMonacoEnvironment,
+  type Language,
+  type Theme,
+} from './data'
 import { FullscreenOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
@@ -18,7 +18,7 @@ const props = defineProps({
   modifiedValue: { type: String, required: false, default: '' },
   showTool: { type: Boolean, required: false, default: false },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
-  theme: { type: String, required: false, default: THEME.VS }
+  theme: { type: String as PropType<Theme>, required: false, default: 'vs' }
 })
 const emits = defineEmits(['update:originValue', 'update:modifiedValue', 'originChange', 'modifiedChange', 'originDblClick', 'modifiedDblClick'])
 
@@ -30,11 +30,6 @@ const showDiff = ref<boolean>(false) // 是否只显示差异
 const side = ref<boolean>(true) // 是否分栏
 const wordWrap = ref<boolean>(false) // 是否自动换行
 const diffCount = ref<number>(0) // 差异个数
-
-// 初始化编辑器
-onMounted(() => initDiffEditor())
-// 销毁编辑器
-onBeforeUnmount(() => editor?.dispose())
 
 watch(() => props.originValue, value => {
   if (originModel?.getValue() != value) {
@@ -53,25 +48,10 @@ watch(() => wordWrap.value, value => editor?.updateOptions({
   wordWrap: value ? 'on' : 'off'
 }))
 
-const initDiffEditor = () => {
+// 初始化编辑器
+onMounted(() => {
   // 初始化环境
-  self.MonacoEnvironment = {
-    getWorker(_, label) {
-      if (label === 'json') {
-        return new jsonWorker()
-      }
-      if (label === 'css' || label === 'scss' || label === 'less') {
-        return new cssWorker()
-      }
-      if (label === 'html' || label === 'handlebars' || label === 'razor') {
-        return new htmlWorker()
-      }
-      if (label === 'typescript' || label === 'javascript') {
-        return new tsWorker()
-      }
-      return new editorWorker()
-    }
-  }
+  initMonacoEnvironment()
 
   // 创建对比编辑器
   editor = monaco.editor.createDiffEditor(editorRef.value, {
@@ -113,24 +93,16 @@ const initDiffEditor = () => {
     }
   })
   // drag事件
-  const dragFileHandler = (codeEditor: monaco.editor.IStandaloneCodeEditor) => {
-    const node = codeEditor.getDomNode()
-    node?.addEventListener('dragover', e => {
-      e.preventDefault() // 阻止默认行为
-      e.stopPropagation() // 阻止事件冒泡
-    })
-    node?.addEventListener('drop', e => {
-      e.preventDefault() // 阻止默认行为
-      e.stopPropagation() // 阻止事件冒泡
-      // 读取文件内容
-      handleReadDragFileEvent(e, value => codeEditor.setValue(value as string))
-    })
-  }
-  dragFileHandler(editor.getOriginalEditor())
-  dragFileHandler(editor.getModifiedEditor())
+  dragFileInEditorHandler(editor.getOriginalEditor())
+  dragFileInEditorHandler(editor.getModifiedEditor())
+
   // 更新事件
   editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
-}
+})
+
+// 销毁编辑器
+onBeforeUnmount(() => editor?.dispose())
+
 // 清空编辑器内容
 const handleClearText = () => {
   originModel.setValue('')
@@ -170,10 +142,12 @@ const handleShowDiffHandler = () => {
     <a-space>
       <a @click="handleToggleFullScreen(editorRef)">
         <FullscreenOutlined />
-        全屏</a>
+        全屏
+      </a>
       <a @click="handleClearText()">
         <DeleteOutlined />
-        清除</a>
+        清除
+      </a>
       <a-switch v-model:checked="showDiff" checked-children="Diff" un-checked-children="All"
                 @change="handleShowDiffHandler" />
       <a-switch v-model:checked="side" checked-children="Side" un-checked-children="UnSide" />
@@ -181,7 +155,7 @@ const handleShowDiffHandler = () => {
     </a-space>
   </a-flex>
   <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" v-bind="$attrs" style="height: calc(100vh - 200px)" />
+  <div ref="editorRef" style="height: 100px" v-bind="$attrs"/>
 </template>
 
 <style scoped></style>
