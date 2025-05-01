@@ -13,18 +13,19 @@ import { handleToggleFullScreen } from '@/utils/FullScreen'
 import { DeleteOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
-  value: { type: String, required: false, default: '' },
+  modelValue: { type: String, required: false, default: '' },
   showTool: { type: Boolean, required: false, default: false },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
-  theme: { type: String as PropType<Theme>, required: false, default: 'vs' }
+  theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
+  wordWrap: { type: Boolean, required: false, default: false },
 })
-const emits = defineEmits(['update:value', 'change', 'dblClick'])
+const emits = defineEmits(['update:modelValue', 'change', 'dblClick'])
 
 const editorRef = ref()
 let editor: monaco.editor.IStandaloneCodeEditor
 let model: monaco.editor.ITextModel
-const wordWrap = ref<boolean>(false) // 是否自动换行
-watch(() => props.value, value => {
+const wordWrap = ref(props.wordWrap)
+watch(() => props.modelValue, value => {
   if (model?.getValue() != value) {
     model?.setValue(value)
   }
@@ -44,13 +45,18 @@ onMounted(() => {
   editor = monaco.editor.create(editorRef.value, {
     ...defaultDiffOptions,
     theme: props.theme, // 主题
-    placeholder: '请粘贴文本或拖拽文件...'
+    wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
+    placeholder: '请粘贴文本或拖拽文件...',
   })
-  editor.setModel(model = monaco.editor.createModel(props.value, props.language))
+  editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
+  if (props.modelValue) {
+    // 解决创建Model时传入的value与placeholder重叠问题
+    model.setValue(props.modelValue)
+  }
 
   // change事件
   model.onDidChangeContent(() => {
-    emits('update:value', model.getValue())
+    emits('update:modelValue', model.getValue())
     emits('change', model.getValue())
   })
 
@@ -91,6 +97,7 @@ const handleClearText = () => {
       <a-switch v-model:checked="wordWrap" checked-children="Wrap" un-checked-children="UnWrap" />
     </a-space>
   </a-flex>
+  <a-divider style="margin: 10px 0" />
   <div ref="editorRef" v-bind="$attrs" style="min-height: 100px" />
 </template>
 

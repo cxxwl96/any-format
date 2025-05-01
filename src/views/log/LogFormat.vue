@@ -2,7 +2,6 @@
 import { SettingOutlined, SwapOutlined } from '@ant-design/icons-vue'
 import { type Ref, ref, toRaw, unref, watch } from 'vue'
 import useFormat from './Format'
-import { CodeMirror } from '@/components/CodeEditor'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
@@ -41,13 +40,20 @@ function dblClickHandler(value: string, target: Ref<string>) {
 </script>
 
 <template>
-  <div v-if="!showDiff">
-    <div class="tip-font">
-      Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
-    </div>
-    <CodeMirror @dblclick="originDblClickHandler" v-model="originValue" @change="sessionCacheOrigin.cache"
-                :lineWrapping="true" />
-  </div>
+  <MonacoEditor v-if="!showDiff"
+                v-model="originValue"
+                @dblClick="originDblClickHandler"
+                @change="sessionCacheOrigin.cache"
+                word-wrap
+                show-tool
+                style="height: calc(100vh - 200px)"
+  >
+    <template #toolTip>
+      <div class="tip-font">
+        Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+      </div>
+    </template>
+  </MonacoEditor>
   <MonacoDiffEditor v-else
                     v-model:origin-value="originValue"
                     v-model:modified-value="modifiedValue"
