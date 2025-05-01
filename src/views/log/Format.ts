@@ -27,13 +27,12 @@ interface MatchRes {
 }
 
 export default function useFormat(config: AnyFormatConfig = {
-  startChars: ['{', '[', '('],
-  endChars: ['}', ']', ')'],
-  breakChars: [';', ','],
+  startChars: ['{', '[', '(', '<\\w+>'],
+  endChars: ['}', ']', ')', '</\\w+>'],
+  breakChars: [';', ',', '</\\w+>'],
   tabCount: 4
 }) {
   const { startChars, endChars, breakChars, tabCount } = config
-
   // 任意格式化
   function anyFormat(text: string) {
     if (!text) {
@@ -54,7 +53,7 @@ export default function useFormat(config: AnyFormatConfig = {
       } else if ((matchRes = isMatched(endChars, arr, i)).matched) {
         formatted = formatted.concat(breakSpace(--level))
         formatted = formatted.concat(matchRes.text)
-        lastCharBreak = true
+        lastCharBreak = false
         i += matchRes.text.length
       } else if ((matchRes = isMatched(breakChars, arr, i)).matched) {
         formatted = formatted.concat(matchRes.text)
@@ -67,9 +66,10 @@ export default function useFormat(config: AnyFormatConfig = {
             i++
           }
           lastCharBreak = false
+        } else {
+          formatted = formatted.concat(ch)
+          i++
         }
-        formatted = formatted.concat(ch)
-        i++
       }
     }
     return formatted.split(/\r\n|\r|\n/).filter(line => line.trim() !== '').join('\n')
@@ -77,9 +77,10 @@ export default function useFormat(config: AnyFormatConfig = {
 
   function isMatched(conditions: string[], arr: string, index: number): MatchRes {
     let newConditions: string[] = [...conditions]
+    // 文本比较
     let i = index + 1
     for (; i < arr.length; i++) {
-      const tempConditions = newConditions.filter(s => s.startsWith(arr.substring(index, i)))
+      const tempConditions = newConditions.filter(condition => condition.startsWith(arr.substring(index, i)))
       if (tempConditions.length > 0) {
         newConditions = tempConditions
       } else {
@@ -92,6 +93,24 @@ export default function useFormat(config: AnyFormatConfig = {
         text: newConditions[0]
       }
     }
+    // 正则比较
+    for (const condition of conditions) {
+      // 单个字符不进行正则比较
+      if (condition.length === 1) {
+        continue
+      }
+      try {
+        const matchs = arr.substring(index).matchAll(new RegExp('^' + condition, 'g'))
+        for (const match of matchs) {
+          return {
+            matched: true,
+            text: match[0]
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
     return {
       matched: false,
       text: ''
@@ -100,7 +119,7 @@ export default function useFormat(config: AnyFormatConfig = {
 
   function breakSpace(level: number) {
     let s = '\n'
-    let n = level * tabCount
+    let n = Math.max(0, level) * tabCount
     while (n-- > 0) {
       s = s.concat(' ')
     }

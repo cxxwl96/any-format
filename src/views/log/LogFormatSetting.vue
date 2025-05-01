@@ -20,11 +20,11 @@ watch(() => open.value, (value: boolean) => {
 
 // LogFormat设置
 let form: UnwrapRef<AnyFormatConfig> = reactive({
-    startChars: ['{', '[', '('],
-    endChars: ['}', ']', ')'],
-    breakChars: [';', ','],
-    tabCount: 4
-  })
+  startChars: ['{', '[', '(', '<\\w+>'],
+  endChars: ['}', ']', ')', '</\\w+>'],
+  breakChars: [';', ',', '</\\w+>'],
+  tabCount: 4
+})
 const initForm = () => {
   if (sessionCache.load()) {
     try {
@@ -48,6 +48,7 @@ defineExpose({
 
 <template>
   <a-modal title="LogFormat设置" v-model:open="open" :footer="null">
+    <a-alert message="支持正则匹配哦~" type="info" closable style="margin-bottom: 10px; padding: 0 7px; font-size: 12px; border-radius: 3px; color: #1677ff" />
     <a-form
       :model="form"
       name="basic"
