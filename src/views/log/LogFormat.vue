@@ -2,7 +2,6 @@
 import { SettingOutlined, SwapOutlined } from '@ant-design/icons-vue'
 import { type Ref, ref, toRaw, unref, watch } from 'vue'
 import useFormat from './Format'
-import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
