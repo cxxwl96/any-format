@@ -25,14 +25,14 @@ interface MatchRes {
   matched: boolean;
   text: string;
 }
-
-export default function useFormat(config: AnyFormatConfig = {
+export const config: AnyFormatConfig = {
   startChars: ['{', '[', '(', '<\\w+>'],
   endChars: ['}', ']', ')', '</\\w+>'],
   breakChars: [';', ',', '</\\w+>'],
   tabCount: 4
-}) {
-  const { startChars, endChars, breakChars, tabCount } = config
+}
+export default function useFormat(conf: AnyFormatConfig = config) {
+  const { startChars, endChars, breakChars, tabCount } = conf
   // 任意格式化
   function anyFormat(text: string) {
     if (!text) {
