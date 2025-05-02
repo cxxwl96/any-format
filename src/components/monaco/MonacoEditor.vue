@@ -18,7 +18,7 @@ const props = defineProps({
   showTool: { type: Boolean, required: false, default: true },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
   theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
-  wordWrap: { type: Boolean, required: false, default: false },
+  wordWrap: { type: Boolean, required: false, default: false }
 })
 const emits = defineEmits(['update:modelValue', 'change', 'dblClick'])
 
@@ -26,6 +26,11 @@ const editorRef = ref()
 let editor: monaco.editor.IStandaloneCodeEditor
 let model: monaco.editor.ITextModel
 const wordWrap = ref(props.wordWrap)
+const editorInfo = ref<{
+  style: { minHeight: string }
+}>({
+  style: { minHeight: '200px' }
+})
 watch(() => props.modelValue, value => {
   if (model?.getValue() != value) {
     model?.setValue(value)
@@ -46,7 +51,7 @@ onMounted(() => {
   editor = monaco.editor.create(editorRef.value, {
     ...defaultDiffOptions,
     theme: props.theme, // 主题
-    wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
+    wordWrap: wordWrap.value ? 'on' : 'off' // 自动换行
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -101,7 +106,7 @@ const handleClearText = () => {
     </a-space>
   </a-flex>
   <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" v-bind="$attrs" style="min-height: 100px" />
+  <div ref="editorRef" v-bind="$attrs" :style="editorInfo.style" />
 </template>
 
 <style scoped>

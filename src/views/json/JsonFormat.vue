@@ -9,10 +9,10 @@ import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { XML2JSON } from '@/data'
 import vkbeautify from 'vkbeautify'
+import { MonacoEditor } from '@/components/monaco'
 
 const sessionCache = useSessionCache('JsonFormat')
 
-const el = ref()
 const result = ref<{
   value: string;
   error: boolean;
@@ -23,7 +23,7 @@ const openModal = ref<boolean>(false)
 
 // 格式化校验
 function formatValidate(tip: boolean = true) {
-  const value = el.value.getValue()
+  const value = result.value.value
   if (!value || value === '') {
     if (tip) {
       message.info('请输入内容')
@@ -47,9 +47,6 @@ function formatValidate(tip: boolean = true) {
       })
     }
   }
-  if (!result.value.error && value !== result.value.value) {
-    el.value.setValue(result.value.value)
-  }
   return unref(result.value.value)
 }
 
@@ -57,7 +54,7 @@ function formatValidate(tip: boolean = true) {
 function compress() {
   const value = formatValidate()
   if (value) {
-    el.value.setValue(JSON.stringify(JSON.parse(value)))
+    result.value.value = JSON.stringify(JSON.parse(value))
   }
 }
 
@@ -94,21 +91,21 @@ function deepDelEscape(suffix: boolean) {
   if (value) {
     const json = ref(JSON.parse(value))
     deepJson(json, suffix)
-    el.value.setValue(JSON.stringify(json.value))
+    result.value.value = JSON.stringify(json.value)
     formatValidate(false)
   }
 }
 
 // 去除转义
 function delEscape() {
-  const value = el.value.getValue() || ''
-  el.value.setValue(value.replace(/\\"/g, '"'))
+  const value = result.value.value || ''
+  result.value.value = value.replace(/\\"/g, '"')
 }
 
 // 转义
 function escape() {
-  const value = el.value.getValue() || ''
-  el.value.setValue(value.replace(/"/g, '\\"'))
+  const value = result.value.value || ''
+  result.value.value = value.replace(/"/g, '\\"')
 }
 
 // 字段排序
@@ -144,7 +141,7 @@ function fieldSort(asc: boolean) {
   const value = formatValidate()
   if (value) {
     const json = JSON.parse(value)
-    el.value.setValue(JSON.stringify(deepFieldSort(json, asc)))
+    result.value.value = JSON.stringify(deepFieldSort(json, asc))
     formatValidate(false)
   }
 }
@@ -180,12 +177,13 @@ function toggleView() {
 </script>
 
 <template>
-  <div v-if="codemirrorView">
-    <div class="tip-font">
-      Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
-    </div>
-    <CodeMirror ref="el" v-model="result.value" @change="sessionCache.cache" @dblclick="formatValidate" />
-  </div>
+  <MonacoEditor v-if="codemirrorView" :language="'json'" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate" style="height: calc(100vh - 200px)">
+    <template #toolTip>
+      <div class="tip-font">
+        Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+      </div>
+    </template>
+  </MonacoEditor>
   <JsonEditor v-else v-model="result.value" mode="tree" />
   <a-divider />
   <a-affix :offset-bottom="50">
@@ -220,7 +218,7 @@ function toggleView() {
     </div>
   </a-affix>
   <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-    <CodeMirror v-model="result.xmlValue" :mode="MODE.XML" :theme="'eclipse'" style="height: 70vh"/>
+    <MonacoEditor v-model="result.xmlValue" :language="'xml'" style="height: 70vh"/>
   </a-modal>
 </template>
 

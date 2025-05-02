@@ -40,7 +40,7 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
     enabled: true // 能否把文字拖拽进编辑器
   },
   minimap: {
-    enabled: true // 是否启用代码缩略图
+    enabled: true, // 是否启用代码缩略图
   },
   automaticLayout: true, // 控制编辑器是否自动调整布局以适应容器大小的变化
   overviewRulerBorder: false, // 滚动是否有边框
@@ -54,7 +54,8 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   diffCodeLens: true,
   scrollbar: {
     verticalScrollbarSize: 5, // 垂直滚动条宽度，默认px
-    horizontalScrollbarSize: 5 // 水平滚动条高度
+    horizontalScrollbarSize: 5, // 水平滚动条高度
+    alwaysConsumeMouseWheel: false, // 始终使用鼠标滚轮事件（始终在浏览器事件上调用preventDefault（）和stopPropagation()）
   },
   scrollBeyondLastLine: false, // 启用该功能，滚动可以在最后一行之后增加一个屏幕大小，默认值为 true
   stickyScroll: {

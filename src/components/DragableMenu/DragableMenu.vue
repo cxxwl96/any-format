@@ -379,6 +379,7 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 $icon-size: 35px;
 $button-size: 25px;
+$ZIndex: 999;
 
 .draggable-icon {
   position: fixed;
@@ -392,7 +393,7 @@ $button-size: 25px;
   user-select: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   border-radius: 50%;
-  z-index: 99999;
+  z-index: $ZIndex;
 }
 
 .icon-img {
@@ -416,7 +417,7 @@ $button-size: 25px;
   transform: scaleX(0);
   transform-origin: left;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
-  z-index: 99999;
+  z-index: $ZIndex;
   &:not(.menu-left) {
     right: 30px;
     transform-origin: right;
