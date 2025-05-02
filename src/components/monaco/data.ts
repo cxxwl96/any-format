@@ -5,6 +5,7 @@ import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker'
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker'
 import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker'
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
+import { handleToggleFullScreen } from '@/utils/FullScreen'
 
 export type Theme = 'vs' | 'vs-dark' | 'hs-light' | 'hs-black'
 export type Language = 'plaintext' | 'abap' | 'apex' | 'azcli' | 'bat' | 'bicep' | 'cameligo' | 'clojure' | 'coffee' | 'cpp' | 'csharp' | 'csp' | 'css' | 'cypher' | 'dart' | 'dockerfile' | 'ecl' | 'elixir' | 'flow9' | 'freemarker2' | 'fsharp' | 'go' | 'graphql' | 'handlebars' | 'hcl' | 'html' | 'ini' | 'java' | 'javascript' | 'julia' | 'kotlin' | 'less' | 'lexon' | 'liquid' | 'lua' | 'm3' | 'markdown' | 'mdx' | 'mips' | 'msdax' | 'mysql' | 'objective-c' | 'pascal' | 'pascaligo' | 'perl' | 'pgsql' | 'php' | 'pla' | 'postiats' | 'powerquery' | 'powershell' | 'protobuf' | 'pug' | 'python' | 'qsharp' | 'r' | 'razor' | 'redis' | 'redshift' | 'restructuredtext' | 'ruby' | 'rust' | 'sb' | 'scala' | 'scheme' | 'scss' | 'shell' | 'solidity' | 'sophia' | 'sparql' | 'sql' | 'st' | 'swift' | 'systemverilog' | 'tcl' | 'twig' | 'typescript' | 'typespec' | 'vb' | 'wgsl' | 'xml' | 'yaml' | 'json'
@@ -106,15 +107,26 @@ export const dragFileInEditorHandler = (codeEditor: monaco.editor.IStandaloneCod
   })
 }
 
-// 绑定列选择模式快捷键
+// Shift + Ctrl/Cmd + D: 列选择模式切换
 export const bindColumnSelectionKey = (editor: monaco.editor.IStandaloneCodeEditor) => {
-  // 列选择模式快捷键：Shift + Ctrl/Cmd + D
+  // Shift + Ctrl/Cmd + D: 列选择模式切换
   editor.addCommand(
     monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD,
     () => {
       editor.updateOptions({
         columnSelection: !editor.getOption(monaco.editor.EditorOption.columnSelection),
       })
+    }
+  )
+}
+
+// Shift + Ctrl/Cmd + F: 全屏
+export const bindFullScreenKey = (editor: monaco.editor.IStandaloneCodeEditor, node: HTMLElement | null) => {
+  // Shift + Ctrl/Cmd + F: 全屏
+  editor.addCommand(
+    monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF,
+    () => {
+      handleToggleFullScreen(node || undefined)
     }
   )
 }

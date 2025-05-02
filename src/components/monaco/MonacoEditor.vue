@@ -3,7 +3,7 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, unref, watch } from 'vue'
 import {
-  bindColumnSelectionKey,
+  bindColumnSelectionKey, bindFullScreenKey,
   defaultDiffOptions,
   dragFileInEditorHandler,
   initMonacoEnvironment,
@@ -55,6 +55,7 @@ onMounted(() => {
 
       Ctrl/Cmd + F: 查找
       Alt/Opt + Ctrl/Cmd + F: 替换
+      Shift + Ctrl/Cmd + F: 全屏
       Shift + Ctrl/Cmd + D: 列选择模式切换`,
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
@@ -79,8 +80,10 @@ onMounted(() => {
   // drag事件
   dragFileInEditorHandler(editor)
 
-  // 绑定列选择模式快捷键
+  // Shift + Ctrl/Cmd + D: 列选择模式切换
   bindColumnSelectionKey(editor)
+  // Shift + Ctrl/Cmd + F: 全屏
+  bindFullScreenKey(editor, editorRef.value)
 })
 
 // 销毁编辑器

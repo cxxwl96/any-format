@@ -8,7 +8,7 @@ function isFullScreen() {
  *
  * @param element
  */
-export function handleToggleFullScreen(element?: HTMLElement) {
+export function handleToggleFullScreen(element?: HTMLElement | undefined) {
   if (!element) {
     element = document.documentElement;
   }

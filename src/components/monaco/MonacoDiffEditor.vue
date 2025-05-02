@@ -5,6 +5,7 @@ import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 import {
+  bindFullScreenKey,
   defaultDiffOptions,
   dragFileInEditorHandler,
   initMonacoEnvironment,
@@ -67,7 +68,8 @@ onMounted(() => {
     placeholder: `请粘贴文本或拖拽文件...
 
       Ctrl/Cmd + F: 查找
-      Alt/Opt + Ctrl/Cmd + F: 替换`
+      Alt/Opt + Ctrl/Cmd + F: 替换
+      Shift + Ctrl/Cmd + F: 全屏`
   })
 
   editor.setModel({
@@ -98,6 +100,9 @@ onMounted(() => {
   // drag事件
   dragFileInEditorHandler(editor.getOriginalEditor())
   dragFileInEditorHandler(editor.getModifiedEditor())
+
+  // Shift + Ctrl/Cmd + F: 全屏
+  bindFullScreenKey(editor.getOriginalEditor(), editorRef.value)
 
   // 更新事件
   editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
