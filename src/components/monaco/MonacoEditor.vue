@@ -29,11 +29,6 @@ const editorRef = ref()
 let editor: monaco.editor.IStandaloneCodeEditor
 let model: monaco.editor.ITextModel
 const wordWrap = ref(props.wordWrap)
-const editorInfo = ref<{
-  style: { minHeight: string }
-}>({
-  style: { minHeight: '200px' }
-})
 watch(() => props.modelValue, value => {
   if (model?.getValue() != value) {
     model?.setValue(value)
@@ -150,9 +145,12 @@ const handleClearText = () => {
     </a-col>
   </a-row>
   <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" v-bind="$attrs" :style="editorInfo.style" />
+  <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor"/>
 </template>
 
 <style scoped>
-
+.a-monaco-editor {
+  min-height: 200px;
+  border: 1px solid #DDDDDD;
+}
 </style>

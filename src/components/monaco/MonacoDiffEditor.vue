@@ -173,7 +173,12 @@ const handleShowDiffHandler = () => {
     </a-col>
   </a-row>
   <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" style="height: 200px" v-bind="$attrs" />
+  <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor"/>
 </template>
 
-<style scoped></style>
+<style scoped>
+.a-monaco-editor {
+  min-height: 200px;
+  border: 1px solid #DDDDDD;
+}
+</style>
