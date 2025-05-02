@@ -5,6 +5,7 @@ import useFormat from './Format'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
+import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
