@@ -5,7 +5,6 @@ import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 import {
-  bindColumnSelectionKey,
   defaultDiffOptions,
   dragFileInEditorHandler,
   initMonacoEnvironment,
@@ -65,6 +64,10 @@ onMounted(() => {
       minimumLineCount: 1,
       contextLineCount: 1
     },
+    placeholder: `请粘贴文本或拖拽文件...
+
+      Ctrl/Cmd + F: 查找
+      Alt/Opt + Ctrl/Cmd + F: 替换`
   })
 
   editor.setModel({
@@ -96,10 +99,6 @@ onMounted(() => {
   dragFileInEditorHandler(editor.getOriginalEditor())
   dragFileInEditorHandler(editor.getModifiedEditor())
 
-  // 绑定列选择模式快捷键
-  bindColumnSelectionKey(editor.getOriginalEditor())
-  bindColumnSelectionKey(editor.getModifiedEditor())
-
   // 更新事件
   editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
 })
@@ -126,40 +125,55 @@ const handleShowDiffHandler = () => {
 </script>
 
 <template>
-  <div style="float: left">
-    <slot name="toolTip" />
-  </div>
-  <a-flex justify="flex-end" align="center" v-if="showTool">
-    <a-space>
-      <a v-if="diffCount>0" @click="editor.goToDiff('previous')">
-        <ArrowLeftOutlined />
-      </a>
-      <span v-if="props.originValue || props.modifiedValue"
-            :style="{color: diffCount>0?'red':'green'}"
-            class="un-select">{{ diffCount > 0 ? '存在' + diffCount + '处差异' : '完全相同'
-        }}</span>
-      <a v-if="diffCount>0" @click="editor.goToDiff('next')">
-        <ArrowRightOutlined />
-      </a>
-      <a-divider type="vertical" />
-    </a-space>
-    <a-space>
-      <a @click="handleToggleFullScreen(editorRef)">
-        <FullscreenOutlined />
-        全屏
-      </a>
-      <a @click="handleClearText()">
-        <DeleteOutlined />
-        清除
-      </a>
-      <a-switch v-model:checked="showDiff" checked-children="Diff" un-checked-children="All"
-                @change="handleShowDiffHandler" />
-      <a-switch v-model:checked="side" checked-children="Side" un-checked-children="UnSide" />
-      <a-switch v-model:checked="wordWrap" checked-children="Wrap" un-checked-children="UnWrap" />
-    </a-space>
-  </a-flex>
+  <a-row align="middle">
+    <a-col>
+      <slot name="title" />
+    </a-col>
+    <a-col v-if="showTool" flex="auto" align="right">
+      <a-space>
+        <a-space v-if="diffCount > 0 || props.originValue || props.modifiedValue">
+          <a @click="editor.goToDiff('previous')">
+            <ArrowLeftOutlined />
+          </a>
+          <span class="un-select" :style="{color: diffCount > 0 ? 'red' : 'green'}">
+          {{ diffCount > 0 ? '存在' + diffCount + '处差异' : '完全相同' }}
+        </span>
+          <a @click="editor.goToDiff('next')">
+            <ArrowRightOutlined />
+          </a>
+          <a-divider type="vertical" />
+        </a-space>
+        <a-tooltip title="清除">
+          <a @click="handleClearText()">
+            <DeleteOutlined />
+          </a>
+        </a-tooltip>
+        <a-tooltip title="全屏">
+          <a @click="handleToggleFullScreen(editorRef)">
+            <FullscreenOutlined />
+          </a>
+        </a-tooltip>
+        <a-switch v-model:checked="showDiff"
+                  @change="handleShowDiffHandler"
+                  checked-children="Diff"
+                  un-checked-children="All"
+                  size="small"
+        />
+        <a-switch v-model:checked="side"
+                  checked-children="Side"
+                  un-checked-children="UnSide"
+                  size="small"
+        />
+        <a-switch v-model:checked="wordWrap"
+                  checked-children="Wrap"
+                  un-checked-children="UnWrap"
+                  size="small"
+        />
+      </a-space>
+    </a-col>
+  </a-row>
   <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" style="height: 100px" v-bind="$attrs"/>
+  <div ref="editorRef" style="height: 200px" v-bind="$attrs" />
 </template>
 
 <style scoped></style>

@@ -4,6 +4,7 @@ import { ref, watch } from 'vue'
 import './Context'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import { useSessionCache } from '@/utils/CacheData'
+import { MonacoEditor } from '@/components/monaco'
 
 const sessionCache = useSessionCache('JSRunner')
 
@@ -30,11 +31,16 @@ const handleRunner = () => {
 
 <template>
   <div class="js-runner">
-    <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
-    <AButton type="primary" @click="handleRunner" class="run-btn">运行脚本</AButton>
-    <CodeMirror v-model="script" @change="sessionCache.cache" theme="darcula" mode="javascript" />
+    <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="javascript" style="height: calc(100vh - 400px)">
+      <template #title>
+        <a-flex align="center">
+          <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
+          <AButton type="primary" @click="handleRunner" class="run-btn" size="small">运行脚本</AButton>
+        </a-flex>
+      </template>
+    </MonacoEditor>
     <div class="tip-font">运行结果：</div>
-    <ATextarea v-model:value="result.data" :style="{color: result.success ? 'black' : 'red'}" />
+    <ATextarea v-model:value="result.data" :style="{color: result.success ? 'black' : 'red'}" readonly/>
   </div>
 </template>
 

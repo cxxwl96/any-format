@@ -20,7 +20,7 @@
     "@types/jsoneditor": "^9.9.5",
     "@types/vkbeautify": "^0.99.4",
     "animejs": "^3.2.2",
-    "ant-design-vue": "^4.2.3",
+    "ant-design-vue": "^4.2.6",
     "codemirror": "^5.65.16",
     "cron-parser": "^5.1.1",
     "crypto-js": "^4.2.0",

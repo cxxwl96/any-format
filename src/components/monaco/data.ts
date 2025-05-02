@@ -23,11 +23,6 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   },
   onlyShowAccessibleDiffViewer: false, //只显示差异审查模式。
   columnSelection: false, // 列选择模式，是否启用列编辑
-  placeholder: `请粘贴文本或拖拽文件...
-  
-  Ctrl/Cmd + F: 查找
-  Alt + Ctrl/Cmd + F: 替换
-  Shift + Ctrl/Cmd + D: 列选择模式切换`,
 
   autoIndent: 'keep', // 自动缩进
   readOnly: false, // 是否只读  只影响右侧

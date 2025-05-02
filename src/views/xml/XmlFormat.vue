@@ -7,6 +7,7 @@ import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { XML2JSON } from '@/data'
 import { validateJson } from '@/utils/jsonUtil'
+import { MonacoEditor } from '@/components/monaco'
 
 const sessionCache = useSessionCache('XmlFormat')
 const data = ref<string>(sessionCache.load())
@@ -110,11 +111,13 @@ const handleXml2Json = () => {
 </script>
 
 <template>
-  <div class="tip-font">
-    Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
-  </div>
-  <CodeMirror ref="el" v-model="data" @change="sessionCache.cache" @dblclick="handleFormat" :mode="MODE.XML"
-              :theme="'eclipse'" />
+  <MonacoEditor language="xml" v-model="data" @change="sessionCache.cache" @dblClick="handleFormat" style="height: calc(100vh - 200px)">
+    <template #title>
+      <div class="tip-font">
+        Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+      </div>
+    </template>
+  </MonacoEditor>
   <a-divider />
   <a-affix :offset-bottom="50">
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
@@ -131,7 +134,7 @@ const handleXml2Json = () => {
     </a-space>
   </a-affix>
   <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-    <CodeMirror v-model="jsonValue" :mode="MODE.JSON" style="height: 70vh"/>
+    <MonacoEditor v-model="jsonValue" language="json" style="height: 70vh"/>
   </a-modal>
 </template>
 

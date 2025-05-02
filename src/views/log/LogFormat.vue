@@ -46,7 +46,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
                 @change="sessionCacheOrigin.cache"
                 style="height: calc(100vh - 200px)"
   >
-    <template #toolTip>
+    <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
       </div>
@@ -61,7 +61,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
                     @modifiedDblClick="modifiedDblClickHandler"
                     style="height: calc(100vh - 200px)"
   >
-    <template #toolTip>
+    <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴左边</a>，双击格式化；<a
         @click="async () => {modifiedValue = await getTextFromClipboard()}">粘贴右边</a>，双击格式化。

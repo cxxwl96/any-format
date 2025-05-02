@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
-import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, type PropType, ref, unref, watch } from 'vue'
 import {
   bindColumnSelectionKey,
   defaultDiffOptions,
@@ -11,7 +11,10 @@ import {
   type Theme
 } from '@/components/monaco/data'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
-import { DeleteOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
+import { DeleteOutlined, FullscreenOutlined, CopyOutlined, SnippetsOutlined } from '@ant-design/icons-vue'
+import { getTextFromClipboard, useCopyToClipboard } from '@/utils/useCopyToClipboard'
+import { message } from 'ant-design-vue'
+const { clipboardRef, copiedRef } = useCopyToClipboard()
 
 const props = defineProps({
   modelValue: { type: String, required: false, default: '' },
@@ -51,7 +54,13 @@ onMounted(() => {
   editor = monaco.editor.create(editorRef.value, {
     ...defaultDiffOptions,
     theme: props.theme, // 主题
-    wordWrap: wordWrap.value ? 'on' : 'off' // 自动换行
+    wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
+
+    placeholder: `请粘贴文本或拖拽文件...
+
+      Ctrl/Cmd + F: 查找
+      Alt/Opt + Ctrl/Cmd + F: 替换
+      Shift + Ctrl/Cmd + D: 列选择模式切换`,
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -82,29 +91,64 @@ onMounted(() => {
 // 销毁编辑器
 onBeforeUnmount(() => editor?.dispose())
 
-// 清空编辑器内容
+// 粘贴
+const handlePaste = async () => {
+  const value = await getTextFromClipboard()
+  if (value) {
+    model?.setValue(value)
+  }
+}
+// 复制
+const handleCopy = async () => {
+  const value = model.getValue()
+  if (value) {
+    clipboardRef.value = value
+    if (unref(copiedRef)) {
+      message.success('复制成功')
+    }
+  }
+}
+// 清除
 const handleClearText = () => {
   model?.setValue('')
 }
 </script>
 
 <template>
-  <div style="float: left">
-    <slot name="toolTip" />
-  </div>
-  <a-flex justify="flex-end" align="center" v-if="showTool">
-    <a-space>
-      <a @click="handleToggleFullScreen(editorRef)">
-        <FullscreenOutlined />
-        全屏
-      </a>
-      <a @click="handleClearText()">
-        <DeleteOutlined />
-        清除
-      </a>
-      <a-switch v-model:checked="wordWrap" checked-children="Wrap" un-checked-children="UnWrap" />
-    </a-space>
-  </a-flex>
+  <a-row align="middle">
+    <a-col>
+      <slot name="title" />
+    </a-col>
+    <a-col v-if="showTool" flex="auto" align="right">
+      <a-space>
+        <a-tooltip title="粘贴">
+          <a @click="handlePaste()">
+            <SnippetsOutlined />
+          </a>
+        </a-tooltip>
+        <a-tooltip title="复制">
+          <a @click="handleCopy()">
+            <CopyOutlined />
+          </a>
+        </a-tooltip>
+        <a-tooltip title="清除">
+          <a @click="handleClearText()">
+            <DeleteOutlined />
+          </a>
+        </a-tooltip>
+        <a-tooltip title="全屏">
+          <a @click="handleToggleFullScreen(editorRef)">
+            <FullscreenOutlined />
+          </a>
+        </a-tooltip>
+        <a-switch v-model:checked="wordWrap"
+                  checked-children="Wrap"
+                  un-checked-children="UnWrap"
+                  size="small"
+        />
+      </a-space>
+    </a-col>
+  </a-row>
   <a-divider style="margin: 10px 0" />
   <div ref="editorRef" v-bind="$attrs" :style="editorInfo.style" />
 </template>

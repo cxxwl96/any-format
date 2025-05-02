@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CodeMirror, JsonEditor, MODE } from '@/components/CodeEditor'
+import { JsonEditor } from '@/components/CodeEditor'
 import { type Ref, ref, unref } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
@@ -177,8 +177,8 @@ function toggleView() {
 </script>
 
 <template>
-  <MonacoEditor v-if="codemirrorView" :language="'json'" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate" style="height: calc(100vh - 200px)">
-    <template #toolTip>
+  <MonacoEditor v-if="codemirrorView" language="json" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate" style="height: calc(100vh - 200px)">
+    <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
       </div>
@@ -218,7 +218,7 @@ function toggleView() {
     </div>
   </a-affix>
   <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-    <MonacoEditor v-model="result.xmlValue" :language="'xml'" style="height: 70vh"/>
+    <MonacoEditor v-model="result.xmlValue" language="xml" style="height: 70vh"/>
   </a-modal>
 </template>
 
