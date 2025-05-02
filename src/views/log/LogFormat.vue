@@ -44,8 +44,6 @@ function dblClickHandler(value: string, target: Ref<string>) {
                 v-model="originValue"
                 @dblClick="originDblClickHandler"
                 @change="sessionCacheOrigin.cache"
-                word-wrap
-                show-tool
                 style="height: calc(100vh - 200px)"
   >
     <template #toolTip>
@@ -61,7 +59,6 @@ function dblClickHandler(value: string, target: Ref<string>) {
                     @modifiedChange="sessionCacheModified.cache"
                     @originDblClick="originDblClickHandler"
                     @modifiedDblClick="modifiedDblClickHandler"
-                    show-tool
                     style="height: calc(100vh - 200px)"
   >
     <template #toolTip>

@@ -3,18 +3,19 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import {
+  bindColumnSelectionKey,
   defaultDiffOptions,
   dragFileInEditorHandler,
   initMonacoEnvironment,
   type Language,
-  type Theme,
+  type Theme
 } from '@/components/monaco/data'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 import { DeleteOutlined, FullscreenOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
   modelValue: { type: String, required: false, default: '' },
-  showTool: { type: Boolean, required: false, default: false },
+  showTool: { type: Boolean, required: false, default: true },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
   theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
   wordWrap: { type: Boolean, required: false, default: false },
@@ -46,7 +47,6 @@ onMounted(() => {
     ...defaultDiffOptions,
     theme: props.theme, // 主题
     wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
-    placeholder: '请粘贴文本或拖拽文件...',
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -69,6 +69,9 @@ onMounted(() => {
 
   // drag事件
   dragFileInEditorHandler(editor)
+
+  // 绑定列选择模式快捷键
+  bindColumnSelectionKey(editor)
 })
 
 // 销毁编辑器

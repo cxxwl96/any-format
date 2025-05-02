@@ -5,18 +5,19 @@ import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 import {
+  bindColumnSelectionKey,
   defaultDiffOptions,
   dragFileInEditorHandler,
   initMonacoEnvironment,
   type Language,
-  type Theme,
+  type Theme
 } from './data'
 import { FullscreenOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps({
   originValue: { type: String, required: false, default: '' },
   modifiedValue: { type: String, required: false, default: '' },
-  showTool: { type: Boolean, required: false, default: false },
+  showTool: { type: Boolean, required: false, default: true },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
   theme: { type: String as PropType<Theme>, required: false, default: 'vs' }
 })
@@ -64,7 +65,6 @@ onMounted(() => {
       minimumLineCount: 1,
       contextLineCount: 1
     },
-    placeholder: '请粘贴文本或拖拽文件...'
   })
 
   editor.setModel({
@@ -95,6 +95,10 @@ onMounted(() => {
   // drag事件
   dragFileInEditorHandler(editor.getOriginalEditor())
   dragFileInEditorHandler(editor.getModifiedEditor())
+
+  // 绑定列选择模式快捷键
+  bindColumnSelectionKey(editor.getOriginalEditor())
+  bindColumnSelectionKey(editor.getModifiedEditor())
 
   // 更新事件
   editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)

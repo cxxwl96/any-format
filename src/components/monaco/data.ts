@@ -22,6 +22,12 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
     contextLineCount: 1
   },
   onlyShowAccessibleDiffViewer: false, //只显示差异审查模式。
+  columnSelection: false, // 列选择模式，是否启用列编辑
+  placeholder: `请粘贴文本或拖拽文件...
+  
+  Ctrl/Cmd + F: 查找
+  Alt + Ctrl/Cmd + F: 替换
+  Shift + Ctrl/Cmd + D: 列选择模式切换`,
 
   autoIndent: 'keep', // 自动缩进
   readOnly: false, // 是否只读  只影响右侧
@@ -56,7 +62,6 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   },
   renderLineHighlight: 'all', // 启用当前行高亮显示的呈现
   contextmenu: false, // 右键菜单
-  columnSelection: true, // 启用列编辑 按下shift键位然后按↑↓键位可以实现列选择 然后实现列编辑
   copyWithSyntaxHighlighting: true, // 是否应将语法突出显示复制到剪贴板中 即 当你复制到word中是否保持文字高亮颜色
   links: true, // 是否点击链接
   selectionHighlight: true,
@@ -103,4 +108,17 @@ export const dragFileInEditorHandler = (codeEditor: monaco.editor.IStandaloneCod
     // 读取文件内容
     handleReadDragFileEvent(e, value => codeEditor.setValue(value as string))
   })
+}
+
+// 绑定列选择模式快捷键
+export const bindColumnSelectionKey = (editor: monaco.editor.IStandaloneCodeEditor) => {
+  // 列选择模式快捷键：Shift + Ctrl/Cmd + D
+  editor.addCommand(
+    monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD,
+    () => {
+      editor.updateOptions({
+        columnSelection: !editor.getOption(monaco.editor.EditorOption.columnSelection),
+      })
+    }
+  )
 }

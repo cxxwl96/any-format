@@ -1,5 +1,5 @@
 <template>
-  <MonacoEditor show-tool theme="vs-dark" style="height: calc(100vh - 200px)"></MonacoEditor>
+  <div>Demo</div>
 </template>
 
 <script setup lang="ts">
