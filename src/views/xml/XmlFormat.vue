@@ -121,16 +121,16 @@ const handleXml2Json = () => {
   <a-divider />
   <a-affix :offset-bottom="50">
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
-      <a-button type="primary" @click="handleFormat">格式化</a-button>
-      <a-button @click="handleCompress">压缩</a-button>
-      <a-dropdown-button @click="handleSort">
+      <a-button type="primary" @click="handleFormat" size="small">格式化</a-button>
+      <a-button @click="handleCompress" size="small">压缩</a-button>
+      <a-dropdown-button @click="handleSort" size="small">
         节点升序
         <template #overlay>
-          <a-button @click="handleSort(false)">节点降序</a-button>
+          <a-button @click="handleSort(false)" size="small">节点降序</a-button>
         </template>
       </a-dropdown-button>
       <a-divider type="vertical"/>
-      <a-button type="primary" @click="handleXml2Json">XML转JSON</a-button>
+      <a-button type="primary" @click="handleXml2Json" size="small">XML转JSON</a-button>
     </a-space>
   </a-affix>
   <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>

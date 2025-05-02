@@ -35,12 +35,12 @@ const handleRunner = () => {
       <template #title>
         <a-flex align="center">
           <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
-          <AButton type="primary" @click="handleRunner" class="run-btn" size="small">运行脚本</AButton>
+          <a-button type="primary" @click="handleRunner" class="run-btn" size="small">运行脚本</a-button>
         </a-flex>
       </template>
     </MonacoEditor>
     <div class="tip-font">运行结果：</div>
-    <ATextarea v-model:value="result.data" :style="{color: result.success ? 'black' : 'red'}" readonly/>
+    <a-textarea v-model:value="result.data" :style="{color: result.success ? 'black' : 'red'}" readonly/>
   </div>
 </template>
 

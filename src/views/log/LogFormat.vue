@@ -71,14 +71,14 @@ function dblClickHandler(value: string, target: Ref<string>) {
   <a-divider />
   <a-affix :offset-bottom="50">
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
-      <a-button type="ghost" @click="showSetting=true">
+      <a-button type="ghost" @click="showSetting=true" size="small">
         <template #icon>
           <SettingOutlined />
         </template>
         设置
       </a-button>
       <a-divider type="vertical" />
-      <a-button type="primary" @click="showDiff=!showDiff">
+      <a-button type="primary" @click="showDiff=!showDiff" size="small">
         <template #icon>
           <SwapOutlined />
         </template>

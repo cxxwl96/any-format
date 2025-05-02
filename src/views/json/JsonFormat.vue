@@ -169,15 +169,15 @@ const handleJson2Xml = () => {
 }
 
 // 切换视图
-const codemirrorView = ref(true)
+const monacoView = ref(true)
 
 function toggleView() {
-  codemirrorView.value = !codemirrorView.value
+  monacoView.value = !monacoView.value
 }
 </script>
 
 <template>
-  <MonacoEditor v-if="codemirrorView" language="json" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate" style="height: calc(100vh - 200px)">
+  <MonacoEditor v-if="monacoView" language="json" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate" style="height: calc(100vh - 200px)">
     <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
@@ -187,50 +187,37 @@ function toggleView() {
   <JsonEditor v-else v-model="result.value" mode="tree" />
   <a-divider />
   <a-affix :offset-bottom="50">
-    <div class="bottom-button-group">
-      <div v-if="codemirrorView" class="codemirror-button">
-        <a-button type="primary" @click="formatValidate">格式化校验</a-button>
-        <a-button @click="compress">压缩</a-button>
-        <a-dropdown-button @click="deepDelEscape(true)">
-          深度去除转义
-          <template #overlay>
-            <a-button @click="deepDelEscape(false)"> 不加 [@String]</a-button>
-          </template>
-        </a-dropdown-button>
-        <a-button @click="delEscape">去除转义</a-button>
-        <a-button @click="escape">转义</a-button>
-        <a-dropdown-button @click="fieldSort(true)">
-          字段升序
-          <template #overlay>
-            <a-button @click="fieldSort(false)">字段降序</a-button>
-          </template>
-        </a-dropdown-button>
-        <a-divider type="vertical"/>
-        <a-button type="primary" @click="handleJson2Xml">JSON转XML</a-button>
-        <a-divider type="vertical"/>
-      </div>
-      <a-button type="primary" @click="toggleView">
+    <a-space :size="[8, 16]" wrap class="bottom-button-group">
+      <a-button v-if="monacoView" type="primary" @click="formatValidate" size="small">格式化校验</a-button>
+      <a-button v-if="monacoView" @click="compress" size="small">压缩</a-button>
+      <a-dropdown-button v-if="monacoView" @click="deepDelEscape(true)" size="small">
+        深度去除转义
+        <template #overlay>
+          <a-button @click="deepDelEscape(false)" size="small"> 不加 [@String]</a-button>
+        </template>
+      </a-dropdown-button>
+      <a-button v-if="monacoView" @click="delEscape" size="small">去除转义</a-button>
+      <a-button v-if="monacoView" @click="escape" size="small">转义</a-button>
+      <a-dropdown-button v-if="monacoView" @click="fieldSort(true)" size="small">
+        字段升序
+        <template #overlay>
+          <a-button @click="fieldSort(false)" size="small">字段降序</a-button>
+        </template>
+      </a-dropdown-button>
+      <a-divider v-if="monacoView" type="vertical"/>
+      <a-button v-if="monacoView" type="primary" @click="handleJson2Xml" size="small">JSON转XML</a-button>
+      <a-divider v-if="monacoView" type="vertical"/>
+      <a-button type="primary" @click="toggleView" size="small">
         <template #icon>
           <SwapOutlined />
         </template>
         切换视图
       </a-button>
-    </div>
+    </a-space>
   </a-affix>
   <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
     <MonacoEditor v-model="result.xmlValue" language="xml" style="height: 70vh"/>
   </a-modal>
 </template>
 
-<style scoped>
-.bottom-button-group {
-  display: inline-block;
-  .codemirror-button {
-    display: inline-block;
-    margin-right: 5px;
-    * {
-      margin: 5px;
-    }
-  }
-}
-</style>
+<style scoped></style>

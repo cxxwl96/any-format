@@ -43,11 +43,10 @@ const decodeQR = (file: File) => {
 
 <template>
   <div class="content-center">
-    <a-row>
-      <div class="tip-font">
-        Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴Scheme</a>生成二维码
-      </div>
-    </a-row>
+    <div class="tip-font">
+      Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴Scheme</a>生成二维码
+    </div>
+    <a-divider style="margin: 10px 0" />
     <a-row :gutter="20" justify="center">
       <a-col flex="7">
         <a-textarea
