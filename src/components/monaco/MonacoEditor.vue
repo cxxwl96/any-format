@@ -55,13 +55,6 @@ onMounted(() => {
     ...defaultDiffOptions,
     theme: props.theme, // 主题
     wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
-
-    placeholder: `请粘贴文本或拖拽文件...
-
-      Ctrl/Cmd + Shift + F: 查找
-      Ctrl/Cmd + Shift + R: 替换
-      Ctrl/Cmd + Shift + S: 全屏
-      Ctrl/Cmd + Shift + D: 列选择模式切换`,
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {

@@ -107,6 +107,12 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   },
   onlyShowAccessibleDiffViewer: false, //只显示差异审查模式。
   columnSelection: false, // 列选择模式，是否启用列编辑
+  placeholder: `请粘贴文本或拖拽文件...
+
+      Ctrl/Cmd + Shift + F: 查找
+      Ctrl/Cmd + Shift + R: 替换
+      Ctrl/Cmd + Shift + S: 全屏
+      Ctrl/Cmd + Shift + D: 列选择模式切换`,
   find: {
     cursorMoveOnType: true
   },

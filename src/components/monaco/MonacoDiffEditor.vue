@@ -70,11 +70,6 @@ onMounted(() => {
       minimumLineCount: 1,
       contextLineCount: 1
     },
-    placeholder: `请粘贴文本或拖拽文件...
-
-      Ctrl/Cmd + F: 查找
-      Alt/Opt + Ctrl/Cmd + F: 替换
-      Shift + Ctrl/Cmd + F: 全屏`,
   })
 
   editor.setModel({
