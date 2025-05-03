@@ -31,7 +31,7 @@ const handleRunner = () => {
 
 <template>
   <div class="js-runner">
-    <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="javascript" style="height: calc(100vh - 400px)">
+    <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="javascript" height="calc(100vh - 400px)">
       <template #title>
         <a-flex align="center">
           <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>

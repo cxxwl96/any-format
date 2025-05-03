@@ -7,6 +7,7 @@ import { handleToggleFullScreen } from '@/utils/FullScreen'
 import {
   bindFullScreenKey,
   defaultDiffOptions,
+  defaultHeight,
   dragFileInEditorHandler,
   initMonacoEnvironment,
   type Language,
@@ -17,9 +18,11 @@ import { FullscreenOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlin
 const props = defineProps({
   originValue: { type: String, required: false, default: '' },
   modifiedValue: { type: String, required: false, default: '' },
-  showTool: { type: Boolean, required: false, default: true },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
-  theme: { type: String as PropType<Theme>, required: false, default: 'vs' }
+  theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
+  showTool: { type: Boolean, required: false, default: true },
+  wordWrap: { type: Boolean, required: false, default: false },
+  height: { type: String || 'auto', required: false, default: 'auto' }
 })
 const emits = defineEmits(['update:originValue', 'update:modifiedValue', 'originChange', 'modifiedChange', 'originDblClick', 'modifiedDblClick'])
 
@@ -29,7 +32,7 @@ let originModel: monaco.editor.ITextModel
 let modifiedModel: monaco.editor.ITextModel
 const showDiff = ref<boolean>(false) // 是否只显示差异
 const side = ref<boolean>(true) // 是否分栏
-const wordWrap = ref<boolean>(false) // 是否自动换行
+const wordWrap = ref(props.wordWrap) // 是否自动换行
 const diffCount = ref<number>(0) // 差异个数
 
 watch(() => props.originValue, value => {
@@ -42,12 +45,12 @@ watch(() => props.modifiedValue, value => {
     modifiedModel?.setValue(value)
   }
 })
-watch(() => showDiff.value, value => editor?.updateOptions({ hideUnchangedRegions: { enabled: value } }))
-watch(() => side.value, value => editor?.updateOptions({ renderSideBySide: value }))
 watch(() => wordWrap.value, value => editor?.updateOptions({
   diffWordWrap: value ? 'on' : 'off',
   wordWrap: value ? 'on' : 'off'
 }))
+watch(() => showDiff.value, value => editor?.updateOptions({ hideUnchangedRegions: { enabled: value } }))
+watch(() => side.value, value => editor?.updateOptions({ renderSideBySide: value }))
 
 // 初始化编辑器
 onMounted(() => {
@@ -101,11 +104,30 @@ onMounted(() => {
   dragFileInEditorHandler(editor.getOriginalEditor())
   dragFileInEditorHandler(editor.getModifiedEditor())
 
+  // 更新事件
+  editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
+
   // Shift + Ctrl/Cmd + F: 全屏
   bindFullScreenKey(editor.getOriginalEditor(), editorRef.value)
 
-  // 更新事件
-  editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
+  // 高度设置
+  if (String(props.height) === 'auto') {
+    // contentSizeChange事件
+    const handleContentSizeChange = () => {
+      const maxContentHeight = Math.max(editor.getOriginalEditor().getContentHeight(), editor.getModifiedEditor().getContentHeight())
+      editorRef.value.style.height = Math.max(maxContentHeight, defaultHeight) + 'px'
+    }
+    editor.getOriginalEditor().onDidContentSizeChange(handleContentSizeChange)
+    editor.getModifiedEditor().onDidContentSizeChange(handleContentSizeChange)
+    // 不显示小地图
+    editor.updateOptions({
+      minimap: {
+        enabled: false
+      }
+    })
+  } else {
+    editorRef.value.style.height = props.height
+  }
 })
 
 // 销毁编辑器
@@ -183,7 +205,6 @@ const handleShowDiffHandler = () => {
 
 <style scoped>
 .a-monaco-editor {
-  min-height: 200px;
   border: 1px solid #DDDDDD;
 }
 </style>

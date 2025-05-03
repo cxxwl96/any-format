@@ -4,7 +4,7 @@ import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, unref, watch } from 'vue'
 import {
   bindColumnSelectionKey, bindFullScreenKey,
-  defaultDiffOptions,
+  defaultDiffOptions, defaultHeight,
   dragFileInEditorHandler,
   initMonacoEnvironment,
   type Language,
@@ -14,14 +14,16 @@ import { handleToggleFullScreen } from '@/utils/FullScreen'
 import { DeleteOutlined, FullscreenOutlined, CopyOutlined, SnippetsOutlined } from '@ant-design/icons-vue'
 import { getTextFromClipboard, useCopyToClipboard } from '@/utils/useCopyToClipboard'
 import { message } from 'ant-design-vue'
+
 const { clipboardRef, copiedRef } = useCopyToClipboard()
 
 const props = defineProps({
   modelValue: { type: String, required: false, default: '' },
-  showTool: { type: Boolean, required: false, default: true },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
   theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
-  wordWrap: { type: Boolean, required: false, default: false }
+  showTool: { type: Boolean, required: false, default: true },
+  wordWrap: { type: Boolean, required: false, default: false },
+  height: { type: String || 'auto', required: false, default: 'auto' }
 })
 const emits = defineEmits(['update:modelValue', 'change', 'dblClick'])
 
@@ -56,7 +58,7 @@ onMounted(() => {
       Ctrl/Cmd + F: 查找
       Alt/Opt + Ctrl/Cmd + F: 替换
       Shift + Ctrl/Cmd + F: 全屏
-      Shift + Ctrl/Cmd + D: 列选择模式切换`,
+      Shift + Ctrl/Cmd + D: 列选择模式切换`
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -84,6 +86,22 @@ onMounted(() => {
   bindColumnSelectionKey(editor)
   // Shift + Ctrl/Cmd + F: 全屏
   bindFullScreenKey(editor, editorRef.value)
+
+  // 高度设置
+  if (String(props.height) === 'auto') {
+    // contentSizeChange事件
+    editor.onDidContentSizeChange(() => {
+      editorRef.value.style.height = Math.max(editor.getContentHeight(), defaultHeight) + 'px'
+    })
+    // 不显示小地图
+    editor.updateOptions({
+      minimap: {
+        enabled: false
+      }
+    })
+  } else {
+    editorRef.value.style.height = props.height
+  }
 })
 
 // 销毁编辑器
@@ -148,12 +166,11 @@ const handleClearText = () => {
     </a-col>
   </a-row>
   <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor"/>
+  <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor" />
 </template>
 
 <style scoped>
 .a-monaco-editor {
-  min-height: 200px;
   border: 1px solid #DDDDDD;
 }
 </style>

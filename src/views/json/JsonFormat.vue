@@ -177,7 +177,7 @@ function toggleView() {
 </script>
 
 <template>
-  <MonacoEditor v-if="monacoView" language="json" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate" style="height: calc(100vh - 200px)">
+  <MonacoEditor v-if="monacoView" language="json" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate">
     <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
@@ -216,7 +216,7 @@ function toggleView() {
     </a-space>
   </a-affix>
   <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-    <MonacoEditor v-model="result.xmlValue" language="xml" style="height: 70vh"/>
+    <MonacoEditor v-model="result.xmlValue" language="xml" height="70vh"/>
   </a-modal>
 </template>
 

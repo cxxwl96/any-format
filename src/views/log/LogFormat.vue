@@ -44,7 +44,6 @@ function dblClickHandler(value: string, target: Ref<string>) {
                 v-model="originValue"
                 @dblClick="originDblClickHandler"
                 @change="sessionCacheOrigin.cache"
-                style="height: calc(100vh - 200px)"
   >
     <template #title>
       <div class="tip-font">
@@ -59,7 +58,6 @@ function dblClickHandler(value: string, target: Ref<string>) {
                     @modifiedChange="sessionCacheModified.cache"
                     @originDblClick="originDblClickHandler"
                     @modifiedDblClick="modifiedDblClickHandler"
-                    style="height: calc(100vh - 200px)"
   >
     <template #title>
       <div class="tip-font">

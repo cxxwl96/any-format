@@ -111,7 +111,7 @@ const handleXml2Json = () => {
 </script>
 
 <template>
-  <MonacoEditor language="xml" v-model="data" @change="sessionCache.cache" @dblClick="handleFormat" style="height: calc(100vh - 200px)">
+  <MonacoEditor language="xml" v-model="data" @change="sessionCache.cache" @dblClick="handleFormat">
     <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
@@ -134,7 +134,7 @@ const handleXml2Json = () => {
     </a-space>
   </a-affix>
   <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-    <MonacoEditor v-model="jsonValue" language="json" style="height: 70vh"/>
+    <MonacoEditor v-model="jsonValue" language="json" height="70vh"/>
   </a-modal>
 </template>
 

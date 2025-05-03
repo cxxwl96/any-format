@@ -70,6 +70,7 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
     ambiguousCharacters: false // 禁用 unicode 字符的高亮显示
   }
 }
+export const defaultHeight = 200
 
 // 初始化环境
 export const initMonacoEnvironment = () => {
