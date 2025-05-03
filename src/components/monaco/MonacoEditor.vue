@@ -23,7 +23,8 @@ const props = defineProps({
   theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
   showTool: { type: Boolean, required: false, default: true },
   wordWrap: { type: Boolean, required: false, default: false },
-  height: { type: String || 'auto', required: false, default: 'auto' }
+  height: { type: String || 'auto', required: false, default: 'auto' },
+  options: { type: Object as PropType<monaco.editor.IStandaloneEditorConstructionOptions>, required: false}
 })
 const emits = defineEmits(['update:modelValue', 'change', 'dblClick'])
 
@@ -49,6 +50,7 @@ onMounted(() => {
 
   // 创建编辑器
   editor = monaco.editor.create(editorRef.value, {
+    ...props.options,
     ...defaultDiffOptions,
     theme: props.theme, // 主题
     wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
@@ -58,7 +60,7 @@ onMounted(() => {
       Ctrl/Cmd + F: 查找
       Alt/Opt + Ctrl/Cmd + F: 替换
       Shift + Ctrl/Cmd + F: 全屏
-      Shift + Ctrl/Cmd + D: 列选择模式切换`
+      Shift + Ctrl/Cmd + D: 列选择模式切换`,
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {

@@ -22,7 +22,8 @@ const props = defineProps({
   theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
   showTool: { type: Boolean, required: false, default: true },
   wordWrap: { type: Boolean, required: false, default: false },
-  height: { type: String || 'auto', required: false, default: 'auto' }
+  height: { type: String || 'auto', required: false, default: 'auto' },
+  options: { type: Object as PropType<monaco.editor.IStandaloneDiffEditorConstructionOptions>, required: false}
 })
 const emits = defineEmits(['update:originValue', 'update:modifiedValue', 'originChange', 'modifiedChange', 'originDblClick', 'modifiedDblClick'])
 
@@ -59,6 +60,7 @@ onMounted(() => {
 
   // 创建对比编辑器
   editor = monaco.editor.createDiffEditor(editorRef.value, {
+    ...props.options,
     ...defaultDiffOptions,
     theme: props.theme, // 主题
     renderSideBySide: side.value, // 是否side模式
@@ -72,7 +74,7 @@ onMounted(() => {
 
       Ctrl/Cmd + F: 查找
       Alt/Opt + Ctrl/Cmd + F: 替换
-      Shift + Ctrl/Cmd + F: 全屏`
+      Shift + Ctrl/Cmd + F: 全屏`,
   })
 
   editor.setModel({
