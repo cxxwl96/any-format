@@ -24,6 +24,9 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   },
   onlyShowAccessibleDiffViewer: false, //只显示差异审查模式。
   columnSelection: false, // 列选择模式，是否启用列编辑
+  find: {
+    cursorMoveOnType: true
+  },
 
   autoIndent: 'keep', // 自动缩进
   readOnly: false, // 是否只读  只影响右侧
