@@ -5,7 +5,7 @@ import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 import {
-  bindFullScreenKey,
+  bindKey,
   defaultDiffOptions,
   defaultHeight,
   dragFileInEditorHandler,
@@ -109,8 +109,9 @@ onMounted(() => {
   // 更新事件
   editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
 
-  // Shift + Ctrl/Cmd + F: 全屏
-  bindFullScreenKey(editor.getOriginalEditor(), editorRef.value)
+  // 绑定键盘事件
+  bindKey(editor.getOriginalEditor(), editorRef.value)
+  bindKey(editor.getModifiedEditor(), editorRef.value)
 
   // 高度设置
   if (String(props.height) === 'auto') {

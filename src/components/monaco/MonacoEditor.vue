@@ -3,8 +3,9 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
 import { onBeforeUnmount, onMounted, type PropType, ref, unref, watch } from 'vue'
 import {
-  bindColumnSelectionKey, bindFullScreenKey,
-  defaultDiffOptions, defaultHeight,
+  bindKey,
+  defaultDiffOptions,
+  defaultHeight,
   dragFileInEditorHandler,
   initMonacoEnvironment,
   type Language,
@@ -57,10 +58,10 @@ onMounted(() => {
 
     placeholder: `请粘贴文本或拖拽文件...
 
-      Ctrl/Cmd + F: 查找
-      Alt/Opt + Ctrl/Cmd + F: 替换
-      Shift + Ctrl/Cmd + F: 全屏
-      Shift + Ctrl/Cmd + D: 列选择模式切换`,
+      Ctrl/Cmd + Shift + F: 查找
+      Ctrl/Cmd + Shift + R: 替换
+      Ctrl/Cmd + Shift + S: 全屏
+      Ctrl/Cmd + Shift + D: 列选择模式切换`,
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -84,10 +85,10 @@ onMounted(() => {
   // drag事件
   dragFileInEditorHandler(editor)
 
-  // Shift + Ctrl/Cmd + D: 列选择模式切换
-  bindColumnSelectionKey(editor)
-  // Shift + Ctrl/Cmd + F: 全屏
-  bindFullScreenKey(editor, editorRef.value)
+  // 绑定键盘事件
+  bindKey(editor, editorRef.value)
+
+
 
   // 高度设置
   if (String(props.height) === 'auto') {

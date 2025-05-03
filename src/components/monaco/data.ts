@@ -8,7 +8,90 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 
 export type Theme = 'vs' | 'vs-dark' | 'hs-light' | 'hs-black'
-export type Language = 'plaintext' | 'abap' | 'apex' | 'azcli' | 'bat' | 'bicep' | 'cameligo' | 'clojure' | 'coffee' | 'cpp' | 'csharp' | 'csp' | 'css' | 'cypher' | 'dart' | 'dockerfile' | 'ecl' | 'elixir' | 'flow9' | 'freemarker2' | 'fsharp' | 'go' | 'graphql' | 'handlebars' | 'hcl' | 'html' | 'ini' | 'java' | 'javascript' | 'julia' | 'kotlin' | 'less' | 'lexon' | 'liquid' | 'lua' | 'm3' | 'markdown' | 'mdx' | 'mips' | 'msdax' | 'mysql' | 'objective-c' | 'pascal' | 'pascaligo' | 'perl' | 'pgsql' | 'php' | 'pla' | 'postiats' | 'powerquery' | 'powershell' | 'protobuf' | 'pug' | 'python' | 'qsharp' | 'r' | 'razor' | 'redis' | 'redshift' | 'restructuredtext' | 'ruby' | 'rust' | 'sb' | 'scala' | 'scheme' | 'scss' | 'shell' | 'solidity' | 'sophia' | 'sparql' | 'sql' | 'st' | 'swift' | 'systemverilog' | 'tcl' | 'twig' | 'typescript' | 'typespec' | 'vb' | 'wgsl' | 'xml' | 'yaml' | 'json'
+export type Language =
+  'plaintext'
+  | 'abap'
+  | 'apex'
+  | 'azcli'
+  | 'bat'
+  | 'bicep'
+  | 'cameligo'
+  | 'clojure'
+  | 'coffee'
+  | 'cpp'
+  | 'csharp'
+  | 'csp'
+  | 'css'
+  | 'cypher'
+  | 'dart'
+  | 'dockerfile'
+  | 'ecl'
+  | 'elixir'
+  | 'flow9'
+  | 'freemarker2'
+  | 'fsharp'
+  | 'go'
+  | 'graphql'
+  | 'handlebars'
+  | 'hcl'
+  | 'html'
+  | 'ini'
+  | 'java'
+  | 'javascript'
+  | 'julia'
+  | 'kotlin'
+  | 'less'
+  | 'lexon'
+  | 'liquid'
+  | 'lua'
+  | 'm3'
+  | 'markdown'
+  | 'mdx'
+  | 'mips'
+  | 'msdax'
+  | 'mysql'
+  | 'objective-c'
+  | 'pascal'
+  | 'pascaligo'
+  | 'perl'
+  | 'pgsql'
+  | 'php'
+  | 'pla'
+  | 'postiats'
+  | 'powerquery'
+  | 'powershell'
+  | 'protobuf'
+  | 'pug'
+  | 'python'
+  | 'qsharp'
+  | 'r'
+  | 'razor'
+  | 'redis'
+  | 'redshift'
+  | 'restructuredtext'
+  | 'ruby'
+  | 'rust'
+  | 'sb'
+  | 'scala'
+  | 'scheme'
+  | 'scss'
+  | 'shell'
+  | 'solidity'
+  | 'sophia'
+  | 'sparql'
+  | 'sql'
+  | 'st'
+  | 'swift'
+  | 'systemverilog'
+  | 'tcl'
+  | 'twig'
+  | 'typescript'
+  | 'typespec'
+  | 'vb'
+  | 'wgsl'
+  | 'xml'
+  | 'yaml'
+  | 'json'
 export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstructionOptions = {
   theme: 'vs', // 主题，'vs','vs-dark','hc-black','hc-light'
   renderSideBySide: true, // 是否side模式
@@ -39,7 +122,7 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
     enabled: true // 能否把文字拖拽进编辑器
   },
   minimap: {
-    enabled: true, // 是否启用代码缩略图
+    enabled: true // 是否启用代码缩略图
   },
   automaticLayout: true, // 控制编辑器是否自动调整布局以适应容器大小的变化
   overviewRulerBorder: false, // 滚动是否有边框
@@ -54,7 +137,7 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   scrollbar: {
     verticalScrollbarSize: 5, // 垂直滚动条宽度，默认px
     horizontalScrollbarSize: 5, // 水平滚动条高度
-    alwaysConsumeMouseWheel: false, // 始终使用鼠标滚轮事件（始终在浏览器事件上调用preventDefault（）和stopPropagation()）
+    alwaysConsumeMouseWheel: false // 始终使用鼠标滚轮事件（始终在浏览器事件上调用preventDefault（）和stopPropagation()）
   },
   scrollBeyondLastLine: false, // 启用该功能，滚动可以在最后一行之后增加一个屏幕大小，默认值为 true
   stickyScroll: {
@@ -111,26 +194,51 @@ export const dragFileInEditorHandler = (codeEditor: monaco.editor.IStandaloneCod
   })
 }
 
-// Shift + Ctrl/Cmd + D: 列选择模式切换
-export const bindColumnSelectionKey = (editor: monaco.editor.IStandaloneCodeEditor) => {
-  // Shift + Ctrl/Cmd + D: 列选择模式切换
-  editor.addCommand(
-    monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD,
-    () => {
-      editor.updateOptions({
-        columnSelection: !editor.getOption(monaco.editor.EditorOption.columnSelection),
-      })
+export const bindKey = (editor: monaco.editor.IStandaloneCodeEditor, node: HTMLElement) => {
+  // 1、Ctrl/Cmd + Shift + F: 查找
+  // 2、Ctrl/Cmd + Shift + R: 替换
+  node.addEventListener('keydown', e => {
+    // 在 Windows 系统中，metaKey 通常对应 Windows 键（徽标键）。在 Mac 系统中，metaKey 对应 Command 键（⌘）。
+    // 查找
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'f') {
+      editor?.getAction('actions.find')?.run()
+      e.preventDefault()
+      e.stopPropagation()
     }
-  )
-}
+    // 替换
+    else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'r') {
+      editor?.getAction('editor.action.startFindReplaceAction')?.run()
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  })
+  editor.onKeyDown((e) => {
+    // 阻止 Monaco 编辑器默认的按键处理
+    // 查找
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyF && !e.shiftKey && !e.altKey) {
+      e.stopPropagation()
+    }
+    // 替换
+    if (e.altKey && (e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyF) {
+      e.stopPropagation()
+    }
+  })
 
-// Shift + Ctrl/Cmd + F: 全屏
-export const bindFullScreenKey = (editor: monaco.editor.IStandaloneCodeEditor, node: HTMLElement | null) => {
-  // Shift + Ctrl/Cmd + F: 全屏
+  // 3、Ctrl/Cmd + Shift + S: 全屏
   editor.addCommand(
-    monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyF,
+    monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyS,
     () => {
       handleToggleFullScreen(node || undefined)
+    }
+  )
+
+  // 4、Ctrl/Cmd + Shift + D: 列选择模式切换
+  editor.addCommand(
+    monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyD,
+    () => {
+      editor.updateOptions({
+        columnSelection: !editor.getRawOptions().columnSelection
+      })
     }
   )
 }
