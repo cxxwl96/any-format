@@ -81,8 +81,6 @@ onMounted(() => {
   // 绑定键盘事件
   bindKey(editor, editorRef.value)
 
-
-
   // 高度设置
   if (String(props.height) === 'auto') {
     // contentSizeChange事件
