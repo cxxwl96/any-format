@@ -146,14 +146,4 @@ const copyResult = (e: MouseEvent) => {
   </div>
 </template>
 
-<style scoped>
-.drag-zone {
-  transition: background-color 0.3s;
-}
-
-.drag-zone.drag-over {
-  cursor: move;
-  border-radius: 6px;
-  border: 1px solid #4096ff;
-}
-</style>
+<style scoped></style>

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import QrCode from 'qrcode-decoder'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { handleReadDragFileEvent } from '@/utils/Event'
 
 const data = ref('')
 const qrCodeRef = ref()
@@ -20,7 +21,7 @@ const downloadImage = async () => {
   document.body.removeChild(a)
 }
 
-const handleDrop = ({ file }: { file: any }) => {
+const handleUploadChange = ({ file }: { file: any }) => {
   if (!file || !file.originFileObj) {
     message.error('请上传有效图片')
     return
@@ -39,6 +40,15 @@ const decodeQR = (file: File) => {
   const qr = new QrCode()
   return qr.decodeFromImage(url)
 }
+
+// 拖拽文件
+const dragging = ref(false)
+const handleDragFile = (event: DragEvent) => {
+  handleReadDragFileEvent(event, (value) => {
+    data.value = value as string
+  })
+  dragging.value = false
+}
 </script>
 
 <template>
@@ -54,7 +64,13 @@ const decodeQR = (file: File) => {
           :auto-size="{ minRows: 10, maxRows: 30 }"
           allowClear
           showCount
-          placeholder="输入schema生成二维码"
+          placeholder="输入schema或拖拽文件到此处生成二维码"
+          @dragenter.prevent="dragging=true"
+          @dragleave.prevent="dragging=false"
+          @dragover.prevent
+          @drop.prevent="handleDragFile"
+          class="drag-zone"
+          :class="{'drag-over': dragging}"
         />
       </a-col>
       <a-col flex="3">
@@ -72,7 +88,7 @@ const decodeQR = (file: File) => {
             </p>
           </a-flex>
           <a-divider vertical />
-          <a-upload-dragger accept="image/*" :showUploadList="false" :action="undefined" @change="handleDrop"
+          <a-upload-dragger accept="image/*" :showUploadList="false" :action="undefined" @change="handleUploadChange"
                             :customRequest="()=>{}" style="width: 100%">
             <p class="ant-upload-drag-icon"><span role="img" aria-label="inbox" class="anticon anticon-inbox"><svg
               focusable="false" data-icon="inbox" width="1em" height="1em" fill="currentColor" aria-hidden="true"

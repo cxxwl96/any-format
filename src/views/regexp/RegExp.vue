@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import type { SelectProps } from 'ant-design-vue'
 import { message } from 'ant-design-vue'
+import { handleReadDragFileEvent } from '@/utils/Event'
 
 const form = ref<{
   regexp: string,
@@ -81,6 +82,14 @@ const handleMatchAll = () => {
   }
   matchResult.length > 0 ? message.success('匹配成功') : message.error('匹配失败')
 }
+// 拖拽文件
+const dragging = ref(false)
+const handleDragFile = (event: DragEvent) => {
+  handleReadDragFileEvent(event, (value) => {
+    form.value.text = value as string
+  })
+  dragging.value = false
+}
 </script>
 
 <template>
@@ -110,9 +119,16 @@ const handleMatchAll = () => {
     <a-textarea
       v-model:value="form.text"
       :auto-size="{minRows:10, maxRows:25}"
-      allow-clear
-      show-count
-      placeholder="输入匹配文本" />
+      allowClear
+      showCount
+      placeholder="输入匹配文本或拖拽文件到此处"
+      @dragenter.prevent="dragging=true"
+      @dragleave.prevent="dragging=false"
+      @dragover.prevent
+      @drop.prevent="handleDragFile"
+      class="drag-zone"
+      :class="{'drag-over': dragging}"
+    />
     <div>
       <div class="tip-font">
         共匹配到
