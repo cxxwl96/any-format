@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { CodeMirror, MODE } from '@/components/CodeEditor'
 import { ref, unref } from 'vue'
 import vkbeautify from 'vkbeautify'
 import { notification } from 'ant-design-vue'

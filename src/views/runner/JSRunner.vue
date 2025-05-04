@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { CodeMirror } from '@/components/CodeEditor'
 import { ref, watch } from 'vue'
 import './Context'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
@@ -33,7 +32,7 @@ const handleRunner = () => {
   <div class="js-runner">
     <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="javascript" height="calc(100vh - 400px)">
       <template #title>
-        <a-flex align="center">
+        <a-flex align="center" gap="middle">
           <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
           <a-button type="primary" @click="handleRunner" class="run-btn" size="small">运行脚本</a-button>
         </a-flex>
@@ -51,14 +50,6 @@ const handleRunner = () => {
   }
   .run-btn {
     float: right;
-  }
-  :global(.CodeMirror) {
-    min-height: 300px;
-    max-height: calc(100vh - 350px);
-  }
-  :global(.CodeMirror-scroll) {
-    min-height: 300px;
-    max-height: calc(100vh - 350px);
   }
 }
 </style>
