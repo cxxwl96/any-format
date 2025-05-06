@@ -190,18 +190,26 @@ function toggleView() {
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
       <a-button v-if="monacoView" type="primary" @click="formatValidate" size="small">格式化校验</a-button>
       <a-button v-if="monacoView" @click="compress" size="small">压缩</a-button>
-      <a-dropdown-button v-if="monacoView" @click="deepDelEscape(true)" size="small">
+      <a-dropdown-button v-if="monacoView" @click="deepDelEscape(true)" size="small" placement="topRight">
         深度去除转义
         <template #overlay>
-          <a-button @click="deepDelEscape(false)" size="small"> 不加 [@String]</a-button>
+          <a-menu>
+            <a-menu-item key="1" @click="deepDelEscape(false)">
+              不加 [@String]
+            </a-menu-item>
+          </a-menu>
         </template>
       </a-dropdown-button>
       <a-button v-if="monacoView" @click="delEscape" size="small">去除转义</a-button>
       <a-button v-if="monacoView" @click="escape" size="small">转义</a-button>
-      <a-dropdown-button v-if="monacoView" @click="fieldSort(true)" size="small">
+      <a-dropdown-button v-if="monacoView" @click="fieldSort(true)" size="small" placement="topRight">
         字段升序
         <template #overlay>
-          <a-button @click="fieldSort(false)" size="small">字段降序</a-button>
+          <a-menu>
+            <a-menu-item key="1" @click="fieldSort(false)">
+              字段降序
+            </a-menu-item>
+          </a-menu>
         </template>
       </a-dropdown-button>
       <a-divider v-if="monacoView" type="vertical"/>
@@ -220,4 +228,12 @@ function toggleView() {
   </a-modal>
 </template>
 
-<style scoped></style>
+<style scoped>
+:global(.ant-dropdown .ant-dropdown-menu) {
+  padding: 0;
+  border-radius: 3px;
+}
+:global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
+  padding: 3px 5px;
+}
+</style>

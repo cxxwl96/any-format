@@ -122,10 +122,14 @@ const handleXml2Json = () => {
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
       <a-button type="primary" @click="handleFormat" size="small">格式化</a-button>
       <a-button @click="handleCompress" size="small">压缩</a-button>
-      <a-dropdown-button @click="handleSort" size="small">
+      <a-dropdown-button @click="handleSort" size="small" placement="topRight">
         节点升序
         <template #overlay>
-          <a-button @click="handleSort(false)" size="small">节点降序</a-button>
+          <a-menu>
+            <a-menu-item key="1" @click="handleSort(false)">
+              节点降序
+            </a-menu-item>
+          </a-menu>
         </template>
       </a-dropdown-button>
       <a-divider type="vertical"/>
@@ -137,4 +141,12 @@ const handleXml2Json = () => {
   </a-modal>
 </template>
 
-<style scoped></style>
+<style scoped>
+:global(.ant-dropdown .ant-dropdown-menu) {
+  padding: 0;
+  border-radius: 3px;
+}
+:global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
+  padding: 3px 5px;
+}
+</style>

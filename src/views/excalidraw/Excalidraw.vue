@@ -1,5 +1,5 @@
 <template>
-  <div id="excalidraw" />
+  <div ref="excalidrawRef" />
 </template>
 
 <script setup lang="ts">
@@ -21,6 +21,7 @@ interface ExcalidrawProps {
 }
 
 const localCache = useLocal('excalidraw', 'data');
+const excalidrawRef = ref()
 const excalidrawApi = ref()
 const initialData = ref<ExcalidrawProps>(localCache.load() as ExcalidrawProps || {})
 
@@ -33,7 +34,7 @@ const processTypeError = () => {
 onMounted(() => {
   processTypeError()
   // @ts-ignore
-  let root = ReactDOM.createRoot(document.getElementById('excalidraw'))
+  let root = ReactDOM.createRoot(excalidrawRef.value)
   root.render(React.createElement(
     'div',
     {

@@ -29,7 +29,7 @@ const handleRunner = () => {
 </script>
 
 <template>
-  <div class="js-runner">
+  <a-space direction="vertical" :size="20" style="width: 100%">
     <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="javascript" height="calc(100vh - 400px)">
       <template #title>
         <a-flex align="center" gap="middle">
@@ -40,16 +40,7 @@ const handleRunner = () => {
     </MonacoEditor>
     <div class="tip-font">运行结果：</div>
     <a-textarea v-model:value="result.data" :style="{color: result.success ? 'black' : 'red'}" readonly/>
-  </div>
+  </a-space>
 </template>
 
-<style scoped>
-.js-runner {
-  .tip-font {
-    display: inline-block;
-  }
-  .run-btn {
-    float: right;
-  }
-}
-</style>
+<style scoped></style>
