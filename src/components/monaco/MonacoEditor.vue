@@ -38,6 +38,16 @@ watch(() => props.modelValue, value => {
     model?.setValue(value)
   }
 })
+watch(() => props.language, value => {
+  if (model) {
+    monaco.editor.setModelLanguage(model, value)
+  }
+})
+watch(() => props.theme, value => {
+  editor?.updateOptions({
+    theme: value
+  })
+})
 watch(() => wordWrap.value, value => {
   editor?.updateOptions({
     wordWrap: value ? 'on' : 'off'

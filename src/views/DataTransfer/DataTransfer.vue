@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { DataTypeArray, type Type, DataTransfer } from '@/views/DataTransfer/DataTransfer'
 import { useSessionCache } from '@/utils/CacheData'
 import { message, notification } from 'ant-design-vue'
 import { MonacoEditor } from '@/components/monaco'
+import type { Language } from '@/components/monaco/data'
+
 const sessionCache = useSessionCache('DataTransfer')
 
 const data = ref<{
   value: string
-  type: Type
-  resultValue: string
+  type?: Type
+  lang?: Language
+  toValue: string
+  toType?: Type
+  toLang?: Language
 }>({
   value: '',
   type: DataTypeArray[0].type,
-  resultValue: '',
+  lang: DataTypeArray[0].lang,
+  toValue: ''
 })
 
 onMounted(() => {
@@ -21,6 +27,15 @@ onMounted(() => {
     data.value = sessionCache.load()
   }
 })
+watch(() => data.value.type, val => data.value.lang = getLang(val))
+watch(() => data.value.toType, val => data.value.toLang = getLang(val))
+
+const getLang = (type?: Type): Language | undefined => {
+  if (type) {
+    return DataTypeArray.find(dataType => dataType.type === type)?.lang
+  }
+  return undefined
+}
 
 const handleChange = () => {
   sessionCache.cache(data.value)
@@ -28,26 +43,41 @@ const handleChange = () => {
 
 const handleTransfer = (toType: Type) => {
   try {
+    data.value.toType = toType
     if (!data.value.value) {
       message.error('请输入内容')
       return
     }
-    data.value.resultValue = new DataTransfer(data.value.value, data.value.type).to(toType, true) || ''
+    data.value.toValue = new DataTransfer(data.value.value, data.value.type || DataTypeArray[0].type).to(toType, true) || ''
     message.success('转换成功')
   } catch (e: any) {
     notification.error({
       message: '转换失败',
       description: e?.message,
-      placement: 'topRight',
+      placement: 'topRight'
     })
   }
+}
+
+const handleSwitchValue = () => {
+  const value = data.value.value
+  data.value.value = data.value.toValue
+  data.value.toValue = value
+
+  const lang = data.value.lang
+  data.value.lang = data.value.toLang
+  data.value.toLang = lang
+
+  const type = data.value.type
+  data.value.type = data.value.toType
+  data.value.toType = type
 }
 </script>
 
 <template>
   <a-row :gutter="20">
     <a-col :span="12">
-      <MonacoEditor v-model="data.value" @change="handleChange" height="75vh" :showTool="false">
+      <MonacoEditor :language="data.lang" v-model="data.value" @change="handleChange" height="75vh" :showTool="false">
         <template #title>
           <span class="tip-font">类型：</span>
           <a-radio-group v-model:value="data.type" size="small">
@@ -57,20 +87,24 @@ const handleTransfer = (toType: Type) => {
           </a-radio-group>
         </template>
       </MonacoEditor>
-      <a-divider style="margin: 10px 0"/>
+      <a-divider style="margin: 10px 0" />
     </a-col>
     <a-col :span="12">
-      <MonacoEditor v-model="data.resultValue" @change="handleChange" height="75vh" :showTool="false">
+      <MonacoEditor :language="data.toLang" v-model="data.toValue" @change="handleChange" height="75vh"
+                    :showTool="false">
         <template #title>
           <span class="tip-font">转换为：</span>
           <a-button-group size="small">
-            <a-button v-for="dataType in DataTypeArray" :key="dataType.type" @click="handleTransfer(dataType.type)" type="primary">
+            <a-button v-for="dataType in DataTypeArray" :key="dataType.type" @click="handleTransfer(dataType.type)"
+                      type="primary">
               {{ dataType.type }}
             </a-button>
           </a-button-group>
+          <a-divider type="vertical" />
+          <a-button @click="handleSwitchValue" size="small">交换内容</a-button>
         </template>
       </MonacoEditor>
-      <a-divider style="margin: 10px 0"/>
+      <a-divider style="margin: 10px 0" />
     </a-col>
   </a-row>
 </template>
