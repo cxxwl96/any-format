@@ -68,7 +68,7 @@ const iconRef = ref();
 const menuRef = ref();
 // 图标位置
 const left = ref(0);
-const top = ref(60);
+const top = ref(10);
 // 菜单位置
 const menuLeftPos = ref(0);
 const menuTop = ref(0);

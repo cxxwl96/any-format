@@ -4,6 +4,7 @@ import { getEnv } from '@/data/env'
 import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
+import DataTransfer from '@/views/DataTransfer/DataTransfer.vue'
 import QrCode from '@/views/qrcode/QrCode.vue'
 import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
@@ -35,7 +36,12 @@ const menus: MenuItem[] = [
     component: shallowRef(XmlFormat),
   },
   {
-    label: 'TextCompare',
+    label: '转换',
+    key: 'DataTransfer',
+    component: shallowRef(DataTransfer),
+  },
+  {
+    label: '文本对比',
     key: 'TextCompare',
     component: shallowRef(TextComparator)
   },

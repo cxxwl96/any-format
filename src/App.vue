@@ -30,7 +30,7 @@ onMounted(() => {
 
 <template>
   <div class="header" v-if="!activeMenu.hideHeader">
-    <div class="glitch text-3D neon">
+    <div class="glitch text-3D neon" style="text-align: right;">
       {{activeMenu.label}}
     </div>
     <div class="bottom-border-line"/>

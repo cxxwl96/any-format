@@ -4,14 +4,10 @@ import vkbeautify from 'vkbeautify'
 import { notification } from 'ant-design-vue'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import { useSessionCache } from '@/utils/CacheData'
-import { XML2JSON } from '@/data'
-import { validateJson } from '@/utils/jsonUtil'
 import { MonacoEditor } from '@/components/monaco'
 
 const sessionCache = useSessionCache('XmlFormat')
 const data = ref<string>(sessionCache.load())
-const jsonValue = ref<string>('')
-const openModal = ref<boolean>(false)
 
 // 格式化
 function handleFormat() {
@@ -81,32 +77,6 @@ function handleSort(asc: boolean = true) {
   data.value = xmlHeader + deepSort(Array.from(xmlDoc.children), asc).map(item => item.outerHTML).join('\r')
   handleFormat()
 }
-
-// XML转JSON
-const handleXml2Json = () => {
-  const value = unref(data.value)
-  if (value) {
-    try {
-      const json = JSON.stringify(XML2JSON.xml2js(value))
-      const result = validateJson(json)
-      if (result.error) {
-        throw new Error(result.message)
-      }
-      notification['success']({
-        message: '转换成功',
-        placement: 'topRight'
-      })
-      jsonValue.value = result.value
-      openModal.value = true
-    } catch (e: any) {
-      notification['error']({
-        message: '转换失败',
-        description: e?.message,
-        placement: 'topRight'
-      })
-    }
-  }
-}
 </script>
 
 <template>
@@ -132,13 +102,8 @@ const handleXml2Json = () => {
           </a-menu>
         </template>
       </a-dropdown-button>
-      <a-divider type="vertical"/>
-      <a-button type="primary" @click="handleXml2Json" size="small">XML转JSON</a-button>
     </a-space>
   </a-affix>
-  <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-    <MonacoEditor v-model="jsonValue" language="json" height="70vh"/>
-  </a-modal>
 </template>
 
 <style scoped>

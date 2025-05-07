@@ -7,8 +7,6 @@ import { SwapOutlined } from '@ant-design/icons-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
 import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
 import { useSessionCache } from '@/utils/CacheData'
-import { XML2JSON } from '@/data'
-import vkbeautify from 'vkbeautify'
 import { MonacoEditor } from '@/components/monaco'
 
 const sessionCache = useSessionCache('JsonFormat')
@@ -17,9 +15,9 @@ const result = ref<{
   value: string;
   error: boolean;
   message: string;
-  xmlValue?: string;
 }>({ value: sessionCache.load(), error: false, message: '' })
-const openModal = ref<boolean>(false)
+// 切换视图
+const monacoView = ref(true)
 
 // 格式化校验
 function formatValidate(tip: boolean = true) {
@@ -145,35 +143,6 @@ function fieldSort(asc: boolean) {
     formatValidate(false)
   }
 }
-
-// JSON转XML
-const handleJson2Xml = () => {
-  const value = formatValidate(false)
-  if (value) {
-    try {
-      const xml = XML2JSON.js2xml(JSON.parse(value)).replace(/&quot;/g, '"')
-      result.value.xmlValue = vkbeautify.xml(xml)
-      notification['success']({
-        message: '转换成功',
-        placement: 'topRight'
-      })
-      openModal.value = true
-    } catch (e: any) {
-      notification['error']({
-        message: '转换失败',
-        description: e?.message,
-        placement: 'topRight'
-      })
-    }
-  }
-}
-
-// 切换视图
-const monacoView = ref(true)
-
-function toggleView() {
-  monacoView.value = !monacoView.value
-}
 </script>
 
 <template>
@@ -213,9 +182,7 @@ function toggleView() {
         </template>
       </a-dropdown-button>
       <a-divider v-if="monacoView" type="vertical"/>
-      <a-button v-if="monacoView" type="primary" @click="handleJson2Xml" size="small">JSON转XML</a-button>
-      <a-divider v-if="monacoView" type="vertical"/>
-      <a-button type="primary" @click="toggleView" size="small">
+      <a-button type="primary" @click="monacoView = !monacoView" size="small">
         <template #icon>
           <SwapOutlined />
         </template>
@@ -223,9 +190,6 @@ function toggleView() {
       </a-button>
     </a-space>
   </a-affix>
-  <a-modal v-model:open="openModal" @ok="openModal=false" width="80%" centered>
-    <MonacoEditor v-model="result.xmlValue" language="xml" height="70vh"/>
-  </a-modal>
 </template>
 
 <style scoped>
