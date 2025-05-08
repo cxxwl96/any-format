@@ -2,6 +2,7 @@ import vkbeautify from 'vkbeautify'
 import YAML from 'js-yaml'
 import x2js from 'x2js'
 import type { Language } from '@/components/monaco/data'
+import { validateJson } from '@/utils/jsonUtil'
 
 export type Type = 'JSON' | 'XML' | 'YAML'
 export const DataTypeArray: { lang: Language; type: Type }[] = [
@@ -72,6 +73,8 @@ export class DataTransfer {
     }
     // 转换
     const json = this.XML2JSON.xml2js(value)
+    // JSON校验
+    validateJson(json, true)
     return pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json)
   }
 
@@ -93,6 +96,8 @@ export class DataTransfer {
    */
   private yaml2json = (value: string, pretty?: boolean): string => {
     const json = YAML.load(value)
+    // JSON校验
+    validateJson(json, true)
     return pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json)
   }
 
@@ -172,6 +177,7 @@ export class DataTransfer {
       case 'YAML':
         return this.toYAML(pretty)
     }
+    throw new Error('Unsupported type')
   }
 }
 

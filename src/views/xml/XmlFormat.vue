@@ -103,7 +103,7 @@ function handleSort(asc: boolean = true) {
           </a-menu>
         </template>
       </a-dropdown-button>
-      <DataTransferButton :value="data" :type="'XML'" :toTypes="['JSON', 'YAML']"/>
+      <DataTransferButton :value="data" :type="'XML'" :toTypes="['JSON', 'YAML']" />
     </a-space>
   </a-affix>
 </template>
@@ -113,6 +113,7 @@ function handleSort(asc: boolean = true) {
   padding: 0 !important;
   border-radius: 3px !important;
 }
+
 :global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
   padding: 0 10px !important;
 }

@@ -2,7 +2,7 @@
 import { jsonlint } from './jsonlint.js'
 import { isString } from './is'
 
-export function validateJson(value: string | object | any): {
+export function validateJson(value: string | object | any, throwError?: boolean): {
   value: string;
   error: boolean;
   message: string;
@@ -22,6 +22,9 @@ export function validateJson(value: string | object | any): {
       result.message = e?.message;
     }
     result.value = value as string;
+  }
+  if (throwError && result.error) {
+    throw new Error(result.message);
   }
   return result;
 }

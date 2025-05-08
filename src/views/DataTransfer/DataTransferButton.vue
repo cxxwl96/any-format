@@ -11,7 +11,8 @@ import { useClipboard } from '@/utils/Clipboard'
 const props = defineProps({
   value: { type: String },
   type: { type: String as PropType<Type>, required: true },
-  toTypes: { type: Object as PropType<Array<Type>>, required: true }
+  toTypes: { type: Object as PropType<Array<Type>>, required: true },
+  dropdownButton: { type: Boolean, default: true }
 })
 
 const data = ref<{
@@ -49,10 +50,11 @@ const handleOk = async () => {
 </script>
 
 <template>
-  <a-button v-if="toTypes.length === 1" @click="handleDataTransfer(toTypes[0])" size="small">{{ `转${toTypes[0]}` }}
-  </a-button>
-  <a-dropdown-button v-if="toTypes.length > 1" @click="handleDataTransfer(toTypes[0])" size="small"
-                     placement="topRight">
+  <a-dropdown-button v-if="dropdownButton && toTypes.length > 1"
+                     @click="handleDataTransfer(toTypes[0])"
+                     size="small"
+                     placement="topRight"
+  >
     {{ `转${toTypes[0]}` }}
     <template #overlay>
       <a-menu>
@@ -62,6 +64,16 @@ const handleOk = async () => {
       </a-menu>
     </template>
   </a-dropdown-button>
+  <a-space v-else :size="[8, 16]">
+    <a-button
+      v-for="toType in toTypes"
+      :key="toType"
+      @click="handleDataTransfer(toType)"
+      size="small"
+    >
+      {{ `转${toType}` }}
+    </a-button>
+  </a-space>
   <a-modal v-model:open="data.openModel"
            :cancel-text="'关闭'"
            :ok-text="'复制'"

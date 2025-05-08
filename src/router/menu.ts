@@ -13,7 +13,7 @@ import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
 import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
 
-// for test demo
+// for dev test demo
 import Demo from '@/views/demo/Demo.vue'
 
 const isDev = getEnv('DEV')
