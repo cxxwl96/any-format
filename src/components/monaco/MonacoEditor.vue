@@ -13,10 +13,7 @@ import {
 } from '@/components/monaco/data'
 import { handleToggleFullScreen } from '@/utils/FullScreen'
 import { DeleteOutlined, FullscreenOutlined, CopyOutlined, SnippetsOutlined } from '@ant-design/icons-vue'
-import { getTextFromClipboard, useCopyToClipboard } from '@/utils/useCopyToClipboard'
-import { message } from 'ant-design-vue'
-
-const { clipboardRef, copiedRef } = useCopyToClipboard()
+import { useClipboard } from '@/utils/Clipboard'
 
 const props = defineProps({
   modelValue: { type: String, required: false, default: '' },
@@ -25,7 +22,7 @@ const props = defineProps({
   showTool: { type: Boolean, required: false, default: true },
   wordWrap: { type: Boolean, required: false, default: false },
   height: { type: String || 'auto', required: false, default: 'auto' },
-  options: { type: Object as PropType<monaco.editor.IStandaloneEditorConstructionOptions>, required: false}
+  options: { type: Object as PropType<monaco.editor.IStandaloneEditorConstructionOptions>, required: false }
 })
 const emits = defineEmits(['update:modelValue', 'change', 'dblClick'])
 
@@ -64,7 +61,7 @@ onMounted(() => {
     ...props.options,
     ...defaultDiffOptions,
     theme: props.theme, // 主题
-    wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
+    wordWrap: wordWrap.value ? 'on' : 'off' // 自动换行
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -113,7 +110,7 @@ onBeforeUnmount(() => editor?.dispose())
 
 // 粘贴
 const handlePaste = async () => {
-  const value = await getTextFromClipboard()
+  const value = await useClipboard().pasteText()
   if (value) {
     model?.setValue(value)
   }
@@ -122,10 +119,7 @@ const handlePaste = async () => {
 const handleCopy = async () => {
   const value = model.getValue()
   if (value) {
-    clipboardRef.value = value
-    if (unref(copiedRef)) {
-      message.success('复制成功')
-    }
+    useClipboard().copyText(value)
   }
 }
 // 清除

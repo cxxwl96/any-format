@@ -9,8 +9,7 @@ import JsonEditor, {
 import 'jsoneditor/dist/jsoneditor.min.css'
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Nullable } from '@/data'
-import { useCopyToClipboard } from '@/utils/useCopyToClipboard'
-const { clipboardRef } = useCopyToClipboard();
+import { useClipboard } from '@/utils/Clipboard'
 
 const props = defineProps({
   // 双重绑定一定要modelValue，更新时使用emit('update:modelValue')更新
@@ -114,7 +113,7 @@ function init() {
                 path += '.' + p
               }
             }
-            clipboardRef.value = path
+            useClipboard().copyText(path)
           }
         }
       }

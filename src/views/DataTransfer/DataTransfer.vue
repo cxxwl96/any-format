@@ -10,16 +10,18 @@ const sessionCache = useSessionCache('DataTransfer')
 
 const data = ref<{
   value: string
-  type?: Type
+  type: Type
   lang?: Language
   toValue: string
-  toType?: Type
+  toType: Type
   toLang?: Language
 }>({
   value: '',
   type: DataTypeArray[0].type,
   lang: DataTypeArray[0].lang,
-  toValue: ''
+  toValue: '',
+  toType: DataTypeArray[0].type,
+  toLang: DataTypeArray[0].lang
 })
 
 onMounted(() => {
@@ -27,15 +29,8 @@ onMounted(() => {
     data.value = sessionCache.load()
   }
 })
-watch(() => data.value.type, val => data.value.lang = getLang(val))
-watch(() => data.value.toType, val => data.value.toLang = getLang(val))
-
-const getLang = (type?: Type): Language | undefined => {
-  if (type) {
-    return DataTypeArray.find(dataType => dataType.type === type)?.lang
-  }
-  return undefined
-}
+watch(() => data.value.type, val => data.value.lang = DataTransfer.getLang(val))
+watch(() => data.value.toType, val => data.value.toLang = DataTransfer.getLang(val))
 
 const handleChange = () => {
   sessionCache.cache(data.value)

@@ -5,7 +5,7 @@ import useFormat from './Format'
 import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
-import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { useClipboard } from '@/utils/Clipboard'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
@@ -47,7 +47,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
   >
     <template #title>
       <div class="tip-font">
-        Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+        Tip：<a @click="async () => {originValue = await useClipboard().pasteText()}">粘贴文本</a>，双击格式化
       </div>
     </template>
   </MonacoEditor>
@@ -61,8 +61,8 @@ function dblClickHandler(value: string, target: Ref<string>) {
   >
     <template #title>
       <div class="tip-font">
-        Tip：<a @click="async () => {originValue = await getTextFromClipboard()}">粘贴左边</a>，双击格式化；<a
-        @click="async () => {modifiedValue = await getTextFromClipboard()}">粘贴右边</a>，双击格式化。
+        Tip：<a @click="async () => {originValue = await useClipboard().pasteText()}">粘贴左边</a>，双击格式化；<a
+        @click="async () => {modifiedValue = await useClipboard().pasteText()}">粘贴右边</a>，双击格式化。
       </div>
     </template>
   </MonacoDiffEditor>

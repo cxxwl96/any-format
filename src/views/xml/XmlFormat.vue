@@ -2,9 +2,10 @@
 import { ref, unref } from 'vue'
 import vkbeautify from 'vkbeautify'
 import { notification } from 'ant-design-vue'
-import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
+import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
 
 const sessionCache = useSessionCache('XmlFormat')
 const data = ref<string>(sessionCache.load())
@@ -83,7 +84,7 @@ function handleSort(asc: boolean = true) {
   <MonacoEditor language="xml" v-model="data" @change="sessionCache.cache" @dblClick="handleFormat">
     <template #title>
       <div class="tip-font">
-        Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+        Tip：<a @click="async () => {data = await useClipboard().pasteText()}">粘贴文本</a>，双击格式化
       </div>
     </template>
   </MonacoEditor>
@@ -102,12 +103,17 @@ function handleSort(asc: boolean = true) {
           </a-menu>
         </template>
       </a-dropdown-button>
+      <DataTransferButton :value="data" :type="'XML'" :toTypes="['JSON', 'YAML']"/>
     </a-space>
   </a-affix>
 </template>
 
 <style scoped>
+:global(.ant-dropdown .ant-dropdown-menu) {
+  padding: 0 !important;
+  border-radius: 3px !important;
+}
 :global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
-  padding: 5px 10px !important;
+  padding: 0 10px !important;
 }
 </style>

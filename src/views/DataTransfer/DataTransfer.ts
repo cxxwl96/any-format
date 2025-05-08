@@ -29,11 +29,8 @@ export class DataTransfer {
    *
    * @param type
    */
-  public static getLang = (type?: Type): Language | undefined => {
-    if (type) {
-      return DataTypeArray.find(dataType => dataType.type === type)?.lang
-    }
-    return undefined
+  public static getLang = (type: Type): Language | undefined => {
+    return DataTypeArray.find(dataType => dataType.type === type)?.lang || undefined
   }
 
   /**

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import QrCode from 'qrcode-decoder'
-import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { useClipboard } from '@/utils/Clipboard'
 import { handleReadDragFileEvent } from '@/utils/Event'
 
 const data = ref('')
@@ -54,7 +54,7 @@ const handleDragFile = (event: DragEvent) => {
 <template>
   <div class="content-center">
     <div class="tip-font">
-      Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴Scheme</a>生成二维码
+      Tip：<a @click="async () => {data = await useClipboard().pasteText()}">粘贴Scheme</a>生成二维码
     </div>
     <a-divider style="margin: 10px 0" />
     <a-row :gutter="20" justify="center">

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import './Context'
-import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
 
@@ -33,7 +33,7 @@ const handleRunner = () => {
     <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="javascript" height="calc(100vh - 400px)">
       <template #title>
         <a-flex align="center" gap="middle">
-          <div class="tip-font">脚本：<a @click="async () => {script = await getTextFromClipboard()}">粘贴脚本</a></div>
+          <div class="tip-font">脚本：<a @click="async () => {script = await useClipboard().pasteText()}">粘贴脚本</a></div>
           <a-button type="primary" @click="handleRunner" class="run-btn" size="small">运行脚本</a-button>
         </a-flex>
       </template>

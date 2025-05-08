@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref, unref } from 'vue'
+import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { Base64 } from 'js-base64'
 import CryptoJS from 'crypto-js'
-import { getTextFromClipboard, useCopyToClipboard } from '@/utils/useCopyToClipboard'
+import { useClipboard } from '@/utils/Clipboard'
 import { handleReadDragFileEvent } from '@/utils/Event'
-
-const { clipboardRef, copiedRef } = useCopyToClipboard()
 
 const data = ref('')
 const resultData = ref('')
@@ -87,10 +85,7 @@ const copyResult = (e: MouseEvent) => {
     } else {
       document.getSelection()?.empty()
     }
-    clipboardRef.value = resultData.value
-    if (unref(copiedRef)) {
-      message.success('复制成功')
-    }
+    useClipboard().copyText(resultData.value)
   }
 }
 </script>
@@ -99,7 +94,7 @@ const copyResult = (e: MouseEvent) => {
     <a-row :gutter="20">
       <a-col flex="5">
         <div class="tip-font">
-          Tip：<a @click="async () => {data = await getTextFromClipboard()}">粘贴文本</a>或拖拽文件到此处，默认进行Base64编码
+          Tip：<a @click="async () => {data = await useClipboard().pasteText()}">粘贴文本</a>或拖拽文件到此处，默认进行Base64编码
         </div>
         <a-divider style="margin: 10px 0" />
         <a-textarea

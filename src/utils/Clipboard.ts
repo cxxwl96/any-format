@@ -1,35 +1,18 @@
-import { ref, watch } from 'vue'
+import { message } from 'ant-design-vue'
 
-import { isDef } from '@/utils/is'
-
-interface Options {
-  target?: HTMLElement;
-}
-
-export function useCopyToClipboard(initial?: string) {
-  const clipboardRef = ref(initial || '')
-  const isSuccessRef = ref(false)
-  const copiedRef = ref(false)
-
-  watch(
-    clipboardRef,
-    (str?: string) => {
-      if (isDef(str)) {
-        copiedRef.value = true
-        isSuccessRef.value = copyTextToClipboard(str)
-      }
-    },
-    { immediate: !!initial, flush: 'sync' }
-  )
-
-  return { clipboardRef, isSuccessRef, copiedRef }
-}
-
-export function copyTextToClipboard(input: string, { target = document.body }: Options = {}) {
+/**
+ * 复制
+ *
+ * @param value
+ */
+const copyText = (value: string) => {
+  if (!value) {
+    return
+  }
   const element = document.createElement('textarea')
   const previouslyFocusedElement = document.activeElement
 
-  element.value = input
+  element.value = value
 
   element.setAttribute('readonly', '');
 
@@ -44,11 +27,11 @@ export function copyTextToClipboard(input: string, { target = document.body }: O
     originalRange = selection.getRangeAt(0)
   }
 
-  target.append(element)
+  document.body.append(element)
   element.select()
 
   element.selectionStart = 0
-  element.selectionEnd = input.length
+  element.selectionEnd = value.length
 
   let isSuccess = false
   try {
@@ -68,11 +51,18 @@ export function copyTextToClipboard(input: string, { target = document.body }: O
   if (previouslyFocusedElement) {
     (previouslyFocusedElement as HTMLElement).focus()
   }
-  return isSuccess
+  if (isSuccess) {
+    message.success('复制成功')
+  } else {
+    message.success('复制失败')
+  }
 }
 
-export function getTextFromClipboard() {
-  const promise = new Promise<string>((resolve, reject) => {
+/**
+ * 粘贴
+ */
+const pasteText = (): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
     // @ts-ignore
     navigator.permissions.query({ name: 'clipboard-read' }).then((result) => {
       if (result.state === 'granted' || result.state === 'prompt') {
@@ -84,6 +74,7 @@ export function getTextFromClipboard() {
               reader.onload = function() {
                 resolve(reader.result as string || '')
                 reject(reader.result as string || '')
+                message.success('粘贴成功')
               }
             })
           }
@@ -91,5 +82,11 @@ export function getTextFromClipboard() {
       }
     })
   })
-  return promise
+}
+
+export const useClipboard = () => {
+  return {
+    copyText,
+    pasteText,
+  }
 }

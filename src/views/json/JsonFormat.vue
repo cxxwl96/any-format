@@ -5,9 +5,10 @@ import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
 import { SwapOutlined } from '@ant-design/icons-vue'
 import { isArray, isJsonString, isObject } from '@/utils/is'
-import { getTextFromClipboard } from '@/utils/useCopyToClipboard'
+import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
+import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
 
 const sessionCache = useSessionCache('JsonFormat')
 
@@ -150,7 +151,7 @@ function fieldSort(asc: boolean) {
                 @dblClick="formatValidate">
     <template #title>
       <div class="tip-font">
-        Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
+        Tip：<a @click="async () => {result.value = await useClipboard().pasteText()}">粘贴文本</a>，双击格式化
       </div>
     </template>
   </MonacoEditor>
@@ -182,6 +183,7 @@ function fieldSort(asc: boolean) {
           </a-menu>
         </template>
       </a-dropdown-button>
+      <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML']"/>
       <a-divider v-if="monacoView" type="vertical" />
       <a-button type="primary" @click="monacoView = !monacoView" size="small">
         <template #icon>
@@ -194,7 +196,11 @@ function fieldSort(asc: boolean) {
 </template>
 
 <style scoped>
+:global(.ant-dropdown .ant-dropdown-menu) {
+  padding: 0 !important;
+  border-radius: 3px !important;
+}
 :global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
-  padding: 5px 10px !important;
+  padding: 3px 10px !important;
 }
 </style>
