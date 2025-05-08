@@ -3,13 +3,12 @@ import YAML from 'js-yaml'
 import x2js from 'x2js'
 import type { Language } from '@/components/monaco/data'
 
-export const DataTypeArray: { lang: Language; type: string }[] = [
+export type Type = 'JSON' | 'XML' | 'YAML'
+export const DataTypeArray: { lang: Language; type: Type }[] = [
   { lang: 'json', type: 'JSON' },
   { lang: 'xml', type: 'XML' },
   { lang: 'yaml', type: 'YAML' }
 ] as const
-
-export type Type = typeof DataTypeArray[number]['type']
 
 export class DataTransfer {
   private value: string
@@ -23,6 +22,18 @@ export class DataTransfer {
   constructor(value: string, type: Type) {
     this.value = value
     this.type = type
+  }
+
+  /**
+   * 通过type获取language
+   *
+   * @param type
+   */
+  public static getLang = (type?: Type): Language | undefined => {
+    if (type) {
+      return DataTypeArray.find(dataType => dataType.type === type)?.lang
+    }
+    return undefined
   }
 
   /**
@@ -165,4 +176,8 @@ export class DataTransfer {
         return this.toYAML(pretty)
     }
   }
+}
+
+export const useDataTransfer = (value: string, type: Type): DataTransfer => {
+  return new DataTransfer(value, type)
 }

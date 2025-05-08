@@ -1,27 +1,30 @@
 <script setup lang="ts">
-import { onMounted, ref, unref } from 'vue'
+import { onMounted, ref, shallowRef } from 'vue'
 import { menus } from '@/router/menu'
 import { useLocal, useSessionCache } from '@/utils/CacheData'
 import DragableMenu from '@/components/DragableMenu/DragableMenu.vue'
 import type { MenuItem } from '@/components/DragableMenu'
 import PackageJson from '../package.json'
+import NotFound from '@/components/pages/NotFound.vue'
 
-const sessionCache = useSessionCache('activeKey')
+const activeMenu = ref<MenuItem>(menus[0])
 
-const activeMenu = ref(menus.filter(menu=>menu.key===(sessionCache.load() as string)).pop() || unref(menus[0]))
-
-function handleChange(menu: MenuItem) {
-  if (menu.key === activeMenu.value?.key) {
-    return
+const updateActiveMenu = () => {
+  const currentPath = window.location.hash?.slice(2) || menus[0].key
+  activeMenu.value = menus.find(menu => menu.key.toLowerCase() === currentPath.toLowerCase()) || {
+    label: 'NotFound',
+    key: 'NotFound',
+    component: shallowRef(NotFound)
   }
-  activeMenu.value = menu
-  sessionCache.cache(menu.key)
 }
+window.addEventListener('hashchange', () => updateActiveMenu())
+updateActiveMenu()
 
 onMounted(() => {
+  // 系统更新
   const localCache = useLocal('app', 'version')
   if (localCache.load() !== PackageJson.version) {
-    sessionCache.clear()
+    useSessionCache('').clear()
     localCache.cache(PackageJson.version)
     window.location.reload()
   }
@@ -30,17 +33,17 @@ onMounted(() => {
 
 <template>
   <div class="header" v-if="!activeMenu.hideHeader">
-    <div class="glitch text-3D neon" style="text-align: right;">
-      {{activeMenu.label}}
+    <div class="glitch text-3D neon" style="text-align: right">
+      {{ activeMenu.label }}
     </div>
-    <div class="bottom-border-line"/>
+    <div class="bottom-border-line" />
   </div>
-  <DragableMenu :menuItems="menus" :activeKey="activeMenu.key" @change="handleChange" />
-  <div :class="{content: true, 'content-padding': !activeMenu.fullContent}">
+  <DragableMenu :menuItems="menus" :activeKey="activeMenu.key" />
+  <div :class="{ content: true, 'content-padding': !activeMenu.fullContent }">
     <component :is="activeMenu.component" />
   </div>
   <div class="footer" v-if="!activeMenu.hideFooter">
-    <p>CopyRight © 2023 - {{new Date().getFullYear()}} By cxxwl96 All Rights Reserved. 黔ICP备2023015771号-1</p>
+    <p>CopyRight © 2023 - {{ new Date().getFullYear() }} By cxxwl96 All Rights Reserved. 黔ICP备2023015771号-1</p>
     <p>PowerBy cxxwl96@sina.com</p>
   </div>
   <a-back-top />

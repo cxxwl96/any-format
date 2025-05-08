@@ -146,7 +146,8 @@ function fieldSort(asc: boolean) {
 </script>
 
 <template>
-  <MonacoEditor v-if="monacoView" language="json" v-model="result.value" @change="sessionCache.cache" @dblClick="formatValidate">
+  <MonacoEditor v-if="monacoView" language="json" v-model="result.value" @change="sessionCache.cache"
+                @dblClick="formatValidate">
     <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {result.value = await getTextFromClipboard()}">粘贴文本</a>，双击格式化
@@ -181,7 +182,7 @@ function fieldSort(asc: boolean) {
           </a-menu>
         </template>
       </a-dropdown-button>
-      <a-divider v-if="monacoView" type="vertical"/>
+      <a-divider v-if="monacoView" type="vertical" />
       <a-button type="primary" @click="monacoView = !monacoView" size="small">
         <template #icon>
           <SwapOutlined />
@@ -193,11 +194,7 @@ function fieldSort(asc: boolean) {
 </template>
 
 <style scoped>
-:global(.ant-dropdown .ant-dropdown-menu) {
-  padding: 0;
-  border-radius: 3px;
-}
 :global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
-  padding: 3px 5px;
+  padding: 5px 10px !important;
 }
 </style>

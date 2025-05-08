@@ -107,11 +107,7 @@ function handleSort(asc: boolean = true) {
 </template>
 
 <style scoped>
-:global(.ant-dropdown .ant-dropdown-menu) {
-  padding: 0;
-  border-radius: 3px;
-}
 :global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
-  padding: 3px 5px;
+  padding: 5px 10px !important;
 }
 </style>

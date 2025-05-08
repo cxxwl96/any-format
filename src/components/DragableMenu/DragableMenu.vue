@@ -24,15 +24,16 @@
       <svg v-if="isAffix" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3zM9 5v6.606L7.404 14h9.192L15 11.606V5z"/></svg>
       <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m13.827 1.69l8.486 8.485l-1.415 1.414l-.707-.707l-4.242 4.243l-.707 3.536l-1.415 1.414l-4.242-4.243l-4.95 4.95l-1.414-1.414l4.95-4.95l-4.243-4.243l1.414-1.414l3.536-.707l4.242-4.243l-.707-.707zm.707 3.536l-4.67 4.67l-2.822.565l6.5 6.5l.564-2.822l4.671-4.67z"/></svg>
     </div>
-    <button
+    <a
       v-for="item in menus"
       :key="item.key"
       :class="{ active: activeMenuItem?.key === item.key }"
       @click="selectMenuItem(item)"
       v-show="!item.hide"
+      :href="`#/${item.key}`"
     >
       {{ item.label }}
-    </button>
+    </a>
   </div>
 </template>
 
@@ -50,12 +51,12 @@ const props = defineProps({
   },
   activeKey: String,
 });
-const emits = defineEmits(['change', 'update:activeKey']);
+const emits = defineEmits(['change']);
 
 // 有效菜单
 const menus = props.menuItems.filter(menu => !menu.hide)
 // 当前激活的菜单项索引
-const activeMenuItem = ref<MenuItem>(menus.filter(item=>item.key === props.activeKey).pop() || menus[0]);
+const activeMenuItem = ref<MenuItem>(menus.filter(item=>item.key === props.activeKey).pop());
 watch(() => props.activeKey, (value) => {
   const menuItem = menus.filter(item=>item.key === value).pop() || activeMenuItem.value
   if (menuItem) {
@@ -120,7 +121,6 @@ const toggleAffix = () => {
 const selectMenuItem = (item: MenuItem) => {
   activeMenuItem.value = item;
   emits('change', item);
-  emits('update:activeKey', item.key);
 };
 
 // 关闭菜单
@@ -422,7 +422,7 @@ $ZIndex: 999;
     right: 30px;
     transform-origin: right;
   }
-  button {
+  a {
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -434,6 +434,8 @@ $ZIndex: 999;
     border-radius: 3px;
     font-size: 14px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    text-decoration: none;
+    color: #000;
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
