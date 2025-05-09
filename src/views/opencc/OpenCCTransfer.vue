@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Converter, Locale} from 'opencc-js'
+import {Converter, type Locale} from 'opencc-js'
 import {ref} from "vue";
 import {MonacoEditor} from "@/components/monaco";
 
