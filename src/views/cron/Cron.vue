@@ -480,4 +480,8 @@ const execute = () => {
   color: #808080;
   font-size: 14px;
 }
+:global(.ant-table:not(.ant-table-bordered) .ant-table-tbody >tr:last-child>td) {
+  border-bottom: none !important;
+  background-color: #FAFAFA;
+}
 </style>
