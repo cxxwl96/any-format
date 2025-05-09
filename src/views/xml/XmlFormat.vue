@@ -6,6 +6,7 @@ import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
 import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
+import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
 
 const sessionCache = useSessionCache('XmlFormat')
 const data = ref<string>(sessionCache.load())
@@ -88,33 +89,21 @@ function handleSort(asc: boolean = true) {
       </div>
     </template>
   </MonacoEditor>
-  <a-divider class="divider-border-none"/>
-  <a-affix :offset-bottom="50">
-    <a-space :size="[8, 16]" wrap class="bottom-button-group">
-      <a-button type="primary" @click="handleFormat" size="small">格式化</a-button>
-      <a-button @click="handleCompress" size="small">压缩</a-button>
-      <a-dropdown-button @click="handleSort" size="small" placement="topRight">
-        节点升序
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="1" @click="handleSort(false)">
-              节点降序
-            </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown-button>
-      <DataTransferButton :value="data" :type="'XML'" :toTypes="['JSON', 'YAML']" />
-    </a-space>
-  </a-affix>
+  <AffixButtonGroup>
+    <a-button type="primary" @click="handleFormat" size="small">格式化</a-button>
+    <a-button @click="handleCompress" size="small">压缩</a-button>
+    <a-dropdown-button @click="handleSort" size="small" placement="topRight">
+      节点升序
+      <template #overlay>
+        <a-menu>
+          <a-menu-item key="1" @click="handleSort(false)">
+            节点降序
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown-button>
+    <DataTransferButton :value="data" :type="'XML'" :toTypes="['JSON', 'YAML']" />
+  </AffixButtonGroup>
 </template>
 
-<style scoped>
-:global(.ant-dropdown .ant-dropdown-menu) {
-  padding: 0 !important;
-  border-radius: 3px !important;
-}
-
-:global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
-  padding: 0 10px !important;
-}
-</style>
+<style scoped></style>

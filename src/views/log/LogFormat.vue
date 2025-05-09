@@ -6,6 +6,7 @@ import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
 import { useClipboard } from '@/utils/Clipboard'
+import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
@@ -66,24 +67,21 @@ function dblClickHandler(value: string, target: Ref<string>) {
       </div>
     </template>
   </MonacoDiffEditor>
-  <a-divider class="divider-border-none"/>
-  <a-affix :offset-bottom="50">
-    <a-space :size="[8, 16]" wrap class="bottom-button-group">
-      <a-button type="ghost" @click="showSetting=true" size="small">
-        <template #icon>
-          <SettingOutlined />
-        </template>
-        设置
-      </a-button>
-      <a-divider type="vertical" />
-      <a-button type="primary" @click="showDiff=!showDiff" size="small">
-        <template #icon>
-          <SwapOutlined />
-        </template>
-        {{ showDiff ? '返回' : '文本对比' }}
-      </a-button>
-    </a-space>
-  </a-affix>
+  <AffixButtonGroup>
+    <a-button type="ghost" @click="showSetting=true" size="small">
+      <template #icon>
+        <SettingOutlined />
+      </template>
+      设置
+    </a-button>
+    <a-divider type="vertical" />
+    <a-button type="primary" @click="showDiff=!showDiff" size="small">
+      <template #icon>
+        <SwapOutlined />
+      </template>
+      {{ showDiff ? '返回' : '文本对比' }}
+    </a-button>
+  </AffixButtonGroup>
   <LogFormatSetting ref="settingRef" v-model:show="showSetting" />
 </template>
 

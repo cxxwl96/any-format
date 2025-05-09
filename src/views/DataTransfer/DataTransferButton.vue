@@ -87,13 +87,4 @@ const handleOk = async () => {
   </a-modal>
 </template>
 
-<style scoped>
-:global(.ant-dropdown .ant-dropdown-menu) {
-  padding: 0 !important;
-  border-radius: 3px !important;
-}
-
-:global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
-  padding: 0 10px !important;
-}
-</style>
+<style scoped></style>

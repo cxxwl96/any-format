@@ -9,6 +9,7 @@ import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
 import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
+import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
 
 const sessionCache = useSessionCache('JsonFormat')
 
@@ -156,51 +157,40 @@ function fieldSort(asc: boolean) {
     </template>
   </MonacoEditor>
   <JsonEditor v-else v-model="result.value" mode="tree" />
-  <a-divider class="divider-border-none"/>
-  <a-affix :offset-bottom="50">
-    <a-space :size="[8, 16]" wrap class="bottom-button-group">
-      <a-button v-if="monacoView" type="primary" @click="formatValidate" size="small">格式化校验</a-button>
-      <a-button v-if="monacoView" @click="compress" size="small">压缩</a-button>
-      <a-dropdown-button v-if="monacoView" @click="deepDelEscape(true)" size="small" placement="topRight">
-        深度去除转义
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="1" @click="deepDelEscape(false)">
-              不加 [@String]
-            </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown-button>
-      <a-button v-if="monacoView" @click="delEscape" size="small">去除转义</a-button>
-      <a-button v-if="monacoView" @click="escape" size="small">转义</a-button>
-      <a-dropdown-button v-if="monacoView" @click="fieldSort(true)" size="small" placement="topRight">
-        字段升序
-        <template #overlay>
-          <a-menu>
-            <a-menu-item key="1" @click="fieldSort(false)">
-              字段降序
-            </a-menu-item>
-          </a-menu>
-        </template>
-      </a-dropdown-button>
-      <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML']"/>
-      <a-divider v-if="monacoView" type="vertical" />
-      <a-button type="primary" @click="monacoView = !monacoView" size="small">
-        <template #icon>
-          <SwapOutlined />
-        </template>
-        切换视图
-      </a-button>
-    </a-space>
-  </a-affix>
+  <AffixButtonGroup>
+    <a-button v-if="monacoView" type="primary" @click="formatValidate" size="small">格式化校验</a-button>
+    <a-button v-if="monacoView" @click="compress" size="small">压缩</a-button>
+    <a-dropdown-button v-if="monacoView" @click="deepDelEscape(true)" size="small" placement="topRight">
+      深度去除转义
+      <template #overlay>
+        <a-menu>
+          <a-menu-item key="1" @click="deepDelEscape(false)">
+            不加 [@String]
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown-button>
+    <a-button v-if="monacoView" @click="delEscape" size="small">去除转义</a-button>
+    <a-button v-if="monacoView" @click="escape" size="small">转义</a-button>
+    <a-dropdown-button v-if="monacoView" @click="fieldSort(true)" size="small" placement="topRight">
+      字段升序
+      <template #overlay>
+        <a-menu>
+          <a-menu-item key="1" @click="fieldSort(false)">
+            字段降序
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown-button>
+    <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML']"/>
+    <a-divider v-if="monacoView" type="vertical" />
+    <a-button type="primary" @click="monacoView = !monacoView" size="small">
+      <template #icon>
+        <SwapOutlined />
+      </template>
+      切换视图
+    </a-button>
+  </AffixButtonGroup>
 </template>
 
-<style scoped>
-:global(.ant-dropdown .ant-dropdown-menu) {
-  padding: 0 !important;
-  border-radius: 3px !important;
-}
-:global(.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item) {
-  padding: 3px 10px !important;
-}
-</style>
+<style scoped></style>

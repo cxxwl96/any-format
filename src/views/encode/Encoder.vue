@@ -5,6 +5,7 @@ import { Base64 } from 'js-base64'
 import CryptoJS from 'crypto-js'
 import { useClipboard } from '@/utils/Clipboard'
 import { handleReadDragFileEvent } from '@/utils/Event'
+import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
 
 const data = ref('')
 const resultData = ref('')
@@ -124,20 +125,17 @@ const copyResult = (e: MouseEvent) => {
         />
       </a-col>
     </a-row>
-    <a-divider class="divider-border-none"/>
-    <a-affix :offset-bottom="50">
-      <a-space :size="[8, 16]" wrap class="bottom-button-group">
-        <a-space v-for="item in encoderButtons" :key="item.title">
-          <span>{{ item.title }}</span>
-          <a-button-group size="small">
-            <a-button @click="item.handleEncode" type="primary">编码</a-button>
-            <a-button @click="item.handleDecode" v-if="item.handleDecode">解码</a-button>
-          </a-button-group>
-          <a-divider type="vertical" />
-        </a-space>
-        <a-button @click="switchData" size="small">交换内容</a-button>
+    <AffixButtonGroup>
+      <a-space v-for="item in encoderButtons" :key="item.title">
+        <span>{{ item.title }}</span>
+        <a-button-group size="small">
+          <a-button @click="item.handleEncode" type="primary">编码</a-button>
+          <a-button @click="item.handleDecode" v-if="item.handleDecode">解码</a-button>
+        </a-button-group>
+        <a-divider type="vertical" />
       </a-space>
-    </a-affix>
+      <a-button @click="switchData" size="small">交换内容</a-button>
+    </AffixButtonGroup>
   </div>
 </template>
 
