@@ -66,7 +66,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
       </div>
     </template>
   </MonacoDiffEditor>
-  <a-divider />
+  <a-divider class="divider-border-none"/>
   <a-affix :offset-bottom="50">
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
       <a-button type="ghost" @click="showSetting=true" size="small">

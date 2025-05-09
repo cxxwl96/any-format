@@ -156,7 +156,7 @@ function fieldSort(asc: boolean) {
     </template>
   </MonacoEditor>
   <JsonEditor v-else v-model="result.value" mode="tree" />
-  <a-divider />
+  <a-divider class="divider-border-none"/>
   <a-affix :offset-bottom="50">
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
       <a-button v-if="monacoView" type="primary" @click="formatValidate" size="small">格式化校验</a-button>

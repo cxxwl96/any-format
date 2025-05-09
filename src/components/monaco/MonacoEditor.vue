@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
-import { onBeforeUnmount, onMounted, type PropType, ref, unref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
 import {
   bindKey,
   defaultDiffOptions,
@@ -19,6 +19,7 @@ const props = defineProps({
   modelValue: { type: String, required: false, default: '' },
   language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
   theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
+  readOnly: { type: Boolean, required: false, default: false },
   showTool: { type: Boolean, required: false, default: true },
   wordWrap: { type: Boolean, required: false, default: false },
   height: { type: String || 'auto', required: false, default: 'auto' },
@@ -58,10 +59,11 @@ onMounted(() => {
 
   // 创建编辑器
   editor = monaco.editor.create(editorRef.value, {
-    ...props.options,
     ...defaultDiffOptions,
     theme: props.theme, // 主题
-    wordWrap: wordWrap.value ? 'on' : 'off' // 自动换行
+    readOnly: props.readOnly,
+    wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
+    ...props.options,
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -82,8 +84,10 @@ onMounted(() => {
     }
   })
 
-  // drag事件
-  dragFileInEditorHandler(editor)
+  if (props.readOnly) {
+    // drag事件
+    dragFileInEditorHandler(editor)
+  }
 
   // 绑定键盘事件
   bindKey(editor, editorRef.value)
@@ -129,42 +133,43 @@ const handleClearText = () => {
 </script>
 
 <template>
-  <a-row align="middle">
-    <a-col>
-      <slot name="title" />
-    </a-col>
-    <a-col v-if="showTool" flex="auto" align="right">
-      <a-space>
-        <a-tooltip title="粘贴">
-          <a @click="handlePaste()">
-            <SnippetsOutlined />
-          </a>
-        </a-tooltip>
-        <a-tooltip title="复制">
-          <a @click="handleCopy()">
-            <CopyOutlined />
-          </a>
-        </a-tooltip>
-        <a-tooltip title="清除">
-          <a @click="handleClearText()">
-            <DeleteOutlined />
-          </a>
-        </a-tooltip>
-        <a-tooltip title="全屏">
-          <a @click="handleToggleFullScreen(editorRef)">
-            <FullscreenOutlined />
-          </a>
-        </a-tooltip>
-        <a-switch v-model:checked="wordWrap"
-                  checked-children="Wrap"
-                  un-checked-children="UnWrap"
-                  size="small"
-        />
-      </a-space>
-    </a-col>
-  </a-row>
-  <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor" />
+  <a-flex vertical gap="small">
+    <a-row align="middle">
+      <a-col>
+        <slot name="title" />
+      </a-col>
+      <a-col v-if="showTool" flex="auto" align="right">
+        <a-space>
+          <a-tooltip title="粘贴">
+            <a @click="handlePaste()">
+              <SnippetsOutlined />
+            </a>
+          </a-tooltip>
+          <a-tooltip title="复制">
+            <a @click="handleCopy()">
+              <CopyOutlined />
+            </a>
+          </a-tooltip>
+          <a-tooltip title="清除">
+            <a @click="handleClearText()">
+              <DeleteOutlined />
+            </a>
+          </a-tooltip>
+          <a-tooltip title="全屏">
+            <a @click="handleToggleFullScreen(editorRef)">
+              <FullscreenOutlined />
+            </a>
+          </a-tooltip>
+          <a-switch v-model:checked="wordWrap"
+                    checked-children="Wrap"
+                    un-checked-children="UnWrap"
+                    size="small"
+          />
+        </a-space>
+      </a-col>
+    </a-row>
+    <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor" />
+  </a-flex>
 </template>
 
 <style scoped>

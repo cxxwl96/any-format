@@ -5,14 +5,15 @@ import LogFormat from '@/views/log/LogFormat.vue'
 import JsonFormat from '@/views/json/JsonFormat.vue'
 import XmlFormat from '@/views/xml/XmlFormat.vue'
 import DataTransfer from '@/views/DataTransfer/DataTransfer.vue'
+import OpenCCTransfer from "@/views/opencc/OpenCCTransfer.vue";
 import QrCode from '@/views/qrcode/QrCode.vue'
 import Encoder from '@/views/encode/Encoder.vue'
 import RegExp from '@/views/regexp/RegExp.vue'
 import Cron from '@/views/cron/Cron.vue'
 import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
-import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
 
+import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
 // for dev test demo
 import Demo from '@/views/demo/Demo.vue'
 
@@ -39,6 +40,11 @@ const menus: MenuItem[] = [
     label: '转换',
     key: 'DataTransfer',
     component: shallowRef(DataTransfer),
+  },
+  {
+    label: '简/繁',
+    key: 'OpenCC',
+    component: shallowRef(OpenCCTransfer),
   },
   {
     label: '文本对比',

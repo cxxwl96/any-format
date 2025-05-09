@@ -2,8 +2,8 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
 
-import { onBeforeUnmount, onMounted, type PropType, ref, watch } from 'vue'
-import { handleToggleFullScreen } from '@/utils/FullScreen'
+import {onBeforeUnmount, onMounted, type PropType, ref, watch} from 'vue'
+import {handleToggleFullScreen} from '@/utils/FullScreen'
 import {
   bindKey,
   defaultDiffOptions,
@@ -13,17 +13,17 @@ import {
   type Language,
   type Theme
 } from './data'
-import { FullscreenOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons-vue'
+import {FullscreenOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons-vue'
 
 const props = defineProps({
-  originValue: { type: String, required: false, default: '' },
-  modifiedValue: { type: String, required: false, default: '' },
-  language: { type: String as PropType<Language>, required: false, default: 'kotlin' },
-  theme: { type: String as PropType<Theme>, required: false, default: 'vs' },
-  showTool: { type: Boolean, required: false, default: true },
-  wordWrap: { type: Boolean, required: false, default: false },
-  height: { type: String || 'auto', required: false, default: 'auto' },
-  options: { type: Object as PropType<monaco.editor.IStandaloneDiffEditorConstructionOptions>, required: false}
+  originValue: {type: String, required: false, default: ''},
+  modifiedValue: {type: String, required: false, default: ''},
+  language: {type: String as PropType<Language>, required: false, default: 'kotlin'},
+  theme: {type: String as PropType<Theme>, required: false, default: 'vs'},
+  showTool: {type: Boolean, required: false, default: true},
+  wordWrap: {type: Boolean, required: false, default: false},
+  height: {type: String || 'auto', required: false, default: 'auto'},
+  options: {type: Object as PropType<monaco.editor.IStandaloneDiffEditorConstructionOptions>, required: false}
 })
 const emits = defineEmits(['update:originValue', 'update:modifiedValue', 'originChange', 'modifiedChange', 'originDblClick', 'modifiedDblClick'])
 
@@ -50,8 +50,8 @@ watch(() => wordWrap.value, value => editor?.updateOptions({
   diffWordWrap: value ? 'on' : 'off',
   wordWrap: value ? 'on' : 'off'
 }))
-watch(() => showDiff.value, value => editor?.updateOptions({ hideUnchangedRegions: { enabled: value } }))
-watch(() => side.value, value => editor?.updateOptions({ renderSideBySide: value }))
+watch(() => showDiff.value, value => editor?.updateOptions({hideUnchangedRegions: {enabled: value}}))
+watch(() => side.value, value => editor?.updateOptions({renderSideBySide: value}))
 
 // 初始化编辑器
 onMounted(() => {
@@ -150,55 +150,56 @@ const handleShowDiffHandler = () => {
 </script>
 
 <template>
-  <a-row align="middle">
-    <a-col>
-      <slot name="title" />
-    </a-col>
-    <a-col v-if="showTool" flex="auto" align="right">
-      <a-space>
-        <a-space v-if="diffCount > 0 || props.originValue || props.modifiedValue">
-          <a @click="editor.goToDiff('previous')">
-            <ArrowLeftOutlined />
-          </a>
-          <span class="un-select" :style="{color: diffCount > 0 ? 'red' : 'green'}">
-          {{ diffCount > 0 ? '存在' + diffCount + '处差异' : '完全相同' }}
-        </span>
-          <a @click="editor.goToDiff('next')">
-            <ArrowRightOutlined />
-          </a>
-          <a-divider type="vertical" />
+  <a-flex vertical gap="small">
+    <a-row align="middle">
+      <a-col>
+        <slot name="title"/>
+      </a-col>
+      <a-col v-if="showTool" flex="auto" align="right">
+        <a-space>
+          <a-space v-if="diffCount > 0 || props.originValue || props.modifiedValue">
+            <a @click="editor.goToDiff('previous')">
+              <ArrowLeftOutlined/>
+            </a>
+            <span class="un-select" :style="{color: diffCount > 0 ? 'red' : 'green'}">
+              {{ diffCount > 0 ? '存在' + diffCount + '处差异' : '完全相同' }}
+            </span>
+            <a @click="editor.goToDiff('next')">
+              <ArrowRightOutlined/>
+            </a>
+            <a-divider type="vertical"/>
+          </a-space>
+          <a-tooltip title="清除">
+            <a @click="handleClearText()">
+              <DeleteOutlined/>
+            </a>
+          </a-tooltip>
+          <a-tooltip title="全屏">
+            <a @click="handleToggleFullScreen(editorRef)">
+              <FullscreenOutlined/>
+            </a>
+          </a-tooltip>
+          <a-switch v-model:checked="showDiff"
+                    @change="handleShowDiffHandler"
+                    checked-children="Diff"
+                    un-checked-children="All"
+                    size="small"
+          />
+          <a-switch v-model:checked="side"
+                    checked-children="Side"
+                    un-checked-children="UnSide"
+                    size="small"
+          />
+          <a-switch v-model:checked="wordWrap"
+                    checked-children="Wrap"
+                    un-checked-children="UnWrap"
+                    size="small"
+          />
         </a-space>
-        <a-tooltip title="清除">
-          <a @click="handleClearText()">
-            <DeleteOutlined />
-          </a>
-        </a-tooltip>
-        <a-tooltip title="全屏">
-          <a @click="handleToggleFullScreen(editorRef)">
-            <FullscreenOutlined />
-          </a>
-        </a-tooltip>
-        <a-switch v-model:checked="showDiff"
-                  @change="handleShowDiffHandler"
-                  checked-children="Diff"
-                  un-checked-children="All"
-                  size="small"
-        />
-        <a-switch v-model:checked="side"
-                  checked-children="Side"
-                  un-checked-children="UnSide"
-                  size="small"
-        />
-        <a-switch v-model:checked="wordWrap"
-                  checked-children="Wrap"
-                  un-checked-children="UnWrap"
-                  size="small"
-        />
-      </a-space>
-    </a-col>
-  </a-row>
-  <a-divider style="margin: 10px 0" />
-  <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor"/>
+      </a-col>
+    </a-row>
+    <div ref="editorRef" v-bind="$attrs" class="a-monaco-editor"/>
+  </a-flex>
 </template>
 
 <style scoped>

@@ -88,7 +88,7 @@ function handleSort(asc: boolean = true) {
       </div>
     </template>
   </MonacoEditor>
-  <a-divider />
+  <a-divider class="divider-border-none"/>
   <a-affix :offset-bottom="50">
     <a-space :size="[8, 16]" wrap class="bottom-button-group">
       <a-button type="primary" @click="handleFormat" size="small">格式化</a-button>

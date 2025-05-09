@@ -56,7 +56,7 @@ const handleDragFile = (event: DragEvent) => {
     <div class="tip-font">
       Tip：<a @click="async () => {data = await useClipboard().pasteText()}">粘贴Scheme</a>生成二维码
     </div>
-    <a-divider style="margin: 10px 0" />
+    <a-divider class="divider-border-none divider-10" />
     <a-row :gutter="20" justify="center">
       <a-col flex="7">
         <a-textarea

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-import { DataTypeArray, type Type, DataTransfer } from '@/views/DataTransfer/DataTransfer'
-import { useSessionCache } from '@/utils/CacheData'
-import { message, notification } from 'ant-design-vue'
-import { MonacoEditor } from '@/components/monaco'
-import type { Language } from '@/components/monaco/data'
+import {onMounted, ref, watch} from 'vue'
+import {DataTransfer, DataTypeArray, type Type} from '@/views/DataTransfer/DataTransfer'
+import {useSessionCache} from '@/utils/CacheData'
+import {message, notification} from 'ant-design-vue'
+import {MonacoEditor} from '@/components/monaco'
+import type {Language} from '@/components/monaco/data'
 
 const sessionCache = useSessionCache('DataTransfer')
 
@@ -72,7 +72,7 @@ const handleSwitchValue = () => {
 <template>
   <a-row :gutter="20">
     <a-col :span="12">
-      <MonacoEditor :language="data.lang" v-model="data.value" @change="handleChange" height="75vh" :showTool="false">
+      <MonacoEditor :language="data.lang" v-model="data.value" @change="handleChange" height="80vh" :showTool="false">
         <template #title>
           <span class="tip-font">类型：</span>
           <a-radio-group v-model:value="data.type" size="small">
@@ -82,10 +82,9 @@ const handleSwitchValue = () => {
           </a-radio-group>
         </template>
       </MonacoEditor>
-      <a-divider style="margin: 10px 0" />
     </a-col>
     <a-col :span="12">
-      <MonacoEditor :language="data.toLang" v-model="data.toValue" @change="handleChange" height="75vh"
+      <MonacoEditor :language="data.toLang" v-model="data.toValue" @change="handleChange" height="80vh"
                     :showTool="false">
         <template #title>
           <span class="tip-font">转换为：</span>
@@ -95,11 +94,10 @@ const handleSwitchValue = () => {
               {{ dataType.type }}
             </a-button>
           </a-button-group>
-          <a-divider type="vertical" />
+          <a-divider type="vertical"/>
           <a-button @click="handleSwitchValue" size="small">交换内容</a-button>
         </template>
       </MonacoEditor>
-      <a-divider style="margin: 10px 0" />
     </a-col>
   </a-row>
 </template>

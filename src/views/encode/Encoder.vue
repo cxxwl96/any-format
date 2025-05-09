@@ -96,7 +96,7 @@ const copyResult = (e: MouseEvent) => {
         <div class="tip-font">
           Tip：<a @click="async () => {data = await useClipboard().pasteText()}">粘贴文本</a>或拖拽文件到此处，默认进行Base64编码
         </div>
-        <a-divider style="margin: 10px 0" />
+        <a-divider class="divider-border-none divider-10" />
         <a-textarea
           v-model:value="data"
           :auto-size="{ minRows: 10, maxRows: 25 }"
@@ -113,7 +113,7 @@ const copyResult = (e: MouseEvent) => {
       </a-col>
       <a-col flex="5">
         <div class="tip-font">Tip：双击结果栏拷贝结果</div>
-        <a-divider style="margin: 10px 0" />
+        <a-divider class="divider-border-none divider-10" />
         <a-textarea
           v-model:value="resultData"
           :auto-size="{ minRows: 10, maxRows: 25 }"
@@ -124,7 +124,7 @@ const copyResult = (e: MouseEvent) => {
         />
       </a-col>
     </a-row>
-    <a-divider />
+    <a-divider class="divider-border-none"/>
     <a-affix :offset-bottom="50">
       <a-space :size="[8, 16]" wrap class="bottom-button-group">
         <a-space v-for="item in encoderButtons" :key="item.title">
