@@ -16,6 +16,7 @@
     "@ant-design/icons-vue": "^7.0.1",
     "@excalidraw/excalidraw": "^0.18.0",
     "@floating-ui/dom": "^1.6.13",
+    "@purge-icons/generated": "^0.10.0",
     "@types/codemirror": "^5.60.15",
     "@types/jsoneditor": "^9.9.5",
     "@types/vkbeautify": "^0.99.4",
