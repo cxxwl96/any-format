@@ -12,10 +12,11 @@ import RegExp from '@/views/regexp/RegExp.vue'
 import Cron from '@/views/cron/Cron.vue'
 import JSRunner from '@/views/runner/JSRunner.vue'
 import TextComparator from '@/views/comparator/TextComparator.vue'
-
 import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
+
 // for dev test demo
 import Demo from '@/views/demo/Demo.vue'
+import { IconPicker } from '@/components/icon'
 
 const isDev = getEnv('DEV')
 
@@ -83,6 +84,13 @@ const menus: MenuItem[] = [
     hideHeader: true,
     hideFooter: true,
     fullContent: true,
+  },
+  {
+    label: 'IconPicker',
+    key: 'IconPicker',
+    component: shallowRef(IconPicker),
+    fullContent: false,
+    hide: !isDev
   },
   {
     label: '来个Demo',
