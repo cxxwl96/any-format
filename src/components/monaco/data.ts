@@ -155,7 +155,7 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   links: true, // 是否点击链接
   selectionHighlight: true,
   lineNumbers: 'on', // 显示行号
-  autoClosingBrackets: 'never', // 禁用自动闭合括号功能
+  autoClosingBrackets: 'languageDefined', // 自动闭合括号功能
   suggestOnTriggerCharacters: false, // 用于控制是否在输入触发字符时显示建议
   glyphMargin: false, // 设置是否显示装饰符号边距
   unicodeHighlight: {
