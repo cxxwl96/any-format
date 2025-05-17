@@ -22,7 +22,10 @@ const props = defineProps({
   readOnly: { type: Boolean, required: false, default: false },
   showTool: { type: Boolean, required: false, default: true },
   wordWrap: { type: Boolean, required: false, default: false },
+  minimap: { type: Boolean, required: false, default: true },
+  lineNumbers: { type: Boolean, required: false, default: true },
   height: { type: String || 'auto', required: false, default: 'auto' },
+  placeholder: { type: String, required: false },
   options: { type: Object as PropType<monaco.editor.IStandaloneEditorConstructionOptions>, required: false }
 })
 const emits = defineEmits(['update:modelValue', 'change', 'dblClick'])
@@ -63,7 +66,13 @@ onMounted(() => {
     theme: props.theme, // 主题
     readOnly: props.readOnly,
     wordWrap: wordWrap.value ? 'on' : 'off', // 自动换行
-    ...props.options,
+    minimap: {
+      enabled: props.minimap
+    },
+    renderLineHighlight: props.readOnly ? 'none' : 'all', // 启用当前行高亮显示的呈现
+    lineNumbers: props.lineNumbers ? 'on' : 'off', // 显示行号
+    placeholder: props.readOnly ? '' : props.placeholder || defaultDiffOptions.placeholder,
+    ...props.options
   })
   editor.setModel(model = monaco.editor.createModel(props.modelValue, props.language))
   if (props.modelValue) {
@@ -84,7 +93,7 @@ onMounted(() => {
     }
   })
 
-  if (props.readOnly) {
+  if (!props.readOnly) {
     // drag事件
     dragFileInEditorHandler(editor)
   }

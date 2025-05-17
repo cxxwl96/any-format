@@ -1,13 +1,22 @@
+// @ts-nocheck
 import moment from 'moment'
-
-// @ts-ignore
-document.context = {
+import axios from 'axios'
+/*------------------------------------------------------------------------------------------------------------------------------------------*/
+/**
+ * Usage：ctx.moment()、ctx.axios('your url').then(...)、...
+ */
+window.ctx = {
   /**
    * moment文档：https://momentjs.cn
    * 时间戳（毫秒）：moment().valueOf()
    * 时间戳（秒）：moment().unix()
    */
   moment: () => moment(),
+
+  /**
+   * axios文档：https://www.axios-http.cn
+   */
+  axios,
 
   /**
    * xhr
@@ -34,5 +43,5 @@ document.context = {
     }
     xhr.send()
     return xhr
-  }
+  },
 }

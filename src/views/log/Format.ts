@@ -26,8 +26,8 @@ interface MatchRes {
   text: string;
 }
 export const config: AnyFormatConfig = {
-  startChars: ['{', '[', '(', '<\\w+>'],
-  endChars: ['}', ']', ')', '</\\w+>'],
+  startChars: ['{', '[', '('],
+  endChars: ['}', ']', ')'],
   breakChars: [';', ','],
   tabCount: 4
 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Converter, type Locale} from 'opencc-js'
-import {ref} from "vue";
+import { ref } from 'vue'
 import {MonacoEditor} from "@/components/monaco";
 
 const data = ref<{
@@ -8,7 +8,6 @@ const data = ref<{
   fromLocale: Locale
   toValue: string
   toLocale: Locale
-  toTip?: string
 }>({
   fromValue: '',
   fromLocale: 'twp',
@@ -39,7 +38,6 @@ const getTip = (locale: Locale): string | undefined => {
 const handleChange = () => {
   const converter = Converter({from: data.value.fromLocale, to: data.value.toLocale})
   data.value.toValue = converter(data.value.fromValue)
-  data.value.toTip = getTip(data.value.toLocale)
 }
 </script>
 
@@ -52,7 +50,7 @@ const handleChange = () => {
         height="30vh"
         :show-tool="false"
         :word-wrap="true"
-        :options="{minimap:{enabled:false}}"
+        :minimap="false"
     >
       <template #title>
         <a-radio-group v-model:value="data.fromLocale" @change="handleChange" size="small">
@@ -76,6 +74,8 @@ const handleChange = () => {
               >
                 {{ chinese.label }}
               </a-radio-button>
+              <a-divider type="vertical" class="divider-border-none" />
+              <a-alert v-if="getTip(data.fromLocale)" :message="getTip(data.fromLocale)" type="info" show-icon closable style="padding: 0 10px; border-radius: 3px"/>
             </a-row>
           </a-flex>
         </a-radio-group>
@@ -87,8 +87,9 @@ const handleChange = () => {
         height="30vh"
         :show-tool="false"
         :word-wrap="true"
+        :minimap="false"
+        :line-numbers="false"
         read-only
-        :options="{minimap:{enabled:false}, renderLineHighlight: 'none', lineNumbers: 'off', placeholder: '',}"
     >
       <template #title>
         <a-radio-group v-model:value="data.toLocale" @change="handleChange" size="small">
@@ -113,7 +114,7 @@ const handleChange = () => {
                 {{ chinese.label }}
               </a-radio-button>
               <a-divider type="vertical" class="divider-border-none" />
-              <a-alert v-if="data.toTip" :message="data.toTip" type="info" show-icon closable style="padding: 0 10px; border-radius: 3px"/>
+              <a-alert v-if="getTip(data.toLocale)" :message="getTip(data.toLocale)" type="info" show-icon closable style="padding: 0 10px; border-radius: 3px"/>
             </a-row>
           </a-flex>
         </a-radio-group>

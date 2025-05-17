@@ -154,7 +154,7 @@ export const defaultDiffOptions: monaco.editor.IStandaloneDiffEditorConstruction
   copyWithSyntaxHighlighting: true, // 是否应将语法突出显示复制到剪贴板中 即 当你复制到word中是否保持文字高亮颜色
   links: true, // 是否点击链接
   selectionHighlight: true,
-  lineNumbers: 'on', //显示行号
+  lineNumbers: 'on', // 显示行号
   autoClosingBrackets: 'never', // 禁用自动闭合括号功能
   suggestOnTriggerCharacters: false, // 用于控制是否在输入触发字符时显示建议
   glyphMargin: false, // 设置是否显示装饰符号边距
