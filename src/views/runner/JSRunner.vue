@@ -42,7 +42,7 @@ const handleRunner = () => {
 
 <template>
   <a-space direction="vertical" :size="20" style="width: 100%">
-    <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="typescript"
+    <MonacoEditor v-model="script" @change="sessionCache.cache" theme="vs-dark" language="javascript"
                   height="calc(100vh - 400px)">
       <template #title>
         <a-flex align="center" gap="middle">
