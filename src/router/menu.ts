@@ -16,7 +16,7 @@ import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
 
 // for dev test demo
 import Demo from '@/views/demo/Demo.vue'
-import { IconPicker } from '@/components/icon'
+import IconPickerDemo from '@/views/demo/IconPickerDemo.vue'
 
 const isDev = getEnv('DEV')
 
@@ -88,7 +88,7 @@ const menus: MenuItem[] = [
   {
     label: 'IconPicker',
     key: 'IconPicker',
-    component: shallowRef(IconPicker),
+    component: shallowRef(IconPickerDemo),
     fullContent: false,
     hide: !isDev
   },

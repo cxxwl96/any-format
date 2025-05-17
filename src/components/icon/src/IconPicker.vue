@@ -34,7 +34,8 @@ import IconData from '../data/icons.data'
 import Icon from './Icon.vue'
 
 const props = defineProps({
-  modelValue: { type: String, default: '' }
+  modelValue: { type: String, default: '' },
+  anySearch: { type: Boolean, default: false },
 })
 const emits = defineEmits(['update:modelValue'])
 
@@ -55,14 +56,18 @@ const handleSearchChange = useDebounceFn(() => {
     spinning.value = false
     return
   }
+  iconList.value = []
   // 优先使用本地icon
   const icons = unref(getIconData.value.filter(icon => icon.includes(searchIcon.value)))
   if (icons && icons.length > 0) {
-    iconList.value = icons
+    iconList.value.push(...icons)
     spinning.value = false
-    return
+    // 不再搜索
+    if (!props.anySearch) {
+      return
+    }
   }
-  // 本地不存在再搜索
+  // 搜索iconify
   axios({
     method: 'GET',
     url: '//api.iconify.design/search',
@@ -71,7 +76,7 @@ const handleSearchChange = useDebounceFn(() => {
       limit: 999
     }
   }).then(res => {
-    iconList.value = res.data?.icons || []
+    iconList.value.push(...(res.data?.icons || []))
   }).catch(err => {
     notification.error({
       message: '请求发生异常',

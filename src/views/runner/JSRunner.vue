@@ -48,11 +48,15 @@ const handleRunner = () => {
         <a-flex align="center" gap="middle">
           <div class="tip-font">脚本：<a @click="async () => {script = await useClipboard().pasteText()}">粘贴脚本</a>
           </div>
-          <a-button type="primary" @click="handleRunner" class="run-btn" size="small">运行脚本</a-button>
+          <a-button type="primary" @click="handleRunner" size="small">运行脚本</a-button>
+          <a-tooltip title="Save">
+            <a><Icon icon="ant-design:save-outlined" /></a>
+          </a-tooltip>
+          <a-tooltip title="History">
+            <a><Icon icon="ant-design:history-outlined" /></a>
+          </a-tooltip>
           <a-tooltip title="Help">
-            <a>
-              <Icon icon="material-symbols:help-outline" @click="pageData.help.open = true" />
-            </a>
+            <a><Icon icon="material-symbols:help-outline" @click="pageData.help.open = true" /></a>
           </a-tooltip>
         </a-flex>
       </template>
