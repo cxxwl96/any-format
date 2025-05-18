@@ -27,7 +27,7 @@
 </template>
 <script setup lang="ts">
 import axios from 'axios'
-import { computed, ref, unref } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
 import { notification } from 'ant-design-vue'
 import { useDebounceFn } from '@vueuse/shared'
 import IconData from '../data/icons.data'
@@ -77,6 +77,8 @@ const handleSearchChange = useDebounceFn(() => {
     }
   }).then(res => {
     iconList.value.push(...(res.data?.icons || []))
+    // 去重
+    iconList.value = Array.from(new Set(iconList.value))
   }).catch(err => {
     notification.error({
       message: '请求发生异常',

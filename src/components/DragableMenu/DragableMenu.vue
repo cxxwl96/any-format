@@ -20,26 +20,31 @@
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <div class="pushpin" @click="toggleAffix">
-      <svg v-if="isAffix" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path fill="currentColor"
-              d="M18 3v2h-1v6l2 3v2h-6v7h-2v-7H5v-2l2-3V5H6V3zM9 5v6.606L7.404 14h9.192L15 11.606V5z" />
-      </svg>
-      <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path fill="currentColor"
-              d="m13.827 1.69l8.486 8.485l-1.415 1.414l-.707-.707l-4.242 4.243l-.707 3.536l-1.415 1.414l-4.242-4.243l-4.95 4.95l-1.414-1.414l4.95-4.95l-4.243-4.243l1.414-1.414l3.536-.707l4.242-4.243l-.707-.707zm.707 3.536l-4.67 4.67l-2.822.565l6.5 6.5l.564-2.822l4.671-4.67z" />
-      </svg>
+    <div class="menu-caret menu-caret-left">
+      <a @click="toggleAffix">
+        <Icon icon="ant-design:pushpin-outlined" :class="[isAffix && 'pushpin-rotate']"/>
+      </a>
+      <a v-if="isScrollbar" @mousedown="startRepeating(-1)" @mouseup="stopRepeating">
+        <Icon icon="ant-design:caret-left-filled"/>
+      </a>
     </div>
-    <a
-      v-for="item in menus"
-      :key="item.key"
-      :class="{ active: activeMenuItem?.key === item.key }"
-      @click="selectMenuItem(item)"
-      v-show="!item.hide"
-      :href="`#/${item.key}`"
-    >
-      {{ item.label }}
-    </a>
+    <div ref="menuItemContentRef" class="menu-item-content">
+      <a
+        v-for="item in menus"
+        :key="item.key"
+        :class="{ active: activeMenuItem?.key === item.key }"
+        @click="selectMenuItem(item)"
+        v-show="!item.hide"
+        :href="`#/${item.key}`"
+      >
+        {{ item.label }}
+      </a>
+    </div>
+    <div class="menu-caret menu-caret-right">
+      <a v-if="isScrollbar" @mousedown="startRepeating(1)" @mouseup="stopRepeating">
+        <Icon icon="ant-design:caret-right-filled"/>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -47,6 +52,7 @@
 import { ref, onMounted, onBeforeUnmount, computed, type PropType, watch } from 'vue'
 import type { MenuItem } from './index.js'
 import { useSessionCache } from '@/utils/CacheData'
+import { Icon } from '@/components/icon'
 
 const affixMenuCache = useSessionCache('affixMenu')
 
@@ -368,18 +374,49 @@ const toggleMenu = (e: MouseEvent) => {
   }
 }
 
+// 菜单滚动
+const scrollNum = 10
+const menuItemContentRef = ref<HTMLDivElement | null>()
+const isScrollbar = ref(false)
+const handleResizeScrollbar = () => {
+  if (menuItemContentRef.value) {
+    isScrollbar.value = menuItemContentRef.value.scrollWidth > menuItemContentRef.value.clientWidth
+  } else {
+    isScrollbar.value = false
+  }
+}
+const scrollTo = (num: number) => {
+  if (menuItemContentRef.value) {
+    menuItemContentRef.value.scrollTo({left: menuItemContentRef.value.scrollLeft + num * scrollNum})
+  }
+}
+let repeatingTimer: NodeJS.Timeout
+const startRepeating = (num: number) => {
+  repeatingTimer = setInterval(() => {
+    scrollTo(num)
+  }, 10)
+}
+const stopRepeating = () => {
+  clearInterval(repeatingTimer)
+}
+
+
 onMounted(() => {
   updateMenuPosition()
   handleMouseLeave()
+  handleResizeScrollbar()
   document.addEventListener('click', closeMenuOnOutsideClick)
+  window.addEventListener('resize', handleResizeScrollbar)
 })
 
 onBeforeUnmount(() => {
   document.removeEventListener('mousemove', drag)
   document.removeEventListener('mouseup', endDrag)
   document.removeEventListener('click', closeMenuOnOutsideClick)
+  window.removeEventListener('resize', handleResizeScrollbar)
   clearTimeout(snapTimer)
   clearTimeout(hideTimer)
+  clearInterval(repeatingTimer)
 })
 </script>
 
@@ -387,12 +424,13 @@ onBeforeUnmount(() => {
 $icon-size: 35px;
 $button-size: 25px;
 $ZIndex: 999;
+$menu-bg: #f4f4f4;
 
 .draggable-icon {
   position: fixed;
   width: $icon-size;
   height: $icon-size;
-  background-color: #f4f4f4;
+  background-color: $menu-bg;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -409,13 +447,10 @@ $ZIndex: 999;
 }
 
 .menu {
+  display: inline-flex;
   position: fixed;
-  display: flex;
-  flex-wrap: wrap; /* 让菜单项换行显示 */
-  max-height: 200px; /* 设置菜单的最大高度为400px */
-  max-width: 90vw;
-  overflow-y: auto; /* 当菜单项超出最大高度时显示滚动条 */
-  background-color: #f4f4f4;
+  max-width: 70vw;
+  background-color: $menu-bg;
   border: none;
   border-radius: 4px;
   padding: 5px 10px;
@@ -426,24 +461,58 @@ $ZIndex: 999;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.24);
   z-index: $ZIndex;
 
+  .menu-item-content {
+    display: inline-flex;
+    overflow: hidden;
+    overflow-x: auto;
+    padding-bottom: 1px;
+
+    /* 滚动条整体容器 */
+    &::-webkit-scrollbar {
+      width: 3px;
+      height: 3px;
+    }
+
+    /* 滚动条轨道（背景区域） */
+    &::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 3px; /* 轨道圆角 */
+    }
+
+    /* 滚动条滑块 */
+    &::-webkit-scrollbar-thumb {
+      background: rgb(182, 182, 182);
+      border-radius: 3px; /* 滑块圆角 */
+      transition: background 0.3s ease; /* 鼠标悬停时的过渡动画 */
+    }
+
+    /* 鼠标悬停在滑块上时的样式 */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #4096ff;
+      cursor: pointer;
+    }
+
+  }
+
   &:not(.menu-left) {
     right: 30px;
     transform-origin: right;
   }
 
   a {
+    display: inline-flex;
     background-color: transparent;
     border: none;
     cursor: pointer;
     transition: background-color 0.2s;
     height: $button-size; /* 让按钮高度固定 */
     padding: 0 11px;
-    display: flex;
     align-items: center;
     border-radius: 3px;
     font-size: 14px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     text-decoration: none;
+    white-space: nowrap;
     color: #000;
 
     &:hover {
@@ -466,19 +535,27 @@ $ZIndex: 999;
   transform: scaleX(1);
 }
 
-.pushpin {
-  width: $button-size;
-  height: $button-size;
-  margin-right: 5px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
+.pushpin-rotate {
+  transform: rotate(-45deg);
+}
 
-  & > svg {
-    width: 80%;
-    height: 80%;
+.menu-caret {
+  position: sticky;
+  white-space: nowrap;
+  background-color: $menu-bg;
+  display: flex;
+  gap: 10px;
+  & a {
+    border: none;
+    padding: 0;
   }
+}
+.menu-caret-left {
+  left: 0;
+  padding-right: 10px;
+}
+.menu-caret-right {
+  right: 0;
+  padding-left: 10px;
 }
 </style>

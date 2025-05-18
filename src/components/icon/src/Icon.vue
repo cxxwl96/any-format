@@ -6,6 +6,7 @@
       'app-iconify anticon',
       spin && 'app-iconify-spin',
       cursorPointer && 'cursor-pointer',
+      !icon && 'app-iconify-loading',
     ]"
     :style="getIconStyle"
   />
@@ -52,7 +53,7 @@ const getIconStyle = computed((): CSSProperties => {
     display: 'inline-flex',
     padding: `${s}px`,
     border: border ? '1px solid #ddd' : 'none',
-    borderRadius: border ? '4px' : 0,
+    borderRadius: border ? '4px' : 'revert-layer',
   }
 })
 const getIcon = computed(() => `${props.prefix ? props.prefix + ':' : ''}${props.icon}`)
@@ -95,6 +96,9 @@ onMounted(() => updateIcon())
 .app-iconify > :first-child {
   min-width: 1em;
   min-height: 1em;
+}
+
+.app-iconify-loading {
   background-color: #5551;
   border-radius: 100%;
 }
