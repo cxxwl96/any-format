@@ -469,8 +469,8 @@ $menu-bg: #f4f4f4;
 
     /* 滚动条整体容器 */
     &::-webkit-scrollbar {
-      width: 3px;
-      height: 3px;
+      width: 2px;
+      height: 2px;
     }
 
     /* 滚动条轨道（背景区域） */
