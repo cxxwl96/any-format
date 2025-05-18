@@ -92,7 +92,7 @@ const handleSwitchValue = () => {
       :language="data.toLang"
       v-model="data.toValue"
       @change="handleChange"
-      height="80vh"
+      height="30vh"
       :show-tool="false"
       :minimap="false"
       :line-numbers="false"
