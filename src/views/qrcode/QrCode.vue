@@ -5,11 +5,17 @@ import QrCode from 'qrcode-decoder'
 import { useClipboard } from '@/utils/Clipboard'
 import { handleReadDragFileEvent } from '@/utils/Event'
 
-const data = ref('')
 const qrCodeRef = ref()
-const segmentedData = ['L', 'M', 'Q', 'H']
-const level = ref(segmentedData[1])
-const showIcon = ref(true)
+
+const pageData = ref({
+  data: '',
+  segmentedData: ['L', 'M', 'Q', 'H'],
+  level: 'M',
+  showIcon: true,
+  dragging: false,
+  img: ''
+})
+
 
 const downloadImage = async () => {
   const url = await qrCodeRef.value.toDataURL()
@@ -21,84 +27,99 @@ const downloadImage = async () => {
   document.body.removeChild(a)
 }
 
-const handleUploadChange = ({ file }: { file: any }) => {
-  if (!file || !file.originFileObj) {
-    message.error('请上传有效图片')
-    return
+// 粘贴文本、二维码图片
+const handlePaste = async (e: ClipboardEvent) => {
+  const clipboard = useClipboard()
+  const img = await clipboard.pasteImage()
+  if (img) {
+    e.preventDefault()
+    pageData.value.img = img
+    decodeQR(null, img)
   }
-  decodeQR(file.originFileObj).then(res => {
+}
+
+const decodeQR = (file: File | null, img: string | null) => {
+  let url: string = ''
+  if (file) {
+    url = window.URL.createObjectURL(file) || window.webkitURL.createObjectURL(file)
+  } else if (img) {
+    url = img
+  }
+  new QrCode().decodeFromImage(url).then(res => {
+    console.log(res)
     if (res?.data) {
       message.success('识别成功')
-      data.value = res.data
+      pageData.value.data = res.data
     } else {
       message.error('识别失败')
+      pageData.value.data = ''
     }
   })
 }
-const decodeQR = (file: File) => {
-  const url = window.URL.createObjectURL(file) || window.webkitURL.createObjectURL(file)
-  const qr = new QrCode()
-  return qr.decodeFromImage(url)
-}
 
 // 拖拽文件
-const dragging = ref(false)
 const handleDragFile = (event: DragEvent) => {
-  handleReadDragFileEvent(event, (value) => {
-    data.value = value as string
-  })
-  dragging.value = false
+  const file = event.dataTransfer?.files[0]
+  if (file && file.type.startsWith('image')) {
+    decodeQR(file, null)
+  } else {
+    handleReadDragFileEvent(event, (value) => {
+      const text = value as string
+      if (text.length >= 26799) {
+        message.error('数据太大了')
+      } else {
+        pageData.value.data = text
+      }
+    })
+  }
+  pageData.value.dragging = false
 }
 </script>
 
 <template>
   <div class="content-center">
     <div class="tip-font">
-      Tip：<a @click="async () => {data = await useClipboard().pasteText()}">粘贴Scheme</a>生成二维码
+      Tip：在此处 <a @click="async () => {pageData.data = await useClipboard().pasteText()}">粘贴文本</a>、<a
+      @click="async () => {pageData.data = await useClipboard().pasteText()}">粘贴二维码图片</a>、拖拽文本文件、拖拽二维码图片
+      进行<span style="color: #1677ff">解析</span>或<span style="color: #1677ff">生成</span>二维码
     </div>
     <a-divider class="divider-border-none divider-10" />
     <a-row :gutter="20" justify="center">
       <a-col flex="7">
         <a-textarea
-          v-model:value="data"
+          v-model:value="pageData.data"
           :auto-size="{ minRows: 10, maxRows: 30 }"
           allowClear
           showCount
-          placeholder="输入schema或拖拽文件到此处生成二维码"
-          @dragenter.prevent="dragging=true"
-          @dragleave.prevent="dragging=false"
+          placeholder="在此处 粘贴文本、粘贴二维码图片、拖拽文本文件、拖拽二维码图片 进行解析或生成二维码"
+          @dragenter.prevent="pageData.dragging=true"
+          @dragleave.prevent="pageData.dragging=false"
           @dragover.prevent
           @drop.prevent="handleDragFile"
+          @paste="handlePaste"
+          @change="pageData.img=''"
           class="drag-zone"
-          :class="{'drag-over': dragging}"
+          :class="{'drag-over': pageData.dragging}"
         />
       </a-col>
-      <a-col flex="3">
-        <a-flex vertical gap="middle" align="center">
-          <a-qrcode ref="qrCodeRef" :value="data" :error-level="level" :size="200" @click="downloadImage"
-                    bgColor="rgba(255, 255, 255, 0.8)" :icon="showIcon? 'favicon.png' : undefined"
+      <a-col flex="5">
+        <a-flex v-if="pageData.img" vertical gap="middle" align="center">
+          <a-image :width="200" :src="pageData.img" />
+        </a-flex>
+        <a-flex v-else vertical gap="middle" align="center">
+          <a-qrcode ref="qrCodeRef" :value="pageData.data" :error-level="pageData.level" :size="200"
+                    @click="downloadImage"
+                    bgColor="rgba(255, 255, 255, 0.8)" :icon="pageData.showIcon? 'favicon.png' : undefined"
                     style="cursor: pointer" />
           <a-tag color="green">点击图片即可下载</a-tag>
           <a-flex gap="middle" align="center">
             <p>容错率：
-              <a-segmented v-model:value="level" :options="segmentedData" />
+              <a-segmented v-model:value="pageData.level" :options="pageData.segmentedData" />
             </p>
             <p>ICON：
-              <a-switch v-model:checked="showIcon" />
+              <a-switch v-model:checked="pageData.showIcon" />
             </p>
           </a-flex>
-          <a-divider vertical />
-          <a-upload-dragger accept="image/*" :showUploadList="false" :action="undefined" @change="handleUploadChange"
-                            :customRequest="()=>{}" style="width: 100%">
-            <p class="ant-upload-drag-icon"><span role="img" aria-label="inbox" class="anticon anticon-inbox"><svg
-              focusable="false" data-icon="inbox" width="1em" height="1em" fill="currentColor" aria-hidden="true"
-              viewBox="0 0 1024 1024"><path
-              d="M885.2 446.3l-.2-.8-112.2-285.1c-5-16.1-19.9-27.2-36.8-27.2H281.2c-17 0-32.1 11.3-36.9 27.6L139.4 443l-.3.7-.2.8c-1.3 4.9-1.7 9.9-1 14.8-.1 1.6-.2 3.2-.2 4.8V830a60.9 60.9 0 0060.8 60.8h627.2c33.5 0 60.8-27.3 60.9-60.8V464.1c0-1.3 0-2.6-.1-3.7.4-4.9 0-9.6-1.3-14.1zm-295.8-43l-.3 15.7c-.8 44.9-31.8 75.1-77.1 75.1-22.1 0-41.1-7.1-54.8-20.6S436 441.2 435.6 419l-.3-15.7H229.5L309 210h399.2l81.7 193.3H589.4zm-375 76.8h157.3c24.3 57.1 76 90.8 140.4 90.8 33.7 0 65-9.4 90.3-27.2 22.2-15.6 39.5-37.4 50.7-63.6h156.5V814H214.4V480.1z"></path></svg>
-              <!----></span></p>
-            <p class="ant-upload-text">单击或拖拽二维码图片到此区域进行解析</p>
-            <p class="ant-upload-hint">仅支持单个图片解析</p>
-          </a-upload-dragger>
-          <a-tag color="green">拖拽图片文件到上方即可解析</a-tag>
         </a-flex>
       </a-col>
     </a-row>

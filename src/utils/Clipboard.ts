@@ -1,11 +1,11 @@
 import { message } from 'ant-design-vue'
 
 /**
- * 复制
+ * 原始方法复制
  *
  * @param value
  */
-const copyText = (value: string) => {
+const copyTextWithOriginal = (value: string) => {
   if (!value) {
     return
   }
@@ -59,26 +59,52 @@ const copyText = (value: string) => {
 }
 
 /**
- * 粘贴
+ * 复制
+ *
+ * @param value
+ */
+const copyText = (value: string) => {
+  if (!value) {
+    return
+  }
+  navigator.clipboard.writeText(value).then(() => message.success('复制成功')).catch(() => message.success('复制失败'))
+}
+
+/**
+ * 粘贴文本
  */
 const pasteText = (): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
-    // @ts-ignore
-    navigator.permissions.query({ name: 'clipboard-read' }).then((result) => {
-      if (result.state === 'granted' || result.state === 'prompt') {
-        navigator.clipboard.read().then((data) => {
-          if (data.length > 0) {
-            data[0].getType('text/plain').then((blob) => {
-              const reader = new FileReader()
-              reader.readAsText(blob, 'utf-8')
-              reader.onload = function() {
-                resolve(reader.result as string || '')
-                reject(reader.result as string || '')
-                message.success('粘贴成功')
-              }
-            })
-          }
-        })
+    navigator.clipboard.readText().then((data) => {
+      if (data) {
+        resolve(data)
+        reject(data)
+        message.success('粘贴成功')
+      }
+    })
+  })
+}
+
+/**
+ * 粘贴图片
+ * 不能粘贴文件类型的图片
+ */
+const pasteImage = (): Promise<string> => {
+  return new Promise<string>((resolve, reject) => {
+    navigator.clipboard.read().then((data) => {
+      if (data.length > 0) {
+        const type = data[0].types.find(type=>type.startsWith('image/'))
+        if (type) {
+          data[0].getType(type).then((blob) => {
+            const reader = new FileReader()
+            reader.readAsDataURL(blob)
+            reader.onload = function() {
+              resolve(reader.result as string || '')
+              reject(reader.result as string || '')
+              message.success('粘贴成功')
+            }
+          })
+        }
       }
     })
   })
@@ -86,7 +112,9 @@ const pasteText = (): Promise<string> => {
 
 export const useClipboard = () => {
   return {
+    copyTextWithOriginal,
     copyText,
     pasteText,
+    pasteImage,
   }
 }

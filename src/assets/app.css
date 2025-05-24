@@ -104,14 +104,14 @@
     color: #00000059;
 }
 
-.tip-font, .tip-font > a {
+.tip-font, .tip-font a {
     user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
 }
 
-.tip-font > a {
+.tip-font a {
     color: #1677ff;
     cursor: pointer;
 }
@@ -139,4 +139,12 @@
 
 .divider-10 {
     margin: 10px 0;
+}
+
+.divider-20 {
+    margin: 20px 0;
+}
+
+.divider-30 {
+    margin: 30px 0;
 }
