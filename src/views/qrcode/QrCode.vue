@@ -46,7 +46,6 @@ const decodeQR = (file: File | null, img: string | null) => {
     url = img
   }
   new QrCode().decodeFromImage(url).then(res => {
-    console.log(res)
     if (res?.data) {
       message.success('识别成功')
       pageData.value.data = res.data
@@ -79,9 +78,13 @@ const handleDragFile = (event: DragEvent) => {
 <template>
   <div class="content-center">
     <div class="tip-font">
-      Tip：在此处 <a @click="async () => {pageData.data = await useClipboard().pasteText()}">粘贴文本</a>、<a
-      @click="async () => {pageData.data = await useClipboard().pasteText()}">粘贴二维码图片</a>、拖拽文本文件、拖拽二维码图片
-      进行<span style="color: #1677ff">解析</span>或<span style="color: #1677ff">生成</span>二维码
+      Tip：在此处 <a @click="async () => {pageData.data = await useClipboard().pasteText()}">粘贴文本</a>、<a @click="async () => {
+        const img = await useClipboard().pasteImage()
+        if (img) {
+          pageData.img = img
+          decodeQR(null, img)
+        }
+      }">粘贴二维码图片</a>、拖拽文本文件、拖拽二维码图片 进行<span style="color: #1677ff">解析</span>或<span style="color: #1677ff">生成</span>二维码
     </div>
     <a-divider class="divider-border-none divider-10" />
     <a-row :gutter="20" justify="center">

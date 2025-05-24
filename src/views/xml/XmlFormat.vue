@@ -7,6 +7,7 @@ import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
 import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
 import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
+import { StrUtil } from '@/utils/StrUtil'
 
 const sessionCache = useSessionCache('XmlFormat')
 const data = ref<string>(sessionCache.load())
@@ -91,7 +92,16 @@ function handleSort(asc: boolean = true) {
   </MonacoEditor>
   <AffixButtonGroup>
     <a-button type="primary" @click="handleFormat" size="small">格式化</a-button>
-    <a-button @click="handleCompress" size="small">压缩</a-button>
+    <a-dropdown-button @click="handleCompress" size="small" placement="topRight">
+      压缩
+      <template #overlay>
+        <a-menu>
+          <a-menu-item key="1" @click="data = StrUtil.compress(data)">
+            文本压缩
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown-button>
     <a-dropdown-button @click="handleSort" size="small" placement="topRight">
       节点升序
       <template #overlay>

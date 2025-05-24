@@ -10,6 +10,7 @@ import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
 import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
 import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
+import { StrUtil } from '@/utils/StrUtil'
 
 const sessionCache = useSessionCache('JsonFormat')
 
@@ -34,17 +35,13 @@ function formatValidate(tip: boolean = true) {
   result.value = { ...validateJson(value) }
   if (tip) {
     if (result.value.error) {
-      notification['error']({
+      notification.error({
         message: 'JSON格式错误',
         description: result.value.message,
         placement: 'topRight'
       })
     } else {
-      notification['success']({
-        message: '正确的JSON',
-        description: 'OK',
-        placement: 'topRight'
-      })
+      message.success('正确的JSON')
     }
   }
   return unref(result.value.value)
@@ -159,7 +156,16 @@ function fieldSort(asc: boolean) {
   <JsonEditor v-else v-model="result.value" mode="tree" />
   <AffixButtonGroup>
     <a-button v-if="monacoView" type="primary" @click="formatValidate" size="small">格式化校验</a-button>
-    <a-button v-if="monacoView" @click="compress" size="small">压缩</a-button>
+    <a-dropdown-button v-if="monacoView" @click="compress" size="small" placement="topRight">
+      压缩
+      <template #overlay>
+        <a-menu>
+          <a-menu-item key="1" @click="result.value = StrUtil.compress(result.value)">
+            文本压缩
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown-button>
     <a-dropdown-button v-if="monacoView" @click="deepDelEscape(true)" size="small" placement="topRight">
       深度去除转义
       <template #overlay>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import CronParser from 'cron-parser'
-import { notification } from 'ant-design-vue'
+import { message, notification } from 'ant-design-vue'
 
 type CronItemKey = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'week' | 'year'
 type CronItemName = '秒' | '分钟' | '小时' | '日' | '月' | '周' | '年'
@@ -258,12 +258,9 @@ const execute = () => {
         const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
         resultData.value.result.push(`${date.toLocaleString()} ${days[date.getDay()]}`)
       })
-    notification['success']({
-      message: '执行成功',
-      placement: 'topRight'
-    })
+    message.success('执行成功')
   } catch (e: any) {
-    notification['error']({
+    notification.error({
       message: '执行失败',
       description: e?.message,
       placement: 'topRight'
