@@ -8,7 +8,11 @@ import PackageJson from '../package.json'
 import NotFound from '@/components/pages/NotFound.vue'
 
 const activeMenu = ref<MenuItem>(menus[0])
+const componentRef = ref()
 
+/**
+ * 更新激活菜单
+ */
 const updateActiveMenu = () => {
   const currentPath = window.location.hash?.slice(2) || menus[0].key
   activeMenu.value = menus.find(menu => menu.key.toLowerCase() === currentPath.toLowerCase()) || {
@@ -19,6 +23,16 @@ const updateActiveMenu = () => {
 }
 window.addEventListener('hashchange', () => updateActiveMenu())
 updateActiveMenu()
+
+/**
+ * 标签被激活时执行组件初始化方法
+ */
+const handleVisibilitychange = async () => {
+  if (document.visibilityState === 'visible') {
+    componentRef.value.init?.()
+  }
+}
+document.addEventListener('visibilitychange', handleVisibilitychange)
 
 onMounted(() => {
   // 系统更新
@@ -40,7 +54,7 @@ onMounted(() => {
   </div>
   <DragableMenu :menuItems="menus" :activeKey="activeMenu.key" />
   <div :class="{ content: true, 'content-padding': !activeMenu.fullContent }">
-    <component :is="activeMenu.component" />
+    <component ref="componentRef" :is="activeMenu.component" />
   </div>
   <div class="footer" v-if="!activeMenu.hideFooter">
     <p>CopyRight © 2023 - {{ new Date().getFullYear() }} By cxxwl96 All Rights Reserved. 黔ICP备2023015771号-1</p>

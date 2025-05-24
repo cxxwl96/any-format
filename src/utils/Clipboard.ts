@@ -1,4 +1,5 @@
-import { message } from 'ant-design-vue'
+import { Button, message, notification } from 'ant-design-vue'
+import { h } from 'vue'
 
 /**
  * 原始方法复制
@@ -73,13 +74,13 @@ const copyText = (value: string) => {
 /**
  * 粘贴文本
  */
-const pasteText = (): Promise<string> => {
+const pasteText = (tip: boolean = true): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
-    navigator.clipboard.readText().then((data) => {
-      if (data) {
-        resolve(data)
-        reject(data)
-        message.success('粘贴成功')
+    navigator.clipboard.readText().then((text) => {
+      if (text) {
+        resolve(text)
+        reject(text)
+        tip && message.success('粘贴成功')
       }
     })
   })
@@ -110,6 +111,36 @@ const pasteImage = (): Promise<string> => {
   })
 }
 
+/**
+ * 智能粘贴
+ *
+ * @param callback
+ * @param original
+ */
+const handleSmartPaste = (callback: (value: string) => void, original?: string) => {
+  useClipboard().pasteText(false).then((text) => {
+    if (original !== text) {
+      notification.open({
+        message: undefined,
+        description: '检测到您有新复制内容，是否立即粘贴？',
+        btn: () =>
+          h(
+            Button,
+            {
+              type: 'primary',
+              size: 'small',
+              onClick: () => {
+                callback(text)
+                notification.close('paste_notification')
+              },
+            },
+            { default: () => '粘贴' },
+          ),
+        key: 'paste_notification'
+      })
+    }
+  })
+}
 export const useClipboard = () => {
   return {
     copyTextWithOriginal,
