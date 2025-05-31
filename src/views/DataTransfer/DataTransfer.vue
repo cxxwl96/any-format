@@ -82,7 +82,8 @@ const handleSwitchValue = () => {
       <template #title>
         <span class="tip-font">类型：</span>
         <a-radio-group v-model:value="data.type" size="small">
-          <a-radio-button v-for="dataType in DataTypeArray" :key="dataType.type" :value="dataType.type">
+          <a-radio-button v-for="dataType in DataTypeArray.filter(item => item.show)" :key="dataType.type"
+                          :value="dataType.type">
             {{ dataType.type }}
           </a-radio-button>
         </a-radio-group>
@@ -101,7 +102,8 @@ const handleSwitchValue = () => {
       <template #title>
         <span class="tip-font">转换为：</span>
         <a-button-group size="small">
-          <a-button v-for="dataType in DataTypeArray" :key="dataType.type" @click="handleTransfer(dataType.type)"
+          <a-button v-for="dataType in DataTypeArray.filter(item => item.show)" :key="dataType.type"
+                    @click="handleTransfer(dataType.type)"
                     type="primary">
             {{ dataType.type }}
           </a-button>

@@ -1,14 +1,17 @@
 import vkbeautify from 'vkbeautify'
 import YAML from 'js-yaml'
 import x2js from 'x2js'
+import jsToInterface from 'js-to-interface'
 import type { Language } from '@/components/monaco/data'
 import { validateJson } from '@/utils/jsonUtil'
+import { isJsonString } from '@/utils/is'
 
-export type Type = 'JSON' | 'XML' | 'YAML'
-export const DataTypeArray: { lang: Language; type: Type }[] = [
-  { lang: 'json', type: 'JSON' },
-  { lang: 'xml', type: 'XML' },
-  { lang: 'yaml', type: 'YAML' }
+export type Type = 'JSON' | 'XML' | 'YAML' | 'TypeScript'
+export const DataTypeArray: { lang: Language; type: Type; show: boolean }[] = [
+  { lang: 'json', type: 'JSON', show: true },
+  { lang: 'xml', type: 'XML', show: true },
+  { lang: 'yaml', type: 'YAML', show: true },
+  { lang: 'typescript', type: 'TypeScript', show: false }
 ] as const
 
 export class DataTransfer {
@@ -112,6 +115,24 @@ export class DataTransfer {
   }
 
   /**
+   * JSON转TypeScript
+   */
+  public jsonToTypeScript = (): string => {
+    if (!this.value) {
+      return ''
+    }
+    if (!isJsonString(this.value)) {
+      throw new Error('only supports JSON to TypeScript')
+    }
+    const obj = JSON.parse(this.value)
+
+    let result = jsToInterface(obj, { fKey: 'Root' }).join('\n')
+    // 兼容逻辑
+    result = result.replace(/\( (string|number|boolean) \)/g, '$1')
+    return `${result}\nconst data: Root = ${this.value}`
+  }
+
+  /**
    * 转JSON
    *
    * @param pretty
@@ -176,6 +197,8 @@ export class DataTransfer {
         return this.toXML(pretty)
       case 'YAML':
         return this.toYAML(pretty)
+      case 'TypeScript':
+        return this.jsonToTypeScript()
     }
     throw new Error('Unsupported type')
   }

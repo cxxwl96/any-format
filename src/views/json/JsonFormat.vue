@@ -254,7 +254,7 @@ function clearJson() {
         </a-menu>
       </template>
     </a-dropdown-button>
-    <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML']"/>
+    <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML', 'TypeScript']"/>
     <a-button @click="clearData.open=true" size="small">JSON清理</a-button>
     <a-divider type="vertical" />
     <a-button type="primary" @click="monacoView = !monacoView" size="small">
