@@ -9,8 +9,10 @@ import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
 import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
-import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
+import AffixButtonGroup from '@/components/AffixButtonGroup.vue'
 import { StrUtil } from '@/utils/StrUtil'
+import { stringify } from 'qs';
+import type { Language } from '@/components/monaco/data'
 
 const sessionCache = useSessionCache('JsonFormat')
 
@@ -31,11 +33,11 @@ const clearData = ref<{
 }>({
   open: false,
   options: [
-    {title: '清理null', key: 'null', value: true, case: ['"name": null']},
-    {title: '清理空字符串', key: 'string', value: true, case: ['"name": ""', '"name": " "']},
-    {title: '清理false', key: 'boolean', value: true, case: ['"isBlank": false']},
-    {title: '清理空对象', key: 'object', value: true, case: ['"person": {}']},
-    {title: '清理空数组', key: 'array', value: true, case: ['addresses: []']}
+    { title: '清理null', key: 'null', value: true, case: ['"name": null'] },
+    { title: '清理空字符串', key: 'string', value: true, case: ['"name": ""', '"name": " "'] },
+    { title: '清理false', key: 'boolean', value: true, case: ['"isBlank": false'] },
+    { title: '清理空对象', key: 'object', value: true, case: ['"person": {}'] },
+    { title: '清理空数组', key: 'array', value: true, case: ['addresses: []'] }
   ]
 })
 
@@ -172,7 +174,7 @@ function deepClearJson(json: any) {
   } else if (isObject(json)) {
     for (const key in json) {
       deepClearJson(json[key])
-      if(toDelete(json[key])) {
+      if (toDelete(json[key])) {
         delete json[key]
       }
     }
@@ -182,9 +184,11 @@ function deepClearJson(json: any) {
   }
   return json
 }
-function clearChecked(key: ClearType):boolean {
+
+function clearChecked(key: ClearType): boolean {
   return (clearData.value.options.find(op => op.key === key)?.value || false)
 }
+
 function toDelete(value: any): boolean {
   if (value === null || value === undefined) {
     return clearChecked('null')
@@ -208,6 +212,14 @@ function clearJson() {
   }
   clearData.value.open = false
 }
+
+// 转GET请求字符串
+function toGetParams(finish: (val: string, lang: Language) => void) {
+  const value = formatValidate(true)
+  if (value) {
+    finish(stringify(JSON.parse(value)), 'plaintext')
+  }
+}
 </script>
 
 <template>
@@ -221,8 +233,8 @@ function clearJson() {
   </MonacoEditor>
   <JsonEditor v-else v-model="result.value" mode="tree" />
   <AffixButtonGroup>
-    <a-button  type="primary" @click="formatValidate" size="small">格式化校验</a-button>
-    <a-dropdown-button  @click="compress" size="small" placement="topRight">
+    <a-button type="primary" @click="formatValidate" size="small">格式化校验</a-button>
+    <a-dropdown-button @click="compress" size="small" placement="topRight">
       压缩
       <template #overlay>
         <a-menu>
@@ -232,7 +244,7 @@ function clearJson() {
         </a-menu>
       </template>
     </a-dropdown-button>
-    <a-dropdown-button  @click="deepDelEscape(true)" size="small" placement="topRight">
+    <a-dropdown-button @click="deepDelEscape(true)" size="small" placement="topRight">
       深度去除转义
       <template #overlay>
         <a-menu>
@@ -242,9 +254,9 @@ function clearJson() {
         </a-menu>
       </template>
     </a-dropdown-button>
-    <a-button  @click="delEscape" size="small">去除转义</a-button>
-    <a-button  @click="escape" size="small">转义</a-button>
-    <a-dropdown-button  @click="fieldSort(true)" size="small" placement="topRight">
+    <a-button @click="delEscape" size="small">去除转义</a-button>
+    <a-button @click="escape" size="small">转义</a-button>
+    <a-dropdown-button @click="fieldSort(true)" size="small" placement="topRight">
       字段升序
       <template #overlay>
         <a-menu>
@@ -254,7 +266,12 @@ function clearJson() {
         </a-menu>
       </template>
     </a-dropdown-button>
-    <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML', 'TypeScript']"/>
+    <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML', 'TypeScript']">
+      <template #button="{finish}">
+        <a-menu-item @click="toGetParams(finish)">转GET请求字符串
+        </a-menu-item>
+      </template>
+    </DataTransferButton>
     <a-button @click="clearData.open=true" size="small">JSON清理</a-button>
     <a-divider type="vertical" />
     <a-button type="primary" @click="monacoView = !monacoView" size="small">
@@ -266,9 +283,9 @@ function clearJson() {
   </AffixButtonGroup>
   <a-modal title="清理设置" v-model:open="clearData.open" ok-text="清理" @ok="clearJson">
     <a-flex v-for="option in clearData.options" :key="option.title" style="margin: 5px 0">
-      <a-checkbox v-model:checked="option.value">{{option.title}}</a-checkbox>
-      <a-tag v-for="ca in option.case" :key="ca" color="geekblue" >
-        {{ca}}
+      <a-checkbox v-model:checked="option.value">{{ option.title }}</a-checkbox>
+      <a-tag v-for="ca in option.case" :key="ca" color="geekblue">
+        {{ ca }}
       </a-tag>
     </a-flex>
   </a-modal>

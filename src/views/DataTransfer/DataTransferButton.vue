@@ -27,7 +27,7 @@ const data = ref<{
 
 const handleDataTransfer = (toType: Type) => {
   if (!props.value) {
-    message.error('请输入内容')
+    message.info('请输入内容')
     return
   }
   try {
@@ -43,7 +43,20 @@ const handleDataTransfer = (toType: Type) => {
     })
   }
 }
-
+const handleFinish = (value: string, lang: Language) => {
+  try {
+    data.value.toValue = value
+    data.value.toLang = lang
+    data.value.openModel = true
+    message.success('转换成功')
+  } catch (e: any) {
+    notification.error({
+      message: '转换失败',
+      description: e?.message,
+      placement: 'topRight'
+    })
+  }
+}
 const handleOk = async () => {
   useClipboard().copyText(data.value.toValue)
 }
@@ -61,6 +74,7 @@ const handleOk = async () => {
         <a-menu-item v-for="toType in toTypes.slice(1)" :key="toType" @click="handleDataTransfer(toType)">
           {{ `转${toType}` }}
         </a-menu-item>
+        <slot name="button" :finish="handleFinish"/>
       </a-menu>
     </template>
   </a-dropdown-button>
@@ -73,6 +87,7 @@ const handleOk = async () => {
     >
       {{ `转${toType}` }}
     </a-button>
+    <slot name="button" :finish="handleFinish"/>
   </a-space>
   <a-modal v-model:open="data.openModel"
            :cancel-text="'关闭'"
