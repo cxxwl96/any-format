@@ -7,12 +7,14 @@ import { useSessionCache } from '@/utils/CacheData'
 import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
 import { useClipboard } from '@/utils/Clipboard'
 import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
+import ToString2Json from '@/views/log/ToString2Json.vue'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
 const sessionCacheShowDiff = useSessionCache('LogFormat_ShowDiff')
 
 const settingRef = ref()
+const showToString2Json = ref<boolean>()
 const showSetting = ref<boolean>()
 const showDiff = ref<boolean>(sessionCacheShowDiff.load())
 const originValue = ref<string>(sessionCacheOrigin.load())
@@ -68,6 +70,8 @@ function dblClickHandler(value: string, target: Ref<string>) {
     </template>
   </MonacoDiffEditor>
   <AffixButtonGroup>
+    <a-button v-if="!showDiff" @click="showToString2Json=true" type="ghost" size="small">ToString转JSON</a-button>
+    <a-divider v-if="!showDiff" type="vertical" />
     <a-button type="ghost" @click="showSetting=true" size="small">
       <template #icon>
         <SettingOutlined />
@@ -83,6 +87,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
     </a-button>
   </AffixButtonGroup>
   <LogFormatSetting ref="settingRef" v-model:show="showSetting" />
+  <ToString2Json v-model:show="showToString2Json" v-model:value="originValue"/>
 </template>
 
 <style scoped></style>
