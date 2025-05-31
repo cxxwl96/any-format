@@ -3,7 +3,6 @@ import { Icon } from '@/components/icon'
 import { onMounted, ref, unref, watch } from 'vue'
 import { message, notification } from 'ant-design-vue'
 import { useLocalCache } from '@/utils/CacheData'
-import { useClipboard } from '@/utils/Clipboard'
 import { MonacoEditor } from '@/components/monaco'
 import { validateJson } from '@/utils/jsonUtil'
 const localCache = useLocalCache('AnyFormatToJson')
