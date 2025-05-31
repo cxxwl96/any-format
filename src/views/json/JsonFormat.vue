@@ -4,7 +4,7 @@ import { type Ref, ref, unref } from 'vue'
 import { validateJson } from '@/utils/jsonUtil'
 import { message, notification } from 'ant-design-vue'
 import { SwapOutlined } from '@ant-design/icons-vue'
-import { isArray, isJsonString, isObject } from '@/utils/is'
+import { isArray, isBoolean, isJsonString, isObject, isString } from '@/utils/is'
 import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
@@ -21,6 +21,23 @@ const result = ref<{
 }>({ value: sessionCache.load(), error: false, message: '' })
 // 切换视图
 const monacoView = ref(true)
+// JSON清理
+type ClearType = 'null' | 'string' | 'boolean' | 'object' | 'array'
+const clearData = ref<{
+  open: boolean,
+  options: {
+    title: string, key: ClearType, value: boolean, case: string[]
+  }[]
+}>({
+  open: false,
+  options: [
+    {title: '清理null', key: 'null', value: true, case: ['"name": null']},
+    {title: '清理空字符串', key: 'string', value: true, case: ['"name": ""', '"name": " "']},
+    {title: '清理false', key: 'boolean', value: true, case: ['"isBlank": false']},
+    {title: '清理空对象', key: 'object', value: true, case: ['"person": {}']},
+    {title: '清理空数组', key: 'array', value: true, case: ['addresses: []']}
+  ]
+})
 
 // 格式化校验
 function formatValidate(tip: boolean = true) {
@@ -44,7 +61,7 @@ function formatValidate(tip: boolean = true) {
       message.success('正确的JSON')
     }
   }
-  return unref(result.value.value)
+  return result.value.error ? null : unref(result.value.value)
 }
 
 // 压缩
@@ -55,10 +72,11 @@ function compress() {
   }
 }
 
-function deepJson(json: Ref<any>, suffix: boolean) {
+// 深度去除转义
+function deepJsonForDelEscape(json: Ref<any>, suffix: boolean) {
   if (isArray(json.value)) {
     for (const obj of json.value) {
-      deepJson(ref(obj), suffix)
+      deepJsonForDelEscape(ref(obj), suffix)
     }
   } else if (isObject(json.value)) {
     const suffixStr = ' [@String]'
@@ -68,26 +86,25 @@ function deepJson(json: Ref<any>, suffix: boolean) {
         delete json.value[key]
         key = suffix ? key + suffixStr : key
         json.value[key] = JSON.parse(value)
-        deepJson(ref(json.value[key]), suffix)
+        deepJsonForDelEscape(ref(json.value[key]), suffix)
       } else {
         if (!suffix && key.endsWith(suffixStr)) {
-          deepJson(ref(value), suffix)
+          deepJsonForDelEscape(ref(value), suffix)
           delete json.value[key]
           json.value[key.substring(0, key.length - suffixStr.length)] = value
         } else {
-          deepJson(ref(value), suffix)
+          deepJsonForDelEscape(ref(value), suffix)
         }
       }
     }
   }
 }
 
-// 深度去除转义
 function deepDelEscape(suffix: boolean) {
   const value = formatValidate()
   if (value) {
     const json = ref(JSON.parse(value))
-    deepJson(json, suffix)
+    deepJsonForDelEscape(json, suffix)
     result.value.value = JSON.stringify(json.value)
     formatValidate(false)
   }
@@ -142,6 +159,55 @@ function fieldSort(asc: boolean) {
     formatValidate(false)
   }
 }
+
+// JSON清理
+function deepClearJson(json: any) {
+  if (isArray(json)) {
+    for (const item of json) {
+      deepClearJson(item)
+      if (toDelete(item)) {
+        delete json[item]
+      }
+    }
+  } else if (isObject(json)) {
+    for (const key in json) {
+      deepClearJson(json[key])
+      if(toDelete(json[key])) {
+        delete json[key]
+      }
+    }
+  }
+  if (toDelete(json)) {
+    return ''
+  }
+  return json
+}
+function clearChecked(key: ClearType):boolean {
+  return (clearData.value.options.find(op => op.key === key)?.value || false)
+}
+function toDelete(value: any): boolean {
+  if (value === null || value === undefined) {
+    return clearChecked('null')
+  } else if (isString(value)) {
+    return clearChecked('string') && value.trim().length === 0
+  } else if (isBoolean(value)) {
+    return clearChecked('boolean') && !value
+  } else if (isObject(value)) {
+    return clearChecked('object') && Object.keys(value).length === 0
+  } else if (isArray(value)) {
+    return clearChecked('array') && value.length === 0
+  }
+  return false
+}
+
+function clearJson() {
+  const value = formatValidate()
+  if (value) {
+    const json = JSON.parse(value)
+    result.value.value = JSON.stringify(deepClearJson(json))
+  }
+  clearData.value.open = false
+}
 </script>
 
 <template>
@@ -155,8 +221,8 @@ function fieldSort(asc: boolean) {
   </MonacoEditor>
   <JsonEditor v-else v-model="result.value" mode="tree" />
   <AffixButtonGroup>
-    <a-button v-if="monacoView" type="primary" @click="formatValidate" size="small">格式化校验</a-button>
-    <a-dropdown-button v-if="monacoView" @click="compress" size="small" placement="topRight">
+    <a-button  type="primary" @click="formatValidate" size="small">格式化校验</a-button>
+    <a-dropdown-button  @click="compress" size="small" placement="topRight">
       压缩
       <template #overlay>
         <a-menu>
@@ -166,7 +232,7 @@ function fieldSort(asc: boolean) {
         </a-menu>
       </template>
     </a-dropdown-button>
-    <a-dropdown-button v-if="monacoView" @click="deepDelEscape(true)" size="small" placement="topRight">
+    <a-dropdown-button  @click="deepDelEscape(true)" size="small" placement="topRight">
       深度去除转义
       <template #overlay>
         <a-menu>
@@ -176,9 +242,9 @@ function fieldSort(asc: boolean) {
         </a-menu>
       </template>
     </a-dropdown-button>
-    <a-button v-if="monacoView" @click="delEscape" size="small">去除转义</a-button>
-    <a-button v-if="monacoView" @click="escape" size="small">转义</a-button>
-    <a-dropdown-button v-if="monacoView" @click="fieldSort(true)" size="small" placement="topRight">
+    <a-button  @click="delEscape" size="small">去除转义</a-button>
+    <a-button  @click="escape" size="small">转义</a-button>
+    <a-dropdown-button  @click="fieldSort(true)" size="small" placement="topRight">
       字段升序
       <template #overlay>
         <a-menu>
@@ -189,7 +255,8 @@ function fieldSort(asc: boolean) {
       </template>
     </a-dropdown-button>
     <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML']"/>
-    <a-divider v-if="monacoView" type="vertical" />
+    <a-button @click="clearData.open=true" size="small">JSON清理</a-button>
+    <a-divider type="vertical" />
     <a-button type="primary" @click="monacoView = !monacoView" size="small">
       <template #icon>
         <SwapOutlined />
@@ -197,6 +264,14 @@ function fieldSort(asc: boolean) {
       切换视图
     </a-button>
   </AffixButtonGroup>
+  <a-modal title="清理设置" v-model:open="clearData.open" ok-text="清理" @ok="clearJson">
+    <a-flex v-for="option in clearData.options" :key="option.title" style="margin: 5px 0">
+      <a-checkbox v-model:checked="option.value">{{option.title}}</a-checkbox>
+      <a-tag v-for="ca in option.case" :key="ca" color="geekblue" >
+        {{ca}}
+      </a-tag>
+    </a-flex>
+  </a-modal>
 </template>
 
 <style scoped></style>
