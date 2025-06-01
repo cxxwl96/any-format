@@ -6,8 +6,9 @@ import LogFormatSetting from '@/views/log/LogFormatSetting.vue'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
 import { useClipboard } from '@/utils/Clipboard'
-import AffixButtonGroup from "@/components/AffixButtonGroup.vue";
-import ToString2Json from '@/views/log/ToString2Json.vue'
+import AffixButtonGroup from '@/components/AffixButtonGroup.vue'
+import RegexReplace from '@/components/RegexReplace'
+import { formatValidate, options } from '@/views/log/ToString2Json'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
@@ -87,7 +88,16 @@ function dblClickHandler(value: string, target: Ref<string>) {
     </a-button>
   </AffixButtonGroup>
   <LogFormatSetting ref="settingRef" v-model:show="showSetting" />
-  <ToString2Json v-model:show="showToString2Json" v-model:value="originValue"/>
+  <RegexReplace title="ToString转JSON"
+                v-model:show="showToString2Json"
+                v-model:value="originValue"
+                cacheKey="AnyFormatToJson"
+                :options="options"
+                alert="将从上到下执行正则替换，理论上无限接近JSON格式，最终结果还要自行检查"
+                to-lang="json"
+                to-tip="Tip：双击格式化校验JSON"
+                @to-dbl-click="formatValidate"
+  />
 </template>
 
 <style scoped></style>
