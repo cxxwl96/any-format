@@ -15,11 +15,11 @@ const sessionCacheModified = useSessionCache('LogFormat_Modified')
 const sessionCacheShowDiff = useSessionCache('LogFormat_ShowDiff')
 
 const settingRef = ref()
-const showToString2Json = ref<boolean>()
-const showSetting = ref<boolean>()
-const showDiff = ref<boolean>(sessionCacheShowDiff.load())
-const originValue = ref<string>(sessionCacheOrigin.load())
-const modifiedValue = ref<string>(sessionCacheModified.load())
+const showToString2Json = ref<boolean>(false)
+const showSetting = ref<boolean>(false)
+const showDiff = ref<boolean>(sessionCacheShowDiff.load() || false)
+const originValue = ref<string>(sessionCacheOrigin.load() || '')
+const modifiedValue = ref<string>(sessionCacheModified.load() || '')
 
 watch(() => showDiff.value, (value) => sessionCacheShowDiff.cache(value))
 

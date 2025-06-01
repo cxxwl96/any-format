@@ -11,7 +11,7 @@ import type { Language } from '@/components/monaco/data'
 const props = defineProps({
   title: { type: String, required: true },
   show: { type: Boolean, default: false },
-  value: { type: String, required: true },
+  value: { type: String, required: true, default: '' },
   cacheKey: { type: String, required: true },
   options: { type: Object as PropType<RegexOption[]> },
   alert: String,
