@@ -34,10 +34,10 @@ const clearData = ref<{
   open: false,
   options: [
     { title: '清理null', key: 'null', value: true, case: ['"name": null'] },
-    { title: '清理空字符串', key: 'string', value: true, case: ['"name": ""', '"name": " "'] },
-    { title: '清理false', key: 'boolean', value: true, case: ['"isBlank": false'] },
-    { title: '清理空对象', key: 'object', value: true, case: ['"person": {}'] },
-    { title: '清理空数组', key: 'array', value: true, case: ['addresses: []'] }
+    { title: '清理空字符串', key: 'string', value: false, case: ['"name": ""', '"name": " "'] },
+    { title: '清理false', key: 'boolean', value: false, case: ['"isBlank": false'] },
+    { title: '清理空对象', key: 'object', value: false, case: ['"person": {}'] },
+    { title: '清理空数组', key: 'array', value: false, case: ['addresses: []'] }
   ]
 })
 
