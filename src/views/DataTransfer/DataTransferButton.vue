@@ -90,13 +90,13 @@ const handleOk = async () => {
     <slot name="button" :finish="handleFinish"/>
   </a-space>
   <a-modal v-model:open="data.openModel"
+           @ok="handleOk"
+           :closable="false"
+           width="65%"
            :cancel-text="'关闭'"
            :ok-text="'复制'"
-           :cancelButtonProps="{display: 'none'}"
-           :closable="false"
-           mask-closable
-           width="65%"
-           @ok="handleOk"
+           :cancel-button-props="{size: 'small'}"
+           :ok-button-props="{size: 'small'}"
   >
     <MonacoEditor :language="data.toLang" v-model="data.toValue" height="65vh" />
   </a-modal>

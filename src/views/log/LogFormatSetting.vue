@@ -86,10 +86,10 @@ onMounted(() => {
       <a-form-item label="TabCount">
         <a-input-number v-model:value="form.tabCount" :min="0" :max="16" />
       </a-form-item>
-      <a-form-item>
-        <a-button type="primary" html-type="submit">保存</a-button>
-        <a-button style="margin-left: 10px" @click="open=false">取消</a-button>
-      </a-form-item>
+      <a-flex justify="flex-end" gap="small">
+        <a-button type="primary" html-type="submit" size="small">保存</a-button>
+        <a-button @click="open=false" size="small">取消</a-button>
+      </a-flex>
     </a-form>
   </a-modal>
 </template>

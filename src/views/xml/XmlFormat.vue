@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, unref } from 'vue'
 import vkbeautify from 'vkbeautify'
-import { notification } from 'ant-design-vue'
+import { message, notification } from 'ant-design-vue'
 import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
@@ -14,17 +14,26 @@ const data = ref<string>(sessionCache.load())
 
 // 格式化
 function handleFormat() {
+  if (!data.value) {
+    message.info('请输入内容')
+    return
+  }
   data.value = vkbeautify.xml(unref(data.value))
 }
 
 // 压缩
 function handleCompress() {
+  if (!data.value) {
+    message.info('请输入内容')
+    return
+  }
   data.value = vkbeautify.xmlmin(unref(data.value))
 }
 
 // 节点排序
 function handleSort(asc: boolean = true) {
   if (!data.value) {
+    message.info('请输入内容')
     return
   }
   // 判断并获取xml头

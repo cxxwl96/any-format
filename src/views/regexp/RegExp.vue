@@ -113,7 +113,7 @@ const handleDragFile = (event: DragEvent) => {
         <a-checkbox v-model:checked="form.ignoreCase">忽略大小写</a-checkbox>
       </a-col>
       <a-col>
-        <a-button type="primary" @click="handleMatchAll">匹配</a-button>
+        <a-button type="primary" @click="handleMatchAll" size="small">匹配</a-button>
       </a-col>
     </a-row>
     <a-textarea

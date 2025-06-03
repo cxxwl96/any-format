@@ -11,7 +11,7 @@ import { MonacoEditor } from '@/components/monaco'
 import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
 import AffixButtonGroup from '@/components/AffixButtonGroup.vue'
 import { StrUtil } from '@/utils/StrUtil'
-import { stringify } from 'qs';
+import { stringify } from 'qs'
 import type { Language } from '@/components/monaco/data'
 
 const sessionCache = useSessionCache('JsonFormat')
@@ -268,8 +268,7 @@ function toGetParams(finish: (val: string, lang: Language) => void) {
     </a-dropdown-button>
     <DataTransferButton :value="result.value" :type="'JSON'" :toTypes="['XML', 'YAML', 'TypeScript']">
       <template #button="{finish}">
-        <a-menu-item @click="toGetParams(finish)">转GET请求字符串
-        </a-menu-item>
+        <a-menu-item @click="toGetParams(finish)">转GET请求字符串</a-menu-item>
       </template>
     </DataTransferButton>
     <a-button @click="clearData.open=true" size="small">JSON清理</a-button>
@@ -281,7 +280,14 @@ function toGetParams(finish: (val: string, lang: Language) => void) {
       切换视图
     </a-button>
   </AffixButtonGroup>
-  <a-modal title="清理设置" v-model:open="clearData.open" ok-text="清理" @ok="clearJson">
+  <a-modal title="清理设置"
+           v-model:open="clearData.open"
+           @ok="clearJson"
+           cancel-text="关闭"
+           ok-text="开始清理"
+           :cancel-button-props="{size: 'small'}"
+           :ok-button-props="{size: 'small'}"
+  >
     <a-flex v-for="option in clearData.options" :key="option.title" style="margin: 5px 0">
       <a-checkbox v-model:checked="option.value">{{ option.title }}</a-checkbox>
       <a-tag v-for="ca in option.case" :key="ca" color="geekblue">

@@ -16,7 +16,7 @@ const props = defineProps({
   options: { type: Object as PropType<RegexOption[]> },
   alert: String,
   toLang: String as PropType<Language>,
-  toTip: String,
+  toTip: String
 })
 const emits = defineEmits(['update:show', 'toDblClick'])
 
@@ -91,8 +91,15 @@ function handleToDblClick() {
 </script>
 
 <template>
-  <a-modal :title="props.title" v-model:open="toString2JsonData.openToString2Json" cancel-text="关闭" ok-text="转换"
-           @ok="toString2Json" width="60vw">
+  <a-modal :title="props.title"
+           v-model:open="toString2JsonData.openToString2Json"
+           @ok="toString2Json"
+           width="60vw"
+           cancel-text="关闭"
+           ok-text="开始转换"
+           :cancel-button-props="{size: 'small'}"
+           :ok-button-props="{size: 'small'}"
+  >
 
     <a-alert v-if="props.alert" :message="props.alert" type="info" closable
              style="margin-bottom: 10px; padding: 0 7px; font-size: 12px; border-radius: 3px; color: #1677ff" />
@@ -135,10 +142,11 @@ function handleToDblClick() {
     </a-button>
   </a-modal>
   <a-modal title="转换结果" v-model:open="toString2JsonData.openJsonFormat" width="60vw" :footer="null">
-    <MonacoEditor :language="props.toLang || 'plaintext'" v-model="toString2JsonData.value" @dblClick="handleToDblClick" height="60vh" word-wrap>
+    <MonacoEditor :language="props.toLang || 'plaintext'" v-model="toString2JsonData.value" @dblClick="handleToDblClick"
+                  height="60vh" word-wrap>
       <template v-if="props.toTip" #title>
         <div class="tip-font">
-          {{props.toTip}}
+          {{ props.toTip }}
         </div>
       </template>
     </MonacoEditor>
