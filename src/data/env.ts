@@ -5,6 +5,7 @@ export type EnvKey =
   | 'PROD'
   | 'SSR'
   | 'VITE_PORT'
+  | 'VITE_APP_NAME'
 
 export const getEnv = (key: EnvKey): any => {
   return import.meta.env[key]

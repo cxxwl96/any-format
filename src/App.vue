@@ -6,6 +6,7 @@ import DragableMenu from '@/components/DragableMenu/DragableMenu.vue'
 import type { MenuItem } from '@/components/DragableMenu'
 import PackageJson from '../package.json'
 import NotFound from '@/components/pages/NotFound.vue'
+import { getEnv } from '@/data/env'
 
 const activeMenu = ref<MenuItem>(menus[0])
 const componentRef = ref()
@@ -20,6 +21,8 @@ const updateActiveMenu = () => {
     key: 'NotFound',
     component: shallowRef(NotFound)
   }
+  // 设置标题
+  document.title = `${activeMenu.value.label} - ${getEnv('VITE_APP_NAME')}`
 }
 window.addEventListener('hashchange', () => updateActiveMenu())
 updateActiveMenu()
