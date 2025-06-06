@@ -20,7 +20,7 @@ const pageData = ref({
     })
   }
 })
-const script = ref<string>(props.modelValue || sessionCache.load())
+const script = ref<string>(props.modelValue || sessionCache.load() || '')
 const result = ref<{ data: any; success: boolean; }>({ data: '', success: true })
 watch(() => props.modelValue, (value) => script.value = value || '')
 

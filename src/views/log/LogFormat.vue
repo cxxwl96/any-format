@@ -7,8 +7,6 @@ import { useSessionCache } from '@/utils/CacheData'
 import { MonacoDiffEditor, MonacoEditor } from '@/components/monaco'
 import { useClipboard } from '@/utils/Clipboard'
 import AffixButtonGroup from '@/components/AffixButtonGroup.vue'
-import RegexReplace from '@/components/RegexReplace'
-import { formatValidate, options } from '@/views/log/ToString2Json'
 import { StrUtil } from '@/utils/StrUtil'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
@@ -78,8 +76,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
       设置
     </a-button>
     <a-divider type="vertical" />
-    <a-button @click="originValue = StrUtil.compress(originValue)" size="small">文本压缩</a-button>
-    <a-divider type="vertical" />
+    <a-button v-if="!showDiff" @click="originValue = StrUtil.compress(originValue)" size="small">文本压缩</a-button>
     <a-button type="primary" @click="showDiff=!showDiff" size="small">
       <template #icon>
         <SwapOutlined />
