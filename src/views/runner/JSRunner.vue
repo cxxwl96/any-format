@@ -5,8 +5,12 @@ import { useClipboard } from '@/utils/Clipboard'
 import { useSessionCache } from '@/utils/CacheData'
 import { MonacoEditor } from '@/components/monaco'
 import { Icon } from '@/components/icon'
+import * as prettier from 'prettier/standalone'
+import * as parserBabel from 'prettier/parser-babel'
+import * as prettierPluginEstree from 'prettier/plugins/estree'
 // @ts-ignore
 import contextText from './Context.ts?raw'
+import { StrUtil } from '@/utils/StrUtil'
 
 const sessionCache = useSessionCache('JSRunner')
 
@@ -23,6 +27,35 @@ const pageData = ref({
 const script = ref<string>(props.modelValue || sessionCache.load() || '')
 const result = ref<{ data: any; success: boolean; }>({ data: '', success: true })
 watch(() => props.modelValue, (value) => script.value = value || '')
+
+const formatCode = async (code: string): Promise<string> => {
+  if (!code) {
+    return ''
+  }
+  return await prettier.format(code, {
+    parser: 'babel',
+    plugins: [parserBabel, prettierPluginEstree],
+    arrowParens: 'always',
+    bracketSameLine: false,
+    bracketSpacing: true,
+    semi: true,
+    experimentalTernaries: false,
+    singleQuote: true,
+    jsxSingleQuote: false,
+    quoteProps: 'as-needed',
+    trailingComma: 'all',
+    singleAttributePerLine: false,
+    htmlWhitespaceSensitivity: 'css',
+    vueIndentScriptAndStyle: false,
+    proseWrap: 'preserve',
+    insertPragma: false,
+    printWidth: 80,
+    requirePragma: false,
+    tabWidth: 2,
+    useTabs: false,
+    embeddedLanguageFormatting: 'auto'
+  })
+}
 
 const handleRunner = () => {
   if (script.value) {
@@ -46,11 +79,19 @@ const handleRunner = () => {
                   height="calc(100vh - 400px)">
       <template #title>
         <a-flex align="center" gap="middle">
-          <div class="tip-font">脚本：<a @click="async () => {script = await useClipboard().pasteText()}">粘贴脚本</a>
+          <div class="tip-font">
+            脚本：
+            <a-flex gap="small" style="display: inline-flex">
+              <a @click="async () => {script = await useClipboard().pasteText()}">粘贴脚本</a>
+              <a @click="async () => {script = await formatCode(script)}">格式化</a>
+              <a @click="async () => {script = StrUtil.compress(script)}">压缩</a>
+            </a-flex>
           </div>
           <a-button type="primary" @click="handleRunner" size="small">运行脚本</a-button>
           <a-tooltip title="Help">
-            <a><Icon icon="material-symbols:help-outline" @click="pageData.help.open = true" /></a>
+            <a>
+              <Icon icon="material-symbols:help-outline" @click="pageData.help.open = true" />
+            </a>
           </a-tooltip>
         </a-flex>
       </template>
