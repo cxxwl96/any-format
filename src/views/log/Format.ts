@@ -78,16 +78,16 @@ export default function useFormat(conf: AnyFormatConfig = config) {
   function isMatched(conditions: string[], arr: string, index: number): MatchRes {
     let newConditions: string[] = [...conditions]
     // 文本比较
-    let i = index + 1
+    let i = index
     for (; i < arr.length; i++) {
-      const tempConditions = newConditions.filter(condition => condition.startsWith(arr.substring(index, i)))
+      const tempConditions = newConditions.filter(condition => condition.startsWith(arr.substring(index, i + 1)))
       if (tempConditions.length > 0) {
         newConditions = tempConditions
       } else {
         break
       }
     }
-    if (newConditions.length === 1 && newConditions[0] === arr.substring(index, Math.max(index, i - 1))) {
+    if (newConditions.length === 1 && newConditions[0] === arr.substring(index, Math.max(index, i))) {
       return {
         matched: true,
         text: newConditions[0]

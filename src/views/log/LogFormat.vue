@@ -9,13 +9,13 @@ import { useClipboard } from '@/utils/Clipboard'
 import AffixButtonGroup from '@/components/AffixButtonGroup.vue'
 import RegexReplace from '@/components/RegexReplace'
 import { formatValidate, options } from '@/views/log/ToString2Json'
+import { StrUtil } from '@/utils/StrUtil'
 
 const sessionCacheOrigin = useSessionCache('LogFormat_Origin')
 const sessionCacheModified = useSessionCache('LogFormat_Modified')
 const sessionCacheShowDiff = useSessionCache('LogFormat_ShowDiff')
 
 const settingRef = ref()
-const showToString2Json = ref<boolean>(false)
 const showSetting = ref<boolean>(false)
 const showDiff = ref<boolean>(sessionCacheShowDiff.load() || false)
 const originValue = ref<string>(sessionCacheOrigin.load() || '')
@@ -71,14 +71,14 @@ function dblClickHandler(value: string, target: Ref<string>) {
     </template>
   </MonacoDiffEditor>
   <AffixButtonGroup>
-    <a-button v-if="!showDiff" @click="showToString2Json=true" type="ghost" size="small">ToString转JSON</a-button>
-    <a-divider v-if="!showDiff" type="vertical" />
     <a-button type="ghost" @click="showSetting=true" size="small">
       <template #icon>
         <SettingOutlined />
       </template>
       设置
     </a-button>
+    <a-divider type="vertical" />
+    <a-button @click="originValue = StrUtil.compress(originValue)" size="small">文本压缩</a-button>
     <a-divider type="vertical" />
     <a-button type="primary" @click="showDiff=!showDiff" size="small">
       <template #icon>
@@ -88,16 +88,6 @@ function dblClickHandler(value: string, target: Ref<string>) {
     </a-button>
   </AffixButtonGroup>
   <LogFormatSetting ref="settingRef" v-model:show="showSetting" />
-  <RegexReplace title="ToString转JSON"
-                v-model:show="showToString2Json"
-                v-model:value="originValue"
-                cacheKey="AnyFormatToJson"
-                :options="options"
-                alert="将从上到下执行正则替换，理论上无限接近JSON格式，最终结果还要自行检查"
-                to-lang="json"
-                to-tip="Tip：双击格式化校验JSON"
-                @to-dbl-click="formatValidate"
-  />
 </template>
 
 <style scoped></style>
