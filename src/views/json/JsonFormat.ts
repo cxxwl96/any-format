@@ -6,27 +6,13 @@ import { jsonlint } from '@/utils/jsonlint'
 import { isArray, isBoolean, isJsonString, isObject, isString } from '@/utils/is'
 
 type ClearType = 'null' | 'string' | 'boolean' | 'object' | 'array' | 'regexp'
-type ClearOption = {
+export type ClearOption = {
   title: string;
   key: ClearType;
   checked: boolean;
   case: string[];
   value?: string;
 }
-export const clearData = ref<{
-  open: boolean;
-  options: ClearOption[];
-}>({
-  open: false,
-  options: [
-    { title: '清理null', key: 'null', checked: true, case: ['"name": null'] },
-    { title: '清理空字符串', key: 'string', checked: false, case: ['"name": ""', '"name": " "'] },
-    { title: '清理false', key: 'boolean', checked: false, case: ['"isBlank": false'] },
-    { title: '清理空对象', key: 'object', checked: false, case: ['"person": {}'] },
-    { title: '清理空数组', key: 'array', checked: false, case: ['addresses: []'] },
-    { title: '清理指定字符串（支持正则匹配）', key: 'regexp', checked: false, case: ['name: "abcxxx" // 匹配abc开头的字段值：^abc.+'], value: '' },
-  ]
-})
 
 type JsonType = string | object | any
 type JsonResult = {
@@ -39,7 +25,7 @@ type JsonResult = {
  *
  * @param json JSON
  */
-class JSONUtil {
+export class JSONUtil {
   
   /**
    * 原始JSON
