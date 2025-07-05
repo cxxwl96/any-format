@@ -78,9 +78,12 @@ watch(
 </script>
 
 <template>
-  <MonacoEditor v-if="data.view==='MonacoEditor'" language="json" v-model="originValue"
+  <MonacoEditor v-if="data.view==='MonacoEditor'"
+                language="json"
+                v-model="originValue"
                 @change="(value) => data.originValue = value"
-                @dblClick="originUtil.formatValidate">
+                @dblClick="originUtil.formatValidate"
+  >
     <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {originValue = await useClipboard().pasteText()}">粘贴文本</a>，双击格式化
@@ -93,7 +96,8 @@ watch(
                     @originChange="(value) => data.originValue = value"
                     @modifiedChange="(value) => data.modifyValue = value"
                     @originDblClick="originUtil.formatValidate"
-                    @modifiedDblClick="modifyUtil.formatValidate">
+                    @modifiedDblClick="modifyUtil.formatValidate"
+  >
     <template #title>
       <div class="tip-font">
         Tip：<a @click="async () => {originValue = await useClipboard().pasteText()}">粘贴左边</a>，双击格式化；<a
@@ -141,11 +145,11 @@ watch(
         <DataTransferButton :value="originValue" :type="'JSON'" :toTypes="['XML', 'YAML', 'TypeScript']">
           <template #button="{finish}">
             <a-menu-item @click="() => {
-          const result = originUtil.toGetParams();
-          if(!result.error) {
-            finish(result.value, 'plaintext');
-          }
-        }">转GET请求字符串
+              const result = originUtil.toGetParams();
+              if(!result.error) {
+                finish(result.value, 'plaintext');
+              }
+            }">转GET请求字符串
             </a-menu-item>
           </template>
         </DataTransferButton>
@@ -159,7 +163,7 @@ watch(
           </template>
           {{ data.view === 'MonacoEditor' ? '文本对比' : '返回' }}
         </a-button>
-        <a-divider type="vertical" v-if="data.view === 'MonacoEditor' || data.view === 'JsonEditor'"/>
+        <a-divider type="vertical" v-if="data.view === 'MonacoEditor' || data.view === 'JsonEditor'" />
         <a-button v-if="data.view === 'MonacoEditor' || data.view === 'JsonEditor'"
                   @click="data.view = data.view === 'MonacoEditor' ? 'JsonEditor' : 'MonacoEditor';"
                   type="primary"

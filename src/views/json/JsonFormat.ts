@@ -25,7 +25,7 @@ type JsonResult = {
  *
  * @param json JSON
  */
-export class JSONUtil {
+class JSONUtil {
   
   /**
    * 原始JSON
