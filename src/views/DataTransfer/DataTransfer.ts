@@ -3,8 +3,9 @@ import YAML from 'js-yaml'
 import x2js from 'x2js'
 import jsToInterface from 'js-to-interface'
 import type { Language } from '@/components/monaco/data'
-import { validateJson } from '@/utils/jsonUtil'
 import { isJsonString } from '@/utils/is'
+import { useJSONUtil } from '@/views/json/JsonFormat'
+import { ref } from 'vue'
 
 export type Type = 'JSON' | 'XML' | 'YAML' | 'TypeScript'
 export const DataTypeArray: { lang: Language; type: Type; show: boolean }[] = [
@@ -77,7 +78,7 @@ export class DataTransfer {
     // 转换
     const json = this.XML2JSON.xml2js(value)
     // JSON校验
-    validateJson(json, true)
+    useJSONUtil(ref(json)).formatValidate(false, true)
     return pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json)
   }
 
@@ -100,7 +101,7 @@ export class DataTransfer {
   private yaml2json = (value: string, pretty?: boolean): string => {
     const json = YAML.load(value)
     // JSON校验
-    validateJson(json, true)
+    useJSONUtil(ref(json)).formatValidate(false, true)
     return pretty ? JSON.stringify(json, null, 4) : JSON.stringify(json)
   }
 
