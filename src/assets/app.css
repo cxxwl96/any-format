@@ -12,7 +12,8 @@
 }
 
 .header {
-    margin: 10px 40px 0 40px;
+    margin: 0 40px 0 40px;
+    padding-top: 10px;
     font-family: 'Arial Black', 'sans-serif';
     font-size: 2rem;
     font-weight: bold;

@@ -18,6 +18,7 @@ const data = ref({
                     v-model:modified-value="data.modifiedValue"
                     @originChange="originSessionCache.cache(data.originValue)"
                     @modifiedChange="modifySessionCache.cache(data.modifiedValue)"
+                    height="calc(100vh - 250px)"
   >
     <template #title>
       <div class="tip-font">
