@@ -5,7 +5,7 @@ import { message, notification } from 'ant-design-vue'
 import { jsonlint } from '@/utils/jsonlint'
 import { isArray, isBoolean, isJsonString, isObject, isString } from '@/utils/is'
 
-type ClearType = 'null' | 'string' | 'boolean' | 'object' | 'array' | 'regexp'
+type ClearType = 'null' | 'string' | 'boolean' | 'object' | 'array' | 'valueRegExp' | 'keyRegExp'
 export type ClearOption = {
   title: string;
   key: ClearType;
@@ -248,19 +248,19 @@ export class JSONUtil {
       if (isArray(json)) {
         for (const item of json) {
           deepClearJson(item)
-          if (toDelete(item)) {
+          if (toDelete(null, item)) {
             delete json[item]
           }
         }
       } else if (isObject(json)) {
         for (const key in json) {
           deepClearJson(json[key])
-          if (toDelete(json[key])) {
+          if (toDelete(key, json[key])) {
             delete json[key]
           }
         }
       }
-      if (toDelete(json)) {
+      if (toDelete(null, json)) {
         return ''
       }
       return json
@@ -274,14 +274,18 @@ export class JSONUtil {
       return (options.find(op => op.key === key)?.value || '')
     }
 
-    const toDelete = (value: any): boolean => {
+    const toDelete = (key: string | null, value: any): boolean => {
+      if (key !== null) {
+        const match = key.match(clearValue('keyRegExp'))
+        return clearChecked('keyRegExp') && match !== null && match.length > 0
+      }
       if (value === null || value === undefined) {
         return clearChecked('null')
       } else if (isString(value)) {
         const string = clearChecked('string') && value.trim().length === 0
-        const match = value.match(clearValue('regexp'))
-        const regexp = clearChecked('regexp') && match !== null && match.length > 0
-        return string || regexp
+        const match = value.match(clearValue('valueRegExp'))
+        const valueRegExp = clearChecked('valueRegExp') && match !== null && match.length > 0
+        return string || valueRegExp
       } else if (isBoolean(value)) {
         return clearChecked('boolean') && !value
       } else if (isObject(value)) {

@@ -36,7 +36,8 @@ const clearData = ref<{
     { title: '清理false', key: 'boolean', checked: false, case: ['"isBlank": false'] },
     { title: '清理空对象', key: 'object', checked: false, case: ['"person": {}'] },
     { title: '清理空数组', key: 'array', checked: false, case: ['addresses: []'] },
-    { title: '清理指定字符串（支持正则匹配）', key: 'regexp', checked: false, case: ['name: "abcxxx" // 匹配abc开头的字段值：^abc.+'], value: '' },
+    { title: '清理指定字段名（正则匹配）', key: 'keyRegExp', checked: false, case: ['AnyFormat: "abcxxx" // 例如Any开头的字段名：^Any.+'], value: '' },
+    { title: '清理指定字段值（正则匹配）', key: 'valueRegExp', checked: false, case: ['AnyFormat: "abcxxx" // 例如abc开头的字段值：^abc.+'], value: '' },
   ]
 })
 const originValue = ref(data.value.originValue)
@@ -55,6 +56,11 @@ const clearJson = () => {
   clearData.value.open = false
   clearData.value.operateType = null
 }
+watch(() => clearData.value.open, (value) => {
+  if (!value) {
+    clearData.value.operateType = null
+  }
+})
 watch(() => clearData.value.operateType, (value) => {
   if (value != null) {
     clearData.value.open = true
@@ -235,10 +241,15 @@ watch(
           {{ ca }}
         </a-tag>
       </a-flex>
-      <a-input v-if="option.key === 'regexp' && option.checked"
+      <a-input v-if="option.key === 'keyRegExp' && option.checked"
                v-model:value="option.value"
                size="small"
-               placeholder="例如abc开头的字段值：^abc.+"
+               placeholder="输入需要匹配的字段名，支持正则，例如Any开头的字段名：^Any.+"
+      />
+      <a-input v-if="option.key === 'valueRegExp' && option.checked"
+               v-model:value="option.value"
+               size="small"
+               placeholder="输入需要匹配的字段值，支持正则，例如abc开头的字段值：^abc.+"
       />
     </div>
   </a-modal>
