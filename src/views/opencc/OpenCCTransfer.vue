@@ -39,6 +39,16 @@ const handleChange = () => {
   const converter = Converter({from: data.value.fromLocale, to: data.value.toLocale})
   data.value.toValue = converter(data.value.fromValue)
 }
+
+const handleSwitchValue = () => {
+  const value = data.value.fromValue
+  data.value.fromValue = data.value.toValue
+  data.value.toValue = value
+
+  const locale = data.value.fromLocale
+  data.value.fromLocale = data.value.toLocale
+  data.value.toLocale = locale
+}
 </script>
 
 <template>
@@ -113,6 +123,8 @@ const handleChange = () => {
               >
                 {{ chinese.label }}
               </a-radio-button>
+              <a-divider type="vertical" class="divider-border-none" />
+              <a-button @click="handleSwitchValue" size="small">交换内容</a-button>
               <a-divider type="vertical" class="divider-border-none" />
               <a-alert v-if="getTip(data.toLocale)" :message="getTip(data.toLocale)" type="info" show-icon closable style="padding: 0 10px; border-radius: 3px"/>
             </a-row>
