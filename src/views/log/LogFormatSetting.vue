@@ -82,7 +82,7 @@ const handleAddOpenClose = () => {
             <Icon icon="ant-design:delete-outlined" />
           </a-button>
         </a-input-group>
-        <a-button type="link" size="small" style="margin-top: 10px" @click="handleAddOpenClose">
+        <a-button type="dashed" size="small" style="width: 90%; margin-top: 10px" @click="handleAddOpenClose">
           <Icon icon="ant-design:plus-outlined" />
           添加
         </a-button>
