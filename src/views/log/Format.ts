@@ -17,24 +17,32 @@
 import { StrUtil } from '@/utils/StrUtil'
 
 export interface AnyFormatConfig {
-  startChars: string[];
-  endChars: string[];
+  openCloseChars: { open: string; close: string }[];
   breakChars: string[];
   tabCount: number;
 }
 
 interface MatchRes {
   matched: boolean;
-  text: string;
+  text: string; // 匹配到的字符串
+  char: string; // 配置的字符串（openChar、closeChar、breakChar）
 }
+
 export const config: AnyFormatConfig = {
-  startChars: ['{', '[', '('],
-  endChars: ['}', ']', ')'],
+  openCloseChars: [
+    { open: '[', close: ']' },
+    { open: '{', close: '}' },
+    { open: '(', close: ')' }
+  ],
   breakChars: [';', ','],
   tabCount: 4
 }
 export default function useFormat(conf: AnyFormatConfig = config) {
-  const { startChars, endChars, breakChars, tabCount } = conf
+  const { openCloseChars, breakChars, tabCount } = conf
+  const startChars = openCloseChars.map(oc => oc.open)
+  const endChars = openCloseChars.map(oc => oc.close)
+  const startCharStack: { startChar: string; endChar: string }[] = []
+
   // 任意格式化
   function anyFormat(text: string) {
     if (!text) {
@@ -53,9 +61,18 @@ export default function useFormat(conf: AnyFormatConfig = config) {
           formatted = formatted.concat(' ')
           i++
         }
+        // 开始字符压入栈
+        startCharStack.push({
+          startChar: matchRes.char,
+          endChar: openCloseChars.find(oc => oc.open === matchRes.char)?.close || ''
+        })
         formatted = formatted.concat(breakSpace(++level))
       } else if ((matchRes = isMatched(endChars, arr, i)).matched) {
-        formatted = formatted.concat(breakSpace(--level))
+        // 判断是否栈顶
+        if (startCharStack.length > 0 && startCharStack[startCharStack.length - 1].endChar === matchRes.char) {
+          startCharStack.splice(startCharStack.length - 1, 1)
+          formatted = formatted.concat(breakSpace(--level))
+        }
         formatted = formatted.concat(matchRes.text)
         i += matchRes.text.length
       } else if ((matchRes = isMatched(breakChars, arr, i)).matched) {
@@ -89,7 +106,8 @@ export default function useFormat(conf: AnyFormatConfig = config) {
     if (newConditions.length === 1 && newConditions[0] === arr.substring(index, Math.max(index, i))) {
       return {
         matched: true,
-        text: newConditions[0]
+        text: newConditions[0],
+        char: newConditions[0],
       }
     }
     // 正则比较
@@ -103,7 +121,8 @@ export default function useFormat(conf: AnyFormatConfig = config) {
         for (const match of matchs) {
           return {
             matched: true,
-            text: match[0]
+            text: match[0],
+            char: condition,
           }
         }
       } catch (e) {
@@ -112,7 +131,8 @@ export default function useFormat(conf: AnyFormatConfig = config) {
     }
     return {
       matched: false,
-      text: ''
+      text: '',
+      char: '',
     }
   }
 

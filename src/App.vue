@@ -1,26 +1,33 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef } from 'vue'
+import { type Component, defineAsyncComponent, onMounted, ref } from 'vue'
 import { menus } from '@/router/menu'
-import { useLocal, useSessionCache } from '@/utils/CacheData'
+import { useLocal, useLocalCache, useSessionCache } from '@/utils/CacheData'
 import DragableMenu from '@/components/DragableMenu/DragableMenu.vue'
 import type { MenuItem } from '@/components/DragableMenu'
 import PackageJson from '../package.json'
-import NotFound from '@/components/pages/NotFound.vue'
 import { getEnv } from '@/data/env'
 
 const activeMenu = ref<MenuItem>(menus[0])
+let activeComponent: Component
 const componentRef = ref()
+const spinning = ref(false)
 
 /**
  * 更新激活菜单
  */
 const updateActiveMenu = () => {
+  spinning.value = true
   const currentPath = window.location.hash?.slice(2) || menus[0].key
   activeMenu.value = menus.find(menu => menu.key.toLowerCase() === currentPath.toLowerCase()) || {
     label: 'NotFound',
     key: 'NotFound',
-    component: shallowRef(NotFound)
+    component: () => import('@/components/pages/NotFound.vue')
   }
+  activeComponent = defineAsyncComponent(() => {
+    return activeMenu.value.component().catch(() => {
+      return { template: '<div>加载组件失败</div>' }
+    }).finally(() => spinning.value = false)
+  })
   // 设置标题
   document.title = `${activeMenu.value.label} - ${getEnv('VITE_APP_NAME')}`
 }
@@ -32,7 +39,7 @@ updateActiveMenu()
  */
 const handleVisibilitychange = async () => {
   if (document.visibilityState === 'visible') {
-    componentRef.value.init?.()
+    componentRef.value?.init?.()
   }
 }
 document.addEventListener('visibilitychange', handleVisibilitychange)
@@ -42,6 +49,7 @@ onMounted(() => {
   const localCache = useLocal('app', 'version')
   if (localCache.load() !== PackageJson.version) {
     useSessionCache('').clear()
+    useLocalCache('').clear()
     localCache.cache(PackageJson.version)
     window.location.reload()
   }
@@ -57,7 +65,9 @@ onMounted(() => {
   </div>
   <DragableMenu :menuItems="menus" :activeKey="activeMenu.key" />
   <div :class="{ content: true, 'content-padding': !activeMenu.fullContent }">
-    <component ref="componentRef" :is="activeMenu.component" />
+    <a-spin :spinning="spinning">
+      <component ref="componentRef" :is="activeComponent" />
+    </a-spin>
   </div>
   <div class="footer" v-if="!activeMenu.hideFooter">
     <p>CopyRight &copy; 2023 - {{ new Date().getFullYear() }} By cxxwl96 All Rights Reserved. 黔ICP备2023015771号-1</p>

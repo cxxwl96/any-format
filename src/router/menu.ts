@@ -1,22 +1,5 @@
-import { shallowRef } from 'vue'
 import type { MenuItem } from '@/components/DragableMenu'
 import { getEnv } from '@/data/env'
-import LogFormat from '@/views/log/LogFormat.vue'
-import JsonFormat from '@/views/json/JsonFormat.vue'
-import XmlFormat from '@/views/xml/XmlFormat.vue'
-import DataTransfer from '@/views/DataTransfer/DataTransfer.vue'
-import OpenCCTransfer from "@/views/opencc/OpenCCTransfer.vue";
-import QrCode from '@/views/qrcode/QrCode.vue'
-import Encoder from '@/views/encode/Encoder.vue'
-import RegExp from '@/views/regexp/RegExp.vue'
-import Cron from '@/views/cron/Cron.vue'
-import JSRunner from '@/views/runner/JSRunner.vue'
-import TextComparator from '@/views/comparator/TextComparator.vue'
-import Excalidraw from '@/views/excalidraw/Excalidraw.vue'
-
-// for dev test demo
-import Demo from '@/views/demo/Demo.vue'
-import IconPickerDemo from '@/views/demo/IconPickerDemo.vue'
 
 const isDev = getEnv('DEV')
 
@@ -25,62 +8,62 @@ const menus: MenuItem[] = [
   {
     label: 'LogFormat',
     key: 'LogFormat',
-    component: shallowRef(LogFormat),
+    component: () => import('@/views/log/LogFormat.vue'),
   },
   {
     label: 'JSON',
     key: 'JSON',
-    component: shallowRef(JsonFormat),
+    component: () => import('@/views/json/JsonFormat.vue'),
   },
   {
     label: 'XML',
     key: 'XML',
-    component: shallowRef(XmlFormat),
+    component: () => import('@/views/xml/XmlFormat.vue'),
   },
   {
     label: '转换',
     key: 'DataTransfer',
-    component: shallowRef(DataTransfer),
+    component: () => import('@/views/DataTransfer/DataTransfer.vue'),
   },
   {
     label: '简/繁',
     key: 'OpenCC',
-    component: shallowRef(OpenCCTransfer),
+    component: () => import('@/views/opencc/OpenCCTransfer.vue'),
   },
   {
     label: '文本对比',
     key: 'TextCompare',
-    component: shallowRef(TextComparator)
+    component: () => import('@/views/comparator/TextComparator.vue')
   },
   {
     label: 'QRCode',
     key: 'QRCode',
-    component: shallowRef(QrCode)
+    component: () => import('@/views/qrcode/QrCode.vue')
   },
   {
     label: 'Encoder',
     key: 'Encoder',
-    component: shallowRef(Encoder)
+    component: () => import('@/views/encode/Encoder.vue')
   },
   {
     label: 'RegExp',
     key: 'RegExp',
-    component: shallowRef(RegExp)
+    component: () => import('@/views/regexp/RegExp.vue')
   },
   {
     label: 'Cron',
     key: 'Cron',
-    component: shallowRef(Cron)
+    component: () => import('@/views/cron/Cron.vue')
   },
   {
     label: 'JSRunner',
     key: 'JSRunner',
-    component: shallowRef(JSRunner)
+    component: () => import('@/views/runner/JSRunner.vue')
   },
   {
     label: '画板',
     key: 'Excalidraw',
-    component: shallowRef(Excalidraw),
+    component: () => import('@/views/excalidraw/Excalidraw.vue'),
     hideHeader: true,
     hideFooter: true,
     fullContent: true,
@@ -88,14 +71,14 @@ const menus: MenuItem[] = [
   {
     label: 'IconPicker',
     key: 'IconPicker',
-    component: shallowRef(IconPickerDemo),
+    component: () => import('@/views/demo/IconPickerDemo.vue'),
     fullContent: false,
     hide: !isDev
   },
   {
     label: '来个Demo',
     key: 'Demo',
-    component: shallowRef(Demo),
+    component: () => import('@/views/demo/Demo.vue'),
     fullContent: false,
     hide: !isDev
   }
