@@ -12,6 +12,7 @@ export type ClearOption = {
   checked: boolean;
   case: string[];
   value?: string;
+  placeholder?: string;
 }
 
 type JsonType = string | object | any

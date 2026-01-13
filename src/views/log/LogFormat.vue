@@ -76,7 +76,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
       设置
     </a-button>
     <a-divider type="vertical" />
-    <a-button v-if="!showDiff" @click="originValue = StrUtil.compress(originValue)" size="small">文本压缩</a-button>
+    <a-button v-if="!showDiff" @click="originValue = StrUtil.compress(originValue, 'start')" size="small">文本压缩</a-button>
     <a-button type="primary" @click="showDiff=!showDiff" size="small">
       <template #icon>
         <SwapOutlined />

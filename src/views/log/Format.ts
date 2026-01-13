@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import { StrUtil } from '@/utils/StrUtil'
+
 export interface AnyFormatConfig {
-  startChars: string[],
-  endChars: string[],
-  breakChars: string[],
-  tabCount: number,
+  startChars: string[];
+  endChars: string[];
+  breakChars: string[];
+  tabCount: number;
 }
 
 interface MatchRes {
@@ -38,38 +40,35 @@ export default function useFormat(conf: AnyFormatConfig = config) {
     if (!text) {
       return text
     }
-    const arr = text.split(/\r\n|\r|\n/).map(line => line.trim()).join('')
+    const arr = StrUtil.compress(text, 'start')
     let formatted = ''
     let level = 0
-    let lastCharBreak = false
     for (let i = 0; i < arr.length;) {
       let ch = arr[i]
       let matchRes: MatchRes
       if ((matchRes = isMatched(startChars, arr, i)).matched) {
         formatted = formatted.concat(matchRes.text)
-        formatted = formatted.concat(breakSpace(++level))
-        lastCharBreak = true
         i += matchRes.text.length
+        while (i < arr.length && (ch = arr[i]) === ' ') {
+          formatted = formatted.concat(' ')
+          i++
+        }
+        formatted = formatted.concat(breakSpace(++level))
       } else if ((matchRes = isMatched(endChars, arr, i)).matched) {
         formatted = formatted.concat(breakSpace(--level))
         formatted = formatted.concat(matchRes.text)
-        lastCharBreak = true
         i += matchRes.text.length
       } else if ((matchRes = isMatched(breakChars, arr, i)).matched) {
         formatted = formatted.concat(matchRes.text)
-        formatted = formatted.concat(breakSpace(level))
-        lastCharBreak = true
         i += matchRes.text.length
-      } else {
-        if (lastCharBreak) {
-          while (i < arr.length && (ch = arr[i]) === ' ') {
-            i++
-          }
-          lastCharBreak = false
-        } else {
-          formatted = formatted.concat(ch)
+        while (i < arr.length && (ch = arr[i]) === ' ') {
+          formatted = formatted.concat(' ')
           i++
         }
+        formatted = formatted.concat(breakSpace(level))
+      } else {
+        formatted = formatted.concat(ch)
+        i++
       }
     }
     return formatted.split(/\r\n|\r|\n/).filter(line => line.trim() !== '').join('\n')

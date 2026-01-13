@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { ConfigEnv, defineConfig, loadEnv, UserConfig } from 'vite'
+import { ConfigEnv, defineConfig, loadEnv, UserConfig, splitVendorChunkPlugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
@@ -15,6 +15,7 @@ export default defineConfig(({mode}: ConfigEnv): UserConfig => {
     plugins: [
       vue(),
       vueJsx(),
+      splitVendorChunkPlugin(), // 自动将 node_modules 拆分为 vendor chunk
     ],
     resolve: {
       alias: {

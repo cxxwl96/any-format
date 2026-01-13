@@ -9,6 +9,7 @@ import DataTransferButton from '@/views/DataTransfer/DataTransferButton.vue'
 import AffixButtonGroup from '@/components/AffixButtonGroup.vue'
 import { StrUtil } from '@/utils/StrUtil'
 import { type ClearOption, useJSONUtil } from '@/views/json/JsonFormat'
+import { message } from 'ant-design-vue'
 
 const sessionCache = useSessionCache('JsonFormat')
 
@@ -36,8 +37,8 @@ const clearData = ref<{
     { title: '清理false', key: 'boolean', checked: false, case: ['"isBlank": false'] },
     { title: '清理空对象', key: 'object', checked: false, case: ['"person": {}'] },
     { title: '清理空数组', key: 'array', checked: false, case: ['addresses: []'] },
-    { title: '清理指定字段名（正则匹配）', key: 'keyRegExp', checked: false, case: ['AnyFormat: "abcxxx" // 例如Any开头的字段名：^Any.+'], value: '' },
-    { title: '清理指定字段值（正则匹配）', key: 'valueRegExp', checked: false, case: ['AnyFormat: "abcxxx" // 例如abc开头的字段值：^abc.+'], value: '' },
+    { title: '清理指定字段名（正则匹配）', key: 'keyRegExp', checked: false, case: ['AnyFormat: "abcxxx" // 例如Any开头的字段名：^Any.+'], value: '', placeholder: '输入需要匹配的字段名，支持正则，例如Any开头的字段名：^Any.+' },
+    { title: '清理指定字段值（正则匹配）', key: 'valueRegExp', checked: false, case: ['AnyFormat: "abcxxx" // 例如abc开头的字段值：^abc.+'], value: '', placeholder: '输入需要匹配的字段值，支持正则，例如abc开头的字段值：^abc.+' },
   ]
 })
 const originValue = ref(data.value.originValue)
@@ -47,6 +48,13 @@ const originUtil = useJSONUtil(originValue)
 const modifyUtil = useJSONUtil(modifyValue)
 
 const clearJson = () => {
+  // option校验
+  for (let option of clearData.value.options) {
+    if (option.checked && option.value === '') {
+      message.error(option.placeholder || '表单项未填写完成')
+      return
+    }
+  }
   const operateType = clearData.value.operateType
   if (operateType === 'origin') {
     originUtil.clearJson(clearData.value.options)
@@ -248,12 +256,12 @@ watch(
       <a-input v-if="option.key === 'keyRegExp' && option.checked"
                v-model:value="option.value"
                size="small"
-               placeholder="输入需要匹配的字段名，支持正则，例如Any开头的字段名：^Any.+"
+               :placeholder="option.placeholder"
       />
       <a-input v-if="option.key === 'valueRegExp' && option.checked"
                v-model:value="option.value"
                size="small"
-               placeholder="输入需要匹配的字段值，支持正则，例如abc开头的字段值：^abc.+"
+               :placeholder="option.placeholder"
       />
     </div>
   </a-modal>
