@@ -10,6 +10,7 @@ import AffixButtonGroup from '@/components/AffixButtonGroup.vue'
 import { StrUtil } from '@/utils/StrUtil'
 import { type ClearOption, useJSONUtil } from '@/views/json/JsonFormat'
 import { message } from 'ant-design-vue'
+import JsonPath from '@/views/json/JsonPath.vue'
 
 const sessionCache = useSessionCache('JsonFormat')
 
@@ -162,6 +163,7 @@ watch(
           </template>
         </DataTransferButton>
         <a-button @click="clearData.operateType='origin'" size="small">JSON清理</a-button>
+        <json-path :data="originValue"/>
         <a-button v-if="data.view === 'MonacoEditor' || data.view === 'MonacoDiffEditor'"
                   @click="data.view = data.view === 'MonacoEditor' ? 'MonacoDiffEditor' : 'MonacoEditor';"
                   type="primary"
@@ -228,6 +230,7 @@ watch(
           </template>
         </DataTransferButton>
         <a-button @click="clearData.operateType='modify'" size="small">JSON清理</a-button>
+        <json-path :data="modifyValue"/>
         <a-button type="primary" @click="data.view = 'MonacoEditor'" size="small">
           <template #icon>
             <SwapOutlined />

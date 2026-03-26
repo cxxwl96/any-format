@@ -249,19 +249,19 @@ class JSONUtil {
       if (isArray(json)) {
         for (const item of json) {
           deepClearJson(item)
-          if (toDelete(null, item)) {
+          if (needDelete(null, item)) {
             delete json[item]
           }
         }
       } else if (isObject(json)) {
         for (const key in json) {
           deepClearJson(json[key])
-          if (toDelete(key, json[key])) {
+          if (needDelete(key, json[key])) {
             delete json[key]
           }
         }
       }
-      if (toDelete(null, json)) {
+      if (needDelete(null, json)) {
         return ''
       }
       return json
@@ -275,30 +275,33 @@ class JSONUtil {
       return (options.find(op => op.key === key)?.value || '')
     }
 
-    const toDelete = (key: string | null, value: any): boolean => {
+    const needDelete = (key: string | null, value: any): boolean => {
+      let del: boolean = false
+      if (value === null || value === undefined) {
+        del = del || clearChecked('null')
+      } else if (isString(value)) {
+        del = del || clearChecked('string') && value.trim().length === 0
+      } else if (isBoolean(value)) {
+        del = del || clearChecked('boolean') && !value
+      } else if (isObject(value)) {
+        del = del || clearChecked('object') && Object.keys(value).length === 0
+      } else if (isArray(value)) {
+        del = del || clearChecked('array') && value.length === 0
+      }
       if (key !== null) {
         const match = key.match(clearValue('keyRegExp'))
-        return clearChecked('keyRegExp') && match !== null && match.length > 0
+        del = del || clearChecked('keyRegExp') && match !== null && match.length > 0
       }
-      if (value === null || value === undefined) {
-        return clearChecked('null')
-      } else if (isString(value)) {
-        const string = clearChecked('string') && value.trim().length === 0
+      if (isString(value)) {
         const match = value.match(clearValue('valueRegExp'))
-        const valueRegExp = clearChecked('valueRegExp') && match !== null && match.length > 0
-        return string || valueRegExp
-      } else if (isBoolean(value)) {
-        return clearChecked('boolean') && !value
-      } else if (isObject(value)) {
-        return clearChecked('object') && Object.keys(value).length === 0
-      } else if (isArray(value)) {
-        return clearChecked('array') && value.length === 0
+        del = del || clearChecked('valueRegExp') && match !== null && match.length > 0
       }
-      return false
+      return del
     }
     this.formatValidate()
     if (!this.isError()) {
-      this.setResultValue(JSON.stringify(deepClearJson(JSON.parse(this.getOriginJson()))))
+      const val = deepClearJson(JSON.parse(this.getOriginJson()))
+      this.setResultValue(val ? JSON.stringify(val) : val)
       this.formatValidate(false)
     }
     return this.getResult()
