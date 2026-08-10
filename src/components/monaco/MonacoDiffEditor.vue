@@ -2,7 +2,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import 'monaco-editor/esm/vs/editor/editor.main.js'
 
-import {onBeforeUnmount, onMounted, type PropType, ref, watch} from 'vue'
+import {computed, onBeforeUnmount, onMounted, type PropType, ref, watch} from 'vue'
 import {handleToggleFullScreen} from '@/utils/FullScreen'
 import {
   bindKey,
@@ -35,6 +35,9 @@ const showDiff = ref<boolean>(false) // 是否只显示差异
 const side = ref<boolean>(true) // 是否分栏
 const wordWrap = ref(props.wordWrap) // 是否自动换行
 const diffCount = ref<number>(0) // 差异个数
+const currentDiffIndex = ref<number>(0) // 当前差异索引（从1开始）
+let lineChanges: monaco.editor.ILineChange[] = [] // 差异行信息
+const currentDiffLabel = computed(() => diffCount.value > 0 ? `${currentDiffIndex.value}/${diffCount.value}` : '')
 
 watch(() => props.originValue, value => {
   if (originModel?.getValue() != value) {
@@ -102,7 +105,59 @@ onMounted(() => {
   dragFileInEditorHandler(editor.getModifiedEditor())
 
   // 更新事件
-  editor.onDidUpdateDiff(() => diffCount.value = editor.getLineChanges()?.length || 0)
+  editor.onDidUpdateDiff(() => {
+    lineChanges = editor.getLineChanges() || []
+    diffCount.value = lineChanges.length
+    updateCurrentDiffIndex(true)
+  })
+
+  // 监听光标位置变化，更新当前diff索引
+  const updateCurrentDiffIndex = (isModified: boolean) => {
+    if (lineChanges.length === 0) {
+      currentDiffIndex.value = 0
+      return
+    }
+    // 使用触发事件的编辑器，若均无焦点则用最后聚焦的编辑器
+    const useModified = isModified
+    const activeEditor = useModified ? editor.getModifiedEditor() : editor.getOriginalEditor()
+    const position = activeEditor.getPosition()
+    if (!position) return
+    const line = position.lineNumber
+    // 光标在第一个diff之前
+    const firstStart = useModified ? lineChanges[0].modifiedStartLineNumber : lineChanges[0].originalStartLineNumber
+    if (line < firstStart) {
+      currentDiffIndex.value = 1
+      return
+    }
+    for (let i = 0; i < lineChanges.length; i++) {
+      const change = lineChanges[i]
+      const start = useModified ? change.modifiedStartLineNumber : change.originalStartLineNumber
+      const end = useModified
+        ? (change.modifiedEndLineNumber || change.modifiedStartLineNumber)
+        : (change.originalEndLineNumber || change.originalStartLineNumber)
+      if (line >= start && line <= end) {
+        currentDiffIndex.value = i + 1
+        return
+      }
+      // 如果光标在两个diff之间，定位到最近的一个
+      if (i < lineChanges.length - 1) {
+        const nextStart = useModified ? lineChanges[i + 1].modifiedStartLineNumber : lineChanges[i + 1].originalStartLineNumber
+        if (line > end && line < nextStart) {
+          currentDiffIndex.value = (line - end) < (nextStart - line) ? i + 1 : i + 2
+          return
+        }
+      }
+    }
+    // 光标在最后一个diff之后
+    const lastEnd = useModified
+      ? (lineChanges[lineChanges.length - 1].modifiedEndLineNumber || lineChanges[lineChanges.length - 1].modifiedStartLineNumber)
+      : (lineChanges[lineChanges.length - 1].originalEndLineNumber || lineChanges[lineChanges.length - 1].originalStartLineNumber)
+    if (line > lastEnd) {
+      currentDiffIndex.value = lineChanges.length
+    }
+  }
+  editor.getModifiedEditor().onDidChangeCursorPosition(() => updateCurrentDiffIndex(true))
+  editor.getOriginalEditor().onDidChangeCursorPosition(() => updateCurrentDiffIndex(false))
 
   // 绑定键盘事件
   bindKey(editor.getOriginalEditor(), editorRef.value)
@@ -162,7 +217,7 @@ const handleShowDiffHandler = () => {
               <ArrowLeftOutlined/>
             </a>
             <span class="un-select" :style="{color: diffCount > 0 ? 'red' : 'green'}">
-              {{ diffCount > 0 ? '存在' + diffCount + '处差异' : '完全相同' }}
+              {{ diffCount > 0 ? '存在' + diffCount + '处差异' + (currentDiffLabel ? ' (' + currentDiffLabel + ')' : '') : '完全相同' }}
             </span>
             <a @click="editor.goToDiff('next')">
               <ArrowRightOutlined/>

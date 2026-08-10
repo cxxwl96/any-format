@@ -138,6 +138,10 @@ export const jsonlint = (function() {
           break
         case 17:
           this.$ = $$[$0 - 2]
+          if (Object.prototype.hasOwnProperty.call($$[$0 - 2], $$[$0][0])) {
+            const dupLine = _$[_$.length - 1].first_line || (yylineno + 1)
+            throw new Error('Duplicate key "' + $$[$0][0] + '" on line ' + dupLine)
+          }
           $$[$0 - 2][$$[$0][0]] = $$[$0][1]
           break
         case 18:

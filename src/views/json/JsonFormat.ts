@@ -102,7 +102,7 @@ class JSONUtil {
         isString(value) ? JSON.stringify(JSON.parse(value), null, 4) : JSON.stringify(value, null, 4)
       this.setResultValue(formatValue)
     } catch (e: any) {
-      if (e?.name === 'Error') {
+      if (e?.name === 'Error' || e?.name === 'SyntaxError' || e?.name === 'ReferenceError') {
         this.error(value as string, e?.message)
       }
       this.setResultValue(value as string)

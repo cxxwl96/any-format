@@ -60,6 +60,7 @@ function dblClickHandler(value: string, target: Ref<string>) {
                     @modifiedChange="sessionCacheModified.cache"
                     @originDblClick="originDblClickHandler"
                     @modifiedDblClick="modifiedDblClickHandler"
+                    style="max-height: calc(100vh - 160px)"
   >
     <template #title>
       <div class="tip-font">

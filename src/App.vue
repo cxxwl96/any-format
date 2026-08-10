@@ -70,7 +70,7 @@ onMounted(() => {
     </a-spin>
   </div>
   <div class="footer" v-if="!activeMenu.hideFooter">
-    <p>CopyRight &copy; 2023 - {{ new Date().getFullYear() }} By cxxwl96 All Rights Reserved. 黔ICP备2023015771号-1</p>
+    <p>CopyRight &copy; 2023 - {{ new Date().getFullYear() }} By cxxwl96 All Rights Reserved. 黔ICP备2023015771号</p>
     <p>PowerBy cxxwl96@sina.com</p>
   </div>
   <a-back-top />

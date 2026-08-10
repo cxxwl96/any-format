@@ -106,6 +106,7 @@ watch(
                     @modifiedChange="(value) => data.modifyValue = value"
                     @originDblClick="originUtil.formatValidate"
                     @modifiedDblClick="modifyUtil.formatValidate"
+                    style="max-height: calc(100vh - 160px)"
   >
     <template #title>
       <div class="tip-font">
