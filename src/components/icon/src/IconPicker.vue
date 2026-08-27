@@ -70,10 +70,9 @@ const handleSearchChange = useDebounceFn(() => {
   // 搜索iconify
   axios({
     method: 'GET',
-    url: '//api.iconify.design/search',
+    url: '//s.iconify.design/api/iconify',
     params: {
-      query: searchIcon.value,
-      limit: 999
+      query: searchIcon.value
     }
   }).then(res => {
     iconList.value.push(...(res.data?.icons || []))
