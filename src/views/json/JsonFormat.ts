@@ -21,17 +21,18 @@ type JsonResult = {
   error: boolean;
   message: string;
 }
+
 /**
  * JSONUtil
  *
  * @param json JSON
  */
 class JSONUtil {
-  
+
   /**
    * 原始JSON
    */
-  private originJson: Ref<JsonType>;
+  private originJson: Ref<JsonType>
 
   /**
    * 计算结果
@@ -60,7 +61,7 @@ class JSONUtil {
 
   /**
    * 设置结果值
-   * 
+   *
    * @param value 值
    */
   private setResultValue = (value: JsonType, updateOriginJson: boolean = true): void => {
@@ -70,14 +71,14 @@ class JSONUtil {
       this.originJson.value = value
     }
   }
-  
+
   private error = (value: JsonType, message: string) => {
     this.result.value.value = value
     this.result.value.error = true
     this.result.value.message = message
     return this.result.value
   }
-  
+
   private isError = () => {
     return this.result.value.error
   }
@@ -89,23 +90,22 @@ class JSONUtil {
    * @param throwError 是否抛异常
    */
   public formatValidate = (tip: boolean = true, throwError?: boolean): JsonResult => {
-    const value = this.getOriginJson()
-    if (!value || value === '') {
+    const originValue = this.getOriginJson()
+    if (!originValue || originValue === '') {
       if (tip) {
         message.info('请输入内容')
       }
       return this.error('', '请输入内容')
     }
+    let formatValue
     try {
-      const formatValue =
-        jsonlint.parse(value) &&
-        isString(value) ? JSON.stringify(JSON.parse(value), null, 4) : JSON.stringify(value, null, 4)
-      this.setResultValue(formatValue)
+      formatValue = jsonlint.parse(originValue) && isString(originValue) ?
+        JSON.stringify(JSON.parse(originValue), null, 4) : JSON.stringify(originValue, null, 4)
     } catch (e: any) {
       if (e?.name === 'Error' || e?.name === 'SyntaxError' || e?.name === 'ReferenceError') {
-        this.error(value as string, e?.message)
+        this.error(originValue as string, e?.message)
       }
-      this.setResultValue(value as string)
+      formatValue = originValue as string
     }
     if (tip) {
       if (this.isError()) {
@@ -114,8 +114,9 @@ class JSONUtil {
           description: this.getResult().message,
           placement: 'topRight'
         })
-      } else {
+      } else if (formatValue !== this.originJson.value) {
         message.success('正确的JSON')
+        this.setResultValue(formatValue)
       }
     }
     if (throwError && this.isError()) {
@@ -172,7 +173,7 @@ class JSONUtil {
     if (!this.isError()) {
       const value = ref(JSON.parse(this.getOriginJson()))
       deepJsonForDelEscape(value, suffix)
-      this.setResultValue(JSON.stringify(value.value)) 
+      this.setResultValue(JSON.stringify(value.value))
       this.formatValidate(false)
     }
     return this.getResult()
@@ -233,7 +234,7 @@ class JSONUtil {
     this.formatValidate()
     if (!this.isError()) {
       const json = JSON.parse(this.getOriginJson())
-      this.setResultValue(JSON.stringify(deepFieldSort(json, asc))) 
+      this.setResultValue(JSON.stringify(deepFieldSort(json, asc)))
       this.formatValidate(false)
     }
     return this.getResult()
@@ -322,5 +323,5 @@ class JSONUtil {
 }
 
 export const useJSONUtil = (json: Ref<JsonType>): JSONUtil => {
-  return new JSONUtil(json);
+  return new JSONUtil(json)
 }

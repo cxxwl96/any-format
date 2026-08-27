@@ -13,7 +13,7 @@ import {
   type Language,
   type Theme
 } from './data'
-import {FullscreenOutlined, DeleteOutlined, ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons-vue'
+import {FullscreenOutlined, DeleteOutlined, SwapOutlined, ArrowLeftOutlined, ArrowRightOutlined} from '@ant-design/icons-vue'
 
 const props = defineProps({
   originValue: {type: String, required: false, default: ''},
@@ -186,11 +186,19 @@ onMounted(() => {
 // 销毁编辑器
 onBeforeUnmount(() => editor?.dispose())
 
+// 交换内容
+const handleSwitch = () => {
+  const value = originModel.getValue()
+  originModel.setValue(modifiedModel.getValue())
+  modifiedModel.setValue(value)
+}
+
 // 清空编辑器内容
 const handleClearText = () => {
   originModel.setValue('')
   modifiedModel.setValue('')
 }
+
 // editor刚初始化时第一次点击不会收缩相同的行，模拟点击两次按钮
 let showDiffClickNum = 0
 const handleShowDiffHandler = () => {
@@ -224,6 +232,11 @@ const handleShowDiffHandler = () => {
             </a>
             <a-divider type="vertical"/>
           </a-space>
+          <a-tooltip title="交换内容">
+            <a @click="handleSwitch()">
+              <SwapOutlined />
+            </a>
+          </a-tooltip>
           <a-tooltip title="清除">
             <a @click="handleClearText()">
               <DeleteOutlined/>
